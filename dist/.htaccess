@@ -1,0 +1,57 @@
+RewriteEngine On
+RewriteBase /CIO/
+Options -Indexes
+ErrorDocument 403 /CIO/dist/404.html
+ErrorDocument 404 /CIO/dist/404.html
+# 1. Redirect /index.html or /index.php to the root /
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/+(.*)index\.(php|html)[\s?] [NC]
+RewriteRule ^ /%1 [R=301,L]
+
+# 2. Redirect /filename.php or /filename.html to /filename
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/+(.+)\.php[\s?] [NC]
+RewriteRule ^ /%1 [R=301,L]
+
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/+(.+)\.html[\s?] [NC]
+RewriteRule ^ /%1 [R=301,L]
+
+# 3. Internal Mapping (The "Silent" part)
+# Map / to index.php if it exists, otherwise index.html
+DirectoryIndex index.php index.html
+
+# Map /filename to /filename.php
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^([^\.]+)$ $1.php [NC,L]
+
+# Map /filename to /filename.html
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.html -f
+RewriteRule ^([^\.]+)$ $1.html [NC,L]
+
+
+ 
+
+# 2. Redirect /index.php or /index.html to / (The Root)
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/+(.*)index\.(php|html)[\s?] [NC]
+RewriteRule ^(.*)index\.(php|html)$ /CIO/$1 [R=301,L]
+
+# 3. Internal Mapping: Map /CIO/filename to /CIO/dist/filename.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{DOCUMENT_ROOT}/CIO/dist/$1.php -f
+RewriteRule ^([^/]+)$ dist/$1.php [L]
+
+# 4. Internal Mapping: Map /CIO/filename to /CIO/dist/filename.html
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{DOCUMENT_ROOT}/CIO/dist/$1.html -f
+RewriteRule ^([^/]+)$ dist/$1.html [L]
+
+# 5. Global 404 Catch-All
+# If it's not a real file/dir and wasn't caught by the rules above, show 404
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^.*$ dist/404.html [L]
+
+# 6. Default Index
+DirectoryIndex dist/index.php index.php index.html
