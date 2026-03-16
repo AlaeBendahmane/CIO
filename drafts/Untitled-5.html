@@ -1,0 +1,838 @@
+new at 25/02
+
+<!doctype html>
+<html lang="fr">
+<?php
+include '../api/session_info.php'
+?>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>CIO | Pointage</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="color-scheme" content="light dark" />
+  <meta name="theme-color" content="#007bff" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#1a1a1a" media="(prefers-color-scheme: dark)" />
+
+  <meta name="title" content="CIO | Dashboard" />
+  <meta name="author" content="ColorlibHQ" />
+  <meta name="keywords"
+    content="bootstrap 5, bootstrap, bootstrap 5 admin dashboard, bootstrap 5 dashboard, bootstrap 5 charts, bootstrap 5 calendar, bootstrap 5 datepicker, bootstrap 5 tables, bootstrap 5 datatable, vanilla js datatable, colorlibhq, colorlibhq dashboard, colorlibhq admin dashboard, accessible admin panel, WCAG compliant" />
+
+  <meta name="supported-color-schemes" content="light dark" />
+  <link rel="preload" href="./css/adminlte.css" as="style" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/source-sans-3@5.0.12/index.css"
+    integrity="sha256-tXJfXfp6Ewt1ilPzLDtQnJV4hclT9XuaZUKyUvmyr+Q=" crossorigin="anonymous" media="print"
+    onload="this.media = 'all'" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.11.0/styles/overlayscrollbars.min.css"
+    crossorigin="anonymous" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
+    crossorigin="anonymous" />
+  <link rel="stylesheet" href="./css/adminlte.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.css"
+    integrity="sha256-4MX+61mt9NVvvuPjUWdUdyfZfxSB1/Rf9WtqRHgG5S0=" crossorigin="anonymous" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/css/jsvectormap.min.css"
+    integrity="sha256-+uGLJmmTKOqBr+2E6KDYs/NRsHxSkONXFHUL0fy2O/4=" crossorigin="anonymous" />
+  <link rel="stylesheet" href="./css/handsontable.full.min.css">
+  <script src="./js/handsontable.full.min.js"></script>
+  <style>
+    @import url('./css/css2.css');
+
+    body {
+      background: white;
+      margin: 0px;
+      color: #334155;
+    }
+
+    .container {
+      height: max-content;
+      padding: 0px 10px;
+    }
+
+    .header-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn-add {
+      background: #2563eb;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .bg-red {
+      color: #fff !important;
+      background-color: #fe0001 !important;
+      font-weight: bold;
+    }
+
+    .bg-purple {
+      color: #fff !important;
+      background-color: #71309f !important;
+      font-weight: bold;
+    }
+
+    .bg-light-green {
+      color: #000 !important;
+      background-color: #ffff01 !important;
+      font-weight: bold;
+    }
+
+    .col-s {
+      background-color: #97cdff !important;
+      color: #1e3a8a !important;
+      font-weight: bold;
+    }
+
+    .col-d {
+      background-color: #f7af7e !important;
+      color: #7c2d12 !important;
+      font-weight: bold;
+    }
+
+    .sun-cell {
+      background: #f4b083 !important;
+      color: #991b1b !important;
+    }
+
+    .white-cell {
+      background: #fff !important;
+      color: #000 !important;
+    }
+
+    .sat-cell {
+      background: #97cdff !important;
+      color: #475569 !important;
+    }
+
+    .handsontable td,
+    .handsontable th {
+      border: 1px solid #000 !important;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(15, 23, 42, 0.6);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      width: 400px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      box-sizing: border-box;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .btn-save {
+      background: #10b981;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .btn-cancel {
+      background: #94a3b8;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .htCore .htDimmed {
+      color: #000000 !important;
+    }
+
+    .handsontable thead th {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .handsontable .ht_clone_left {
+      z-index: 15;
+    }
+
+    .handsontable .htCommentCell:after {
+      border-top: 8px solid red !important;
+      border-left: 8px solid transparent !important;
+    }
+
+    .handsontable td.htCommentCell[style*="background-color: red"]:after,
+    .handsontable td.htCommentCell[style*="background: red"]:after,
+    .handsontable td.htCommentCell.bg-red:after {
+      border-top: 8px solid #00FF00 !important;
+    }
+
+    /*  */
+  </style>
+</head>
+
+<body class="fixed-header layout-fixed sidebar-expand-lg bg-body-tertiary">
+  <?php
+  include './splashscreen.php';
+  ?>
+  <div class="app-wrapper">
+    <nav class="app-header navbar navbar-expand bg-body ">
+      <div class="container-fluid">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" data-lte-toggle="sidebar" href="#" role="button">
+              <i class="bi bi-list"></i>
+            </a>
+          </li>
+        </ul>
+        <?php
+        include './profileNav.php';
+        ?>
+      </div>
+    </nav>
+    <?php
+    $userRole = $role;
+    $currentPage = 'pointage';
+    include './sidebar.php';
+    ?>
+    <!--  -->
+    <input type="hidden" id="sessionV" value="<?= $userRole  ?>">
+    <!--  -->
+    <main class="app-main">
+      <div class="app-content-header">
+        <div class="container-fluid">
+        </div>
+      </div>
+      <div class="app-content">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="card mb-4 card-primary card-outline">
+                <div class="card-header border-0">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <h3 class="card-title">Pointage</h3>
+                    <div class="d-flex gap-2">
+                      <input id="periodePicker" type="month" class="form-control" min="2020-01" max="2030-12">
+                      <?php if ($userRole == 'A'): ?>
+                        <button type="button" id="export-file" class="btn btn-secondary mb-2"
+                          style="margin-bottom: 0px !important;">Exporter</button>
+                      <?php endif; ?>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="card-body " style="padding-top: 0px !important;">
+                  <!-- d-flex flex-column -->
+                  <div id="grid" style="flex: 3;"></div>
+
+                  <!-- <div style="flex: 1; height: 200px; overflow-y: scroll;" >
+                    <div class="timeline mt-4"> </div>
+                  </div> -->
+
+                </div>
+
+
+
+              </div>
+
+
+              <?php if ($userRole == 'A'): ?>
+                <div class="card mb-4 card-primary card-outline collapsed-card">
+                  <div class="card-header border-0">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <h3 class="card-title">Historique</h3>
+                      <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse">
+                        <i data-lte-icon="expand" class="bi bi-plus-lg"></i>
+                        <i data-lte-icon="collapse" class="bi bi-dash-lg"></i>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="card-body pt-0" style="padding-right: 5px !important;padding-left: 10px !important;padding-top: 0px !important;">
+                    <!-- d-flex flex-column -->
+                    <!-- <div id="grid" style="flex: 3;"></div> -->
+
+                    <div style="flex: 1; height: 300px; overflow-y: scroll;">
+                      <div class="timeline mt-0"> </div>
+                    </div>
+
+                  </div>
+
+                </div>
+              <?php endif; ?>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.11.0/browser/overlayscrollbars.browser.es6.min.js"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.min.js" crossorigin="anonymous"></script>
+  <script src="./js/adminlte.js"></script>
+
+  <script>
+    const SELECTOR_SIDEBAR_WRAPPER = '.sidebar-wrapper';
+    const Default = {
+      scrollbarTheme: 'os-theme-light',
+      scrollbarAutoHide: 'leave',
+      scrollbarClickScroll: true,
+    };
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const sidebarWrapper = document.querySelector(SELECTOR_SIDEBAR_WRAPPER);
+      const body = document.body;
+
+      function handleSidebar() {
+        const width = window.innerWidth;
+
+        if (width < 992) {
+          body.classList.add('sidebar-collapse');
+          body.classList.remove('sidebar-open');
+        } else {
+          body.classList.remove('sidebar-collapse');
+        }
+      }
+      handleSidebar();
+      window.addEventListener('resize', handleSidebar);
+      const isMobile = window.innerWidth <= 992;
+      if (
+        sidebarWrapper &&
+        OverlayScrollbarsGlobal?.OverlayScrollbars !== undefined &&
+        !isMobile
+      ) {
+        OverlayScrollbarsGlobal.OverlayScrollbars(sidebarWrapper, {
+          scrollbars: {
+            theme: Default.scrollbarTheme,
+            autoHide: Default.scrollbarAutoHide,
+            clickScroll: Default.scrollbarClickScroll,
+          },
+        });
+      }
+
+      document.getElementById('periodePicker').addEventListener('change', function() {
+        loadData();
+      });
+
+      function getSelectedPeriod() {
+        const val = document.getElementById('periodePicker').value;
+        const [year, month] = val.split('-');
+        return {
+          year: parseInt(year),
+          month: parseInt(month)
+        };
+      }
+
+
+
+
+      const picker = document.getElementById('periodePicker');
+
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+
+      const currentPeriod = `${year}-${month}`;
+      picker.value = currentPeriod;
+
+      loadData();
+
+
+
+    });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.min.js"
+    integrity="sha256-+vh8GkaU7C9/wbSLIcwq82tQ2wTf44aOHA8HlBMwRI8=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/js/jsvectormap.min.js"
+    integrity="sha256-/t1nN2956BT869E6H4V1dnt0X5pAQHPytli+1nTZm2Y=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/maps/world.js"
+    integrity="sha256-XPpPaZlU8S/HWf7FZLAncLg2SAkP8ScUTII89x9D3lY=" crossorigin="anonymous"></script>
+  <!------->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <!------->
+
+
+
+
+
+  <script>
+    /**
+     * DYNAMIC CALENDAR HELPERS
+     */
+    function getDaysInMonth(year, month) {
+      // month is 1-based (1 = Jan, 2 = Feb...)
+      return new Date(year, month, 0).getDate();
+    }
+
+    function getDayLetter(year, month, day) {
+      const date = new Date(year, month - 1, day);
+      const days = ["D", "L", "M", "M", "J", "V", "S"];
+      return days[date.getDay()];
+    }
+
+    function getSelectedPeriod() {
+      const picker = document.getElementById('periodePicker');
+      let val = picker.value;
+      if (!val) {
+        const now = new Date();
+        const currentYear = now.getFullYear();
+        const currentMonth = String(now.getMonth() + 1).padStart(2, '0');
+        val = `${currentYear}-${currentMonth}`;
+        picker.value = val;
+      }
+      const [year, month] = val.split('-');
+      return {
+        year: parseInt(year),
+        month: parseInt(month)
+      };
+    }
+
+    /**
+     * HEADER GENERATION
+     */
+    function generateHeaders() {
+      const {
+        year,
+        month
+      } = getSelectedPeriod();
+      const numDays = getDaysInMonth(year, month);
+
+      const headerRow1 = ['', '', {
+        label: 'Agent',
+        colspan: 2
+      }, ''];
+      for (let i = 1; i <= numDays; i++) {
+        headerRow1.push({
+          label: String(i),
+          colspan: 1
+        });
+      }
+
+      const headerRow2 = ['Sté', 'ID', 'Nom', 'Prénom', 'Campagne'];
+      for (let i = 1; i <= numDays; i++) {
+        headerRow2.push(getDayLetter(year, month, i));
+      }
+      headerRow2.push('Jours', 'Assiduité', 'Avance', 'Prime', 'CDP', 'Remarque');
+
+      return {
+        headerRow1,
+        headerRow2,
+        numDays
+      };
+    }
+
+    /**
+     * RENDERER: Dynamic Styles & ReadOnly Logic
+     */
+    function pointageRenderer(instance, td, row, col, prop, value, cellProperties) {
+      Handsontable.renderers.TextRenderer.apply(this, arguments);
+
+      const {
+        year,
+        month
+      } = getSelectedPeriod();
+      const numDays = getDaysInMonth(year, month);
+      const physicalRow = instance.toPhysicalRow(row);
+      const rowData = instance.getSourceDataAtRow(physicalRow);
+
+      if (!rowData) return td;
+
+      // Lock existing Agent info (Col 0-4)
+      if (col < 5 && rowData[1]) {
+        cellProperties.readOnly = true;
+      } else {
+        cellProperties.readOnly = false;
+      }
+
+      let classes = ['htCenter', 'htMiddle'];
+
+      // Color Logic for Status
+      if (value === 'A') classes.push('bg-red');
+      else if (value === 'SB') classes.push('bg-purple');
+      else if (value === 'C') classes.push('bg-light-green');
+
+      // Weekend Styling (Saturday/Sunday)
+      else if (col >= 5 && col < (5 + numDays)) {
+        const day = col - 4;
+        const dayOfWeek = new Date(year, month - 1, day).getDay();
+        if (dayOfWeek === 0) classes.push('sun-cell');
+        else if (dayOfWeek === 6) classes.push('sat-cell');
+        else classes.push('white-cell');
+      } else {
+        classes.push('white-cell');
+      }
+
+      td.className = classes.join(' ');
+      return td;
+    }
+
+    /**
+     * INITIALIZATION
+     */
+    let isLoadingComments = false;
+    const sessionV = document.getElementById('sessionV').value;
+    const initialHeaders = generateHeaders();
+
+    const hot = new Handsontable(document.getElementById('grid'), {
+      data: [],
+      width: '100%',
+      height: sessionV === 'A' ? 400 : 510,
+      minSpareRows: 1,
+      rowHeaders: true,
+      colHeaders: true,
+      nestedHeaders: [initialHeaders.headerRow1, initialHeaders.headerRow2],
+      fixedColumnsLeft: 5,
+      className: 'htCenter htMiddle',
+      licenseKey: 'non-commercial-and-evaluation',
+      columnSorting: true,
+      filters: true,
+      comments: true,
+      manualColumnResize: true,
+      renderer: pointageRenderer,
+      dropdownMenu: ['filter_by_condition', 'filter_by_value', 'filter_action_bar'],
+      contextMenu: ['row_above', 'row_below', '---------', 'commentsAddEdit', 'commentsRemove', '---------', 'remove_row'],
+
+      colWidths(index) {
+        if (index === 0) return 40;
+        if (index === 1) return 60;
+        if (index === 4) return 110;
+        if (index >= 5 && index < 36) return 35;
+        return 100;
+      },
+
+      // Weekend Header Coloring
+      afterGetColHeader(col, TH) {
+        const {
+          year,
+          month
+        } = getSelectedPeriod();
+        const numDays = getDaysInMonth(year, month);
+        if (col >= 5 && col < 5 + numDays) {
+          const day = col - 4;
+          const dayOfWeek = new Date(year, month - 1, day).getDay();
+          if (dayOfWeek === 6) TH.classList.add('col-s');
+          if (dayOfWeek === 0) TH.classList.add('col-d');
+        }
+      },
+
+      // Data Synchronization
+      async afterChange(changes, source) {
+        if (['loadData', 'updateCalcul'].includes(source) || !changes) return;
+
+        for (const [row, col, oldVal, newVal] of changes) {
+          if (oldVal === newVal) continue;
+          const idFiscal = this.getDataAtCell(row, 1);
+          if (!idFiscal) continue;
+
+          const {
+            year,
+            month
+          } = getSelectedPeriod();
+
+          // If editing pointage days
+          if (col >= 5 && col < 36) {
+            const total = calculateTotalJours(row);
+            this.setDataAtCell(row, 36, total, 'updateCalcul'); // Note: index shifted based on numDays
+
+            await fetch(`../api/api.php?action=save_pointage&mois=${month}&annee=${year}`, {
+              method: 'POST',
+              body: JSON.stringify({
+                idFiscal,
+                day: col - 4,
+                valeur: newVal
+              })
+            });
+          } else {
+            await syncAgentRow(row, [row, col, oldVal, newVal]);
+          }
+        }
+        loadTimeline();
+      }
+    });
+
+    /**
+     * DATA LOADING
+     */
+    async function loadData() {
+      isLoadingComments = true;
+      const {
+        year,
+        month
+      } = getSelectedPeriod();
+
+      // 1. Refresh Dynamic Headers
+      const newHeaders = generateHeaders();
+      hot.updateSettings({
+        nestedHeaders: [newHeaders.headerRow1, newHeaders.headerRow2]
+      });
+
+      // 2. Fetch Data
+      const res = await fetch(`../api/api.php?action=fetch&annee=${year}&mois=${month}`);
+      const data = await res.json();
+      const tableData = data.map(item => item.data);
+
+      hot.loadData(tableData);
+
+      // 3. Load Comments
+      const commentsPlugin = hot.getPlugin('comments');
+      data.forEach((item, rowIndex) => {
+        item.comments.forEach((commentText, dayIdx) => {
+          if (commentText && commentText.trim() !== "") {
+            commentsPlugin.setCommentAtCell(rowIndex, dayIdx + 5, commentText);
+          }
+        });
+      });
+
+      hot.render();
+      setTimeout(() => {
+        isLoadingComments = false;
+      }, 100);
+    }
+
+    /**
+     * CALCULATIONS
+     */
+    function calculateTotalJours(row) {
+      const {
+        year,
+        month
+      } = getSelectedPeriod();
+      const numDays = getDaysInMonth(year, month);
+      let total = 0;
+
+      for (let i = 0; i < numDays; i++) {
+        const valRaw = hot.getDataAtCell(row, 5 + i);
+        const val = parseFloat(String(valRaw).replace(',', '.')) || 0;
+
+        // Logic: Weekends usually 4h, Weekdays 8h? 
+        // Adjust divisor based on your company rules
+        const dayOfWeek = new Date(year, month - 1, i + 1).getDay();
+        const divisor = (dayOfWeek === 0 || dayOfWeek === 6) ? 4 : 8;
+        total += (val / divisor);
+      }
+      return total.toFixed(2);
+    }
+
+    // Event Listener for the Period Picker
+    document.getElementById('periodePicker').addEventListener('change', loadData);
+
+    // Initial Load
+    loadData();
+    loadTimeline();
+
+    // Helper for syncing
+    async function syncAgentRow(row, change) {
+      const {
+        year,
+        month
+      } = getSelectedPeriod();
+      const data = hot.getDataAtRow(row);
+      const agent = {
+        ste: data[0] || '',
+        idFiscal: data[1] || '',
+        nom: (data[2] || '').toUpperCase(),
+        prenom: data[3] || '',
+        campagne: data[4] || '',
+        totalJours: data[36] || 0, // Adjusted index
+        mois: month,
+        annee: year
+      };
+      if (agent.idFiscal) {
+        await fetch(`../api/api.php?action=add_agent&mois=${month}&annee=${year}`, {
+          method: 'POST',
+          body: JSON.stringify(agent)
+        });
+      }
+    }
+
+    async function loadTimeline(idFiscal = null) {
+      const container = document.querySelector('.timeline');
+      if (!container) return;
+
+      let url = '../api/api.php?action=fetch_history';
+      if (idFiscal) url += `&idFiscal=${encodeURIComponent(idFiscal)}`;
+
+      try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error('Network response was not ok');
+
+        const logs = await response.json();
+
+        let html = '';
+        let lastDate = '';
+
+
+        // let unwantedL = logs.filter(log =>
+        //   log.action === "update_agent_Prénom" ||
+        //   log.action === "update_agent_Nom" ||
+        //   log.action === "update_agent_ID Fiscal" ||
+        //   log.action === "update_agent_Campagne" ||
+        //   log.action === "update_agent_STE"
+        // ).length
+
+        // console.log(logs.length/*, unwantedL*/)
+        if (logs.length === 0 /*|| unwantedL == logs.length*/ ) {
+          container.innerHTML = '<div class="text-center p-3">Aucun historique trouvé.</div>';
+          return;
+        }
+
+        logs.forEach(log => {
+          const authorName = `${log.author_nom || ''} ${log.author_prenom || ''}`.trim() || log.updated_by;
+          const targetName = `${log.target_nom || ''} ${log.target_prenom || ''}`.trim() || log.idFiscal;
+
+          const dateOptions = {
+            day: 'numeric',
+            month: 'short',
+            year: 'numeric'
+          };
+          const currentDate = new Date(log.created_at).toLocaleDateString('fr-FR', dateOptions);
+
+          if (currentDate !== lastDate) {
+            html += `
+      <div class="time-label">
+        <span class="text-bg-danger">${currentDate}</span>
+      </div>`;
+            lastDate = currentDate;
+          }
+
+          const periode = `${String(log.mois).padStart(2, '0')}/${log.annee}`;
+
+          let detailsObj = {};
+          try {
+            detailsObj = JSON.parse(log.details);
+          } catch (e) {
+            detailsObj = {};
+          }
+
+          let config = {};
+
+          if (log.action === 'save_pointage') {
+            const day = detailsObj.day || '?';
+            const val = detailsObj.valeur || '';
+
+            config = {
+              icon: 'bi-calendar-check',
+              color: 'text-bg-warning',
+              message: `<a href="#"><strong>${authorName}</strong></a> a mis à jour le pointage de <strong>${targetName}</strong> pour la periode du
+                        <small class="badge text-bg-secondary">${periode}</small>
+                        <span class="text-muted">Jour ${day} pointé à : </span>
+                        <small class="badge text-bg-secondary ms-1">${val}</small>`
+            };
+          }
+          // else if (log.action == "update_agent_Prénom" || log.action == "update_agent_Nom" || log.action == "update_agent_Campagne" || log.action == "update_agent_ID Fiscal" || log.action == "update_agent_STE") {
+          //   // console.log(log.action,'-----')
+          //   return
+          // }
+          // else if (log.action == "update_agent_totalJours") {
+          //   // console.log(log.action,'-----')
+          //   return
+          // }
+          else {
+            const actionText = log.action === 'add_agent' ? 'créé' : 'mis à jour';
+            const color = log.action === 'add_agent' ? 'text-bg-success' : 'text-bg-info';
+            const icon = log.action === 'add_agent' ? 'bi-person-plus' : 'bi-person-gear';
+            let last = log?.action?.split('_').pop().toLowerCase() ?? '_invalide';
+            let val;
+            //= last == "assiduité" ? detailsObj['assiduite'] : "commentaire" ? detailsObj['comment'] : detailsObj[last];
+            if (last == "assiduité") {
+              val = detailsObj['assiduite']
+            } else if (last == "commentaire") {
+              val = detailsObj['comment']
+            } else {
+              val = detailsObj[last]
+            }
+            const capitalized = last.charAt(0).toUpperCase() + last.slice(1);
+            let _text = '';
+            if (last == 'assiduité' || last == 'avance') {
+              _text = 'l\'' + last
+            } else if (last == 'prime' || last == 'remarque') {
+              _text = 'la ' + last
+            } else {
+              _text = 'le ' + last
+            }
+            config = {
+              icon: icon,
+              color: color,
+              message: `<a href="#"><strong>${authorName}</strong></a> a ${actionText + ' ' + _text} de l'agent <strong>${targetName}</strong> pour la periode du
+                      <small class="badge text-bg-secondary ms-1">${periode}</small>
+                      <span class="text-muted">${capitalized} : </span>
+                      <small class="badge text-bg-secondary ms-1">${val}</small>`
+            };
+          }
+
+          html += `
+        <div>
+          <i class="timeline-icon bi ${config.icon} ${config.color} mt-1"></i>
+          <div class="timeline-item shadow-sm">
+            <span class="time"><i class="bi bi-clock-fill"></i> ${log.log_time.substring(0, 5)}</span>
+            <div class="timeline-header no-border">
+              ${config.message}
+            </div>
+          </div>
+        </div>`;
+        });
+
+        html += `
+      <div>
+        <i class="timeline-icon bi bi-clock-fill text-bg-secondary"></i>
+      </div>`;
+
+        container.innerHTML = html;
+
+      } catch (error) {
+        console.error("Erreur lors du chargement de la timeline:", error);
+        container.innerHTML = '<div class="text-danger p-3">Erreur de chargement de l\'historique.</div>';
+      }
+    }
+  </script>
+</body>
+
+</html>

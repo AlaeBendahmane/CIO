@@ -1,0 +1,1078 @@
+olllllllllllllllllllllllddd 
+
+
+
+
+<!doctype html>
+<html lang="fr">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>AdminLTE v4 | Pointage</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="color-scheme" content="light dark" />
+  <meta name="theme-color" content="#007bff" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#1a1a1a" media="(prefers-color-scheme: dark)" />
+
+  <meta name="title" content="AdminLTE v4 | Dashboard" />
+  <meta name="author" content="ColorlibHQ" />
+  <meta name="description"
+    content="AdminLTE is a Free Bootstrap 5 Admin Dashboard, 30 example pages using Vanilla JS. Fully accessible with WCAG 2.1 AA compliance." />
+  <meta name="keywords"
+    content="bootstrap 5, bootstrap, bootstrap 5 admin dashboard, bootstrap 5 dashboard, bootstrap 5 charts, bootstrap 5 calendar, bootstrap 5 datepicker, bootstrap 5 tables, bootstrap 5 datatable, vanilla js datatable, colorlibhq, colorlibhq dashboard, colorlibhq admin dashboard, accessible admin panel, WCAG compliant" />
+
+  <meta name="supported-color-schemes" content="light dark" />
+  <link rel="preload" href="./css/adminlte.css" as="style" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/source-sans-3@5.0.12/index.css"
+    integrity="sha256-tXJfXfp6Ewt1ilPzLDtQnJV4hclT9XuaZUKyUvmyr+Q=" crossorigin="anonymous" media="print"
+    onload="this.media = 'all'" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.11.0/styles/overlayscrollbars.min.css"
+    crossorigin="anonymous" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
+    crossorigin="anonymous" />
+  <link rel="stylesheet" href="./css/adminlte.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.css"
+    integrity="sha256-4MX+61mt9NVvvuPjUWdUdyfZfxSB1/Rf9WtqRHgG5S0=" crossorigin="anonymous" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/css/jsvectormap.min.css"
+    integrity="sha256-+uGLJmmTKOqBr+2E6KDYs/NRsHxSkONXFHUL0fy2O/4=" crossorigin="anonymous" />
+  <link rel="stylesheet" href="./css/handsontable.full.min.css">
+  <script src="./js/handsontable.full.min.js"></script>
+  <style>
+    @import url('./css/css2.css');
+
+    body {
+      background: white;
+      margin: 0px;
+      font-family: 'Inter', sans-serif;
+      color: #334155;
+    }
+
+    .container {
+      height: max-content;
+      padding: 0px 10px;
+    }
+
+    .header-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    /* #searchField {
+            padding: 10px;
+            width: 250px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            outline: none;
+        } */
+
+    .btn-add {
+      background: #2563eb;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    /* Priority Colors */
+    .bg-red {
+      color: #fff !important;
+      background-color: #fe0001 !important;
+      font-weight: bold;
+    }
+
+    .bg-purple {
+      color: #fff !important;
+      background-color: #71309f !important;
+      font-weight: bold;
+    }
+
+    .bg-light-green {
+      color: #000 !important;
+      /* background-color: #8ed150 !important; */
+      background-color: #ffff01 !important;
+      font-weight: bold;
+    }
+
+    /* Weekend Colors */
+    .col-s {
+      background-color: #97cdff !important;
+      color: #1e3a8a !important;
+      font-weight: bold;
+    }
+
+    .col-d {
+      background-color: #f7af7e !important;
+      color: #7c2d12 !important;
+      font-weight: bold;
+    }
+
+    .sun-cell {
+      background: #f4b083 !important;
+      color: #991b1b !important;
+    }
+
+    .white-cell {
+      background: #fff !important;
+      color: #000 !important;
+    }
+
+    .sat-cell {
+      background: #97cdff !important;
+      color: #475569 !important;
+    }
+
+    .handsontable td,
+    .handsontable th {
+      border: 1px solid #000 !important;
+      /* border-right: 1px solid #000 !important; */
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(15, 23, 42, 0.6);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      width: 400px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      box-sizing: border-box;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .btn-save {
+      background: #10b981;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .btn-cancel {
+      background: #94a3b8;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .htCore .htDimmed {
+      /* background-color: #f1f5f9 !important; */
+      /* Light blue-gray */
+      color: #000000 !important;
+    }
+
+    /******/
+    /* Prevent text wrapping and force single line for the first 5 columns */
+    /* .handsontable tr td:nth-child(-n+6) {
+            white-space: nowrap !important;
+            overflow: visible !important;
+            text-overflow: clip !important;
+        } */
+
+    /* Optional: Ensure headers don't wrap either */
+    /* .handsontable th {
+            white-space: nowrap !important;
+        } */
+
+
+
+    /* Ensure the first 5 columns never wrap text */
+    /* .handsontable tr td:nth-child(-n+6) {
+            white-space: nowrap !important;
+        } */
+
+    /* Ensure the small day columns (15px) look clean */
+    /* .handsontable th,
+        .handsontable td {
+            font-size: 11px;
+            padding: 0 !important;
+        } */
+
+    /* Specifically target the day headers to center the single letters */
+    /* .handsontable thead th {
+            text-align: center;
+        } */
+
+    /**/
+
+    /*****sticky header */
+    /* Keep the headers visible while scrolling */
+    .handsontable thead th {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    /* Ensure fixed columns stay on top of the grid */
+    .handsontable .ht_clone_left {
+      z-index: 15;
+    }
+  </style>
+</head>
+
+<body class="fixed-header layout-fixed sidebar-expand-lg bg-body-tertiary">
+  <div class="app-wrapper">
+    <nav class="app-header navbar navbar-expand bg-body ">
+      <div class="container-fluid">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" data-lte-toggle="sidebar" href="#" role="button">
+              <i class="bi bi-list"></i>
+            </a>
+          </li>
+        </ul>
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item dropdown">
+            <a class="nav-link" data-bs-toggle="dropdown" href="#">
+              <i class="bi bi-chat-text"></i>
+              <span class="navbar-badge badge text-bg-danger">3</span>
+            </a>
+            <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
+              <a href="#" class="dropdown-item">
+                <div class="d-flex">
+                  <div class="flex-shrink-0">
+                    <img src="./assets/img/user1-128x128.jpg" alt="User Avatar"
+                      class="img-size-50 rounded-circle me-3" />
+                  </div>
+                  <div class="flex-grow-1">
+                    <h3 class="dropdown-item-title">
+                      Brad Diesel
+                      <span class="float-end fs-7 text-danger"><i class="bi bi-star-fill"></i></span>
+                    </h3>
+                    <p class="fs-7">Call me whenever you can...</p>
+                    <p class="fs-7 text-secondary">
+                      <i class="bi bi-clock-fill me-1"></i> 4 Hours Ago
+                    </p>
+                  </div>
+                </div>
+              </a>
+              <div class="dropdown-divider"></div>
+              <a href="#" class="dropdown-item">
+                <div class="d-flex">
+                  <div class="flex-shrink-0">
+                    <img src="./assets/img/user8-128x128.jpg" alt="User Avatar"
+                      class="img-size-50 rounded-circle me-3" />
+                  </div>
+                  <div class="flex-grow-1">
+                    <h3 class="dropdown-item-title">
+                      John Pierce
+                      <span class="float-end fs-7 text-secondary">
+                        <i class="bi bi-star-fill"></i>
+                      </span>
+                    </h3>
+                    <p class="fs-7">I got your message bro</p>
+                    <p class="fs-7 text-secondary">
+                      <i class="bi bi-clock-fill me-1"></i> 4 Hours Ago
+                    </p>
+                  </div>
+                </div>
+              </a>
+              <div class="dropdown-divider"></div>
+              <a href="#" class="dropdown-item">
+                <div class="d-flex">
+                  <div class="flex-shrink-0">
+                    <img src="./assets/img/user3-128x128.jpg" alt="User Avatar"
+                      class="img-size-50 rounded-circle me-3" />
+                  </div>
+                  <div class="flex-grow-1">
+                    <h3 class="dropdown-item-title">
+                      Nora Silvester
+                      <span class="float-end fs-7 text-warning">
+                        <i class="bi bi-star-fill"></i>
+                      </span>
+                    </h3>
+                    <p class="fs-7">The subject goes here</p>
+                    <p class="fs-7 text-secondary">
+                      <i class="bi bi-clock-fill me-1"></i> 4 Hours Ago
+                    </p>
+                  </div>
+                </div>
+              </a>
+              <div class="dropdown-divider"></div>
+              <a href="#" class="dropdown-item dropdown-footer">See All Messages</a>
+            </div>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link" data-bs-toggle="dropdown" href="#">
+              <i class="bi bi-bell-fill"></i>
+              <span class="navbar-badge badge text-bg-warning">15</span>
+            </a>
+            <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
+              <span class="dropdown-item dropdown-header">15 Notifications</span>
+              <div class="dropdown-divider"></div>
+              <a href="#" class="dropdown-item">
+                <i class="bi bi-envelope me-2"></i> 4 new messages
+                <span class="float-end text-secondary fs-7">3 mins</span>
+              </a>
+              <div class="dropdown-divider"></div>
+              <a href="#" class="dropdown-item">
+                <i class="bi bi-people-fill me-2"></i> 8 friend requests
+                <span class="float-end text-secondary fs-7">12 hours</span>
+              </a>
+              <div class="dropdown-divider"></div>
+              <a href="#" class="dropdown-item">
+                <i class="bi bi-file-earmark-fill me-2"></i> 3 new reports
+                <span class="float-end text-secondary fs-7">2 days</span>
+              </a>
+              <div class="dropdown-divider"></div>
+              <a href="#" class="dropdown-item dropdown-footer"> See All Notifications </a>
+            </div>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" data-lte-toggle="fullscreen">
+              <i data-lte-icon="maximize" class="bi bi-arrows-fullscreen"></i>
+              <i data-lte-icon="minimize" class="bi bi-fullscreen-exit" style="display: none"></i>
+            </a>
+          </li>
+          <li class="nav-item dropdown user-menu">
+            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+              <img src="./assets/img/user2-160x160.jpg" class="user-image rounded-circle shadow" alt="User Image" />
+              <span class="d-none d-md-inline">Alexander Pierce</span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
+              <li class="user-header text-bg-primary">
+                <img src="./assets/img/user2-160x160.jpg" class="rounded-circle shadow" alt="User Image" />
+                <p>
+                  Alexander Pierce - Web Developer
+                  <small>Member since Nov. 2023</small>
+                </p>
+              </li>
+              <li class="user-body">
+                <div class="row">
+                  <div class="col-4 text-center">
+                    <a href="#">Followers</a>
+                  </div>
+                  <div class="col-4 text-center">
+                    <a href="#">Sales</a>
+                  </div>
+                  <div class="col-4 text-center">
+                    <a href="#">Friends</a>
+                  </div>
+                </div>
+              </li>
+              <li class="user-footer">
+                <a href="#" class="btn btn-outline-secondary">Profile</a>
+                <a href="#" class="btn btn-outline-danger float-end">Sign out</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </nav>
+    <aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
+      <div class="sidebar-brand">
+        <a href="./index.html" class="brand-link">
+          <img src="./assets/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image opacity-75 shadow" />
+          <span class="brand-text fw-light">CallInOut</span>
+        </a>
+      </div>
+      <div class="sidebar-wrapper">
+        <nav class="mt-2">
+          <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="navigation"
+            aria-label="Main navigation" data-accordion="false" id="navigation">
+            <li class="nav-item">
+              <a href="./index.html" class="nav-link ">
+                <i class="nav-icon bi bi-speedometer"></i>
+                <p>
+                  Dashboard
+                </p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="./pointage.html" class="nav-link active">
+                <i class="nav-icon bi bi-speedometer"></i>
+                <p>
+                  Pointage
+                </p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="./agents.html" class="nav-link">
+                <i class="nav-icon bi bi-speedometer"></i>
+                <p>
+                  Agents
+                </p>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </aside>
+    <main class="app-main">
+      <div class="app-content-header">
+        <div class="container-fluid">
+        </div>
+      </div>
+      <div class="app-content">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="card mb-4 card-primary card-outline">
+                <div class="card-header border-0">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <h3 class="card-title">Pointage</h3>
+                    <div class="d-flex gap-2">
+                      <input id="periodePicker" type="month" class="form-control" min="2020-01" max="2030-12">
+                    </div>
+                    <!--  -->
+                  </div>
+                </div>
+
+                <div class="card-body">
+                  <div id="grid"></div>
+                </div>
+
+
+
+              </div>
+            </div>
+            <!-- /.col-md-6 -->
+          </div>
+        </div>
+      </div>
+    </main>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.11.0/browser/overlayscrollbars.browser.es6.min.js"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.min.js" crossorigin="anonymous"></script>
+  <script src="./js/adminlte.js"></script>
+
+  <script>
+    const SELECTOR_SIDEBAR_WRAPPER = '.sidebar-wrapper';
+    const Default = {
+      scrollbarTheme: 'os-theme-light',
+      scrollbarAutoHide: 'leave',
+      scrollbarClickScroll: true,
+    };
+
+    document.addEventListener('DOMContentLoaded', function () {
+      const sidebarWrapper = document.querySelector(SELECTOR_SIDEBAR_WRAPPER);
+      const body = document.body;
+
+      // --- New Logic to handle collapse ---
+      function handleSidebar() {
+        const width = window.innerWidth;
+
+        if (width < 992) {
+          // Force collapse on small screens
+          body.classList.add('sidebar-collapse');
+          body.classList.remove('sidebar-open');
+        } else {
+          body.classList.remove('sidebar-collapse');
+        }
+      }
+      handleSidebar();
+      window.addEventListener('resize', handleSidebar);
+      const isMobile = window.innerWidth <= 992;
+      if (
+        sidebarWrapper &&
+        OverlayScrollbarsGlobal?.OverlayScrollbars !== undefined &&
+        !isMobile
+      ) {
+        OverlayScrollbarsGlobal.OverlayScrollbars(sidebarWrapper, {
+          scrollbars: {
+            theme: Default.scrollbarTheme,
+            autoHide: Default.scrollbarAutoHide,
+            clickScroll: Default.scrollbarClickScroll,
+          },
+        });
+      }
+
+      // 1. Listen for changes on the Month Picker
+      document.getElementById('periodePicker').addEventListener('change', function () {
+        loadData(); // Re-fetch data when the month changes
+      });
+
+      /**
+       * Helper to get the current selected Year and Month from the input
+       */
+      function getSelectedPeriod() {
+        const val = document.getElementById('periodePicker').value; // e.g., "2026-02"
+        const [year, month] = val.split('-');
+        return { year: parseInt(year), month: parseInt(month) };
+      }
+
+      ///
+
+
+      const picker = document.getElementById('periodePicker');
+
+      // Get current Date
+      const now = new Date();
+      const year = now.getFullYear();
+      // Months are 0-indexed, so +1. padStart ensures "02" instead of "2"
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+
+      // Set the input value (e.g., "2026-02")
+      const currentPeriod = `${year}-${month}`;
+      picker.value = currentPeriod;
+
+      // Now that the picker has a value, load the data
+      loadData();
+
+      ///
+
+
+
+    });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.min.js"
+    integrity="sha256-+vh8GkaU7C9/wbSLIcwq82tQ2wTf44aOHA8HlBMwRI8=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/js/jsvectormap.min.js"
+    integrity="sha256-/t1nN2956BT869E6H4V1dnt0X5pAQHPytli+1nTZm2Y=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/maps/world.js"
+    integrity="sha256-XPpPaZlU8S/HWf7FZLAncLg2SAkP8ScUTII89x9D3lY=" crossorigin="anonymous"></script>
+  <script>
+    function getSelectedPeriod() {
+      const val = document.getElementById('periodePicker').value; // e.g., "2026-02"
+      const [year, month] = val.split('-');
+      return { year: parseInt(year), month: parseInt(month) };
+    }
+    const daysLetters = ["S", "D", "L", "M", "M", "J", "V"];
+    const numDays = 30;
+
+    const headerRow1 = ['', '', {
+      label: 'Agent',
+      colspan: 2
+    }, ''];
+    for (let i = 1; i <= numDays; i++) headerRow1.push({
+      label: String(i),
+      colspan: 1
+    });
+    const headerRow2 = ['Sté', 'ID', 'Nom', 'Prénom', 'Campagne'];
+    for (let i = 1; i <= numDays; i++) headerRow2.push(daysLetters[(i - 1) % 7]);
+    headerRow2.push('Jours', 'Assiduité', 'Avance', 'Prime', 'CDP', 'Remarque');
+
+    // const searchField = document.getElementById('searchField');
+    const hot = new Handsontable(document.getElementById('grid'), {
+      id: 'main_pointage_table',
+      data: [],
+      width: '100%',
+      height: 600,
+      minSpareRows: 1,
+      rowHeaders: true,
+      colHeaders: true,
+      nestedHeaders: [headerRow1, headerRow2],
+      fixedColumnsLeft: 5,
+      className: 'htCenter htMiddle',
+      licenseKey: 'non-commercial-and-evaluation',
+      columnSorting: true,
+      filters: true,
+      persistentState: true,
+      manualColumnResize: true,
+      manualRowResize: false,
+      // colWidths: [40, 50, 70, 70, 90, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 70, 70, 70, 70, 70, 150],
+      dropdownMenu: [
+        'filter_by_condition',
+        'filter_by_value',
+        'filter_operators',
+        '---------',
+        'filter_action_bar',
+      ],
+      contextMenu: [
+        'row_above',
+        'row_below',
+        '---------',
+        'remove_row',
+      ],
+      search: true,
+      colWidths(index) {
+        // First 5 columns: Auto-size to fit full text without wrapping
+        if (index == 0) {
+          return 10; // 'null' tells Handsontable to use auto-column-size
+        }
+        if (index == 1) {
+          return 30; // 'null' tells Handsontable to use auto-column-size
+        }
+
+        if (index == 4) {
+          return 110; // 'null' tells Handsontable to use auto-column-size
+        }
+        // if (index < 5) {
+        //     return 100; // 'null' tells Handsontable to use auto-column-size
+        // }
+        // Columns 6 to 35 (the days): Fixed at 15px
+        if (index >= 5 && index < 35) {
+          return 35;
+        }
+        // Default width for the remaining calculation/remark columns
+        return 100;
+      },
+      autoColumnSize: true,
+      // autoColumnSize: {
+      //     samplingStrategy: 'all',
+      //     allowRefreshDirectly: true
+      // },
+
+      afterColumnSort(currentSortConfig) {
+        if (currentSortConfig && currentSortConfig.length > 0) {
+          localStorage.setItem('grid_sort_settings', JSON.stringify(currentSortConfig[0]));
+        } else {
+          localStorage.removeItem('grid_sort_settings');
+        }
+        this.render();
+        console.log('sort')
+      },
+
+      afterFilter(conditionsStack) {
+        localStorage.setItem('grid_filter_settings', JSON.stringify(conditionsStack));
+        this.render();
+        console.log('filter')
+
+      },
+
+      afterGetColHeader(col, TH) {
+        if (col >= 5 && col < 5 + numDays) {
+          const dayIndex = (col - 5) % 7;
+          if (dayIndex === 0) TH.classList.add('col-s');
+          if (dayIndex === 1) TH.classList.add('col-d');
+        }
+      },
+
+      async afterChange(changes, source) {///5damaaa mznnnnn
+
+        if (['loadData', 'updateCalcul', 'populateFromArray'].includes(source) || !changes) return; //3ad tzad
+        if (source === 'loadData' || source === 'updateCalcul' || !changes) return;
+
+        for (const [row, col, oldVal, newVal] of changes) {
+          if (oldVal === newVal) continue;
+          const idFiscal = this.getDataAtCell(row, 1);
+          if (!idFiscal) continue;
+          if (col >= 5 && col < 35) {
+            const total = calculateTotalJours(row); // bdlna blassa
+            this.setDataAtCell(row, 35, total, 'updateCalcul'); // bdlna blassa
+            const period = getSelectedPeriod();
+            console.log('...', period)
+            await fetch(`../api/api.php?action=save_pointage&mois=${period.month}&annee=${period.year}`, {
+              method: 'POST',
+              body: JSON.stringify({
+                idFiscal: idFiscal,
+                day: col - 4,
+                valeur: newVal
+              })
+            });
+            //const total = calculateTotalJours(row);
+            // this.setDataAtCell(row, 35, total, 'updateCalcul');
+          } else {
+            await syncAgentRow(row);
+          }
+        }
+      },
+
+
+
+      beforeRemoveRow: async function (index, amount) {
+        const idFiscal = this.getDataAtCell(index, 1);
+
+        if (!idFiscal) return true;
+
+        if (confirm(`Voulez-vous vraiment supprimer l'agent ${idFiscal} ?`)) {
+          try {
+            const response = await fetch(`../api/api.php?action=delete_agent&idFiscal=${idFiscal}`);
+            if (response.ok) {
+              console.log("Agent marqué comme supprimé.");
+              return true;
+            }
+          } catch (err) {
+            console.error("Erreur lors de la suppression:", err);
+            return false;
+          }
+        }
+        return false;
+      },
+      //old working one
+      /* cells(row, col) {
+           const cellProp = {};
+           const value = this.instance.getDataAtCell(row, col);
+
+           const ste = this.instance.getDataAtCell(row, 0);
+           const idFiscal = this.instance.getDataAtCell(row, 1);
+           const nom = this.instance.getDataAtCell(row, 2);
+           const prenom = this.instance.getDataAtCell(row, 3);
+           const comp = this.instance.getDataAtCell(row, 4);
+           // const isRowEmpty = !idFiscal || idFiscal === '';
+           const isRowEmpty = (!ste || ste === '') ||
+               (!idFiscal || idFiscal === '') ||
+               (!nom || nom === '') ||
+               (!prenom || prenom === '') ||
+               (!comp || comp === '');
+           if (col < 5 && !isRowEmpty) {
+               cellProp.readOnly = true;
+           } else {
+               cellProp.readOnly = false;
+           }
+           if (value === 'A') cellProp.className = 'htCenter htMiddle bg-red';
+           else if (value === 'SB') cellProp.className = 'htCenter htMiddle bg-purple';
+           else if (value === 'C') cellProp.className = 'htCenter htMiddle bg-light-green';
+           else if (col >= 5 && col < 35) {
+               const dayIndex = (col - 5) % 7;
+               if (dayIndex === 1) cellProp.className = 'htCenter htMiddle sun-cell';
+               else if (dayIndex === 0) cellProp.className = 'htCenter htMiddle sat-cell';
+           } else if (value != 'A' || value != 'SB' || value != 'C') {
+               cellProp.className = 'htCenter htMiddle white-cell';
+           }
+           return cellProp;
+       }*/
+
+      cells(row, col) {
+        const cellProp = {};
+
+        const value = this.instance.getDataAtCell(row, col);
+
+        // 1. Logic for ReadOnly columns
+        const ste = this.instance.getDataAtCell(row, 0);
+        const idFiscal = this.instance.getDataAtCell(row, 1);
+        const nom = this.instance.getDataAtCell(row, 2);
+        const prenom = this.instance.getDataAtCell(row, 3);
+        const comp = this.instance.getDataAtCell(row, 4);
+
+        const isRowEmpty = (!ste || ste === '') ||
+          (!idFiscal || idFiscal === '') ||
+          (!nom || nom === '') ||
+          (!prenom || prenom === '') ||
+          (!comp || comp === '');
+
+        cellProp.readOnly = (col < 5 && !isRowEmpty);
+
+        // 2. Class Management (The Reset)
+        // Start with the base alignment and the white-cell background
+        let finalClass = 'htCenter htMiddle white-cell';
+
+        // 3. Conditional Overwrites
+        if (value === 'A') {
+          finalClass = 'htCenter htMiddle bg-red';
+        } else if (value === 'SB') {
+          finalClass = 'htCenter htMiddle bg-purple';
+        } else if (value === 'C') {
+          finalClass = 'htCenter htMiddle bg-light-green';
+        } else if (col >= 5 && col < 35) {
+          const dayIndex = (col - 5) % 7;
+          if (dayIndex === 1) {
+            finalClass = 'htCenter htMiddle sun-cell';
+          } else if (dayIndex === 0) {
+            finalClass = 'htCenter htMiddle sat-cell';
+          }
+        }
+
+        cellProp.className = finalClass;
+        return cellProp;
+      }
+
+    });
+
+    async function syncAgentRow(row) {
+      console.log('---------------11111')
+      const period = getSelectedPeriod();
+
+      const data = hot.getDataAtRow(row);
+      const agent = {
+        ste: data[0] || '',
+        idFiscal: data[1] || '',
+        nom: data[2] ? data[2].toUpperCase() : '',
+        prenom: data[3] || '',
+        campagne: data[4] || '',
+        totalJours: data[35] || 0,
+        assiduite: data[36] || '',
+        avance: data[37] || '',
+        prime: data[38] || '',
+        cdp: data[39] || '',
+        remarque: data[40] || '',
+        mois: period.month,
+        annee: period.year
+      };
+      if (agent.idFiscal) {
+        await fetch(`../api/api.php?action=add_agent&mois=${period.month}&annee=${period.year}`, {
+          method: 'POST',
+          body: JSON.stringify(agent)
+        });
+      }
+    }
+
+    function calculateTotalJours(row) {
+      const data = hot.getSourceDataAtRow(row); //zdtha
+      let total = 0;
+      for (let i = 0; i < numDays; i++) {
+        const valRaw = hot.getDataAtCell(row, 5 + i);
+        const val = parseFloat(String(valRaw).replace(',', '.')) || 0;
+        const divisor = ((i % 7) === 0) ? 4 : 8;
+        total += (val / divisor);
+      }
+      //jdida
+      const period = getSelectedPeriod();
+      const agent = {
+        ste: data[0],
+        idFiscal: data[1],
+        nom: data[2],
+        prenom: data[3],
+        campagne: data[4],
+        totalJours: total, // The calculated value
+        assiduite: data[36],
+        avance: data[37],
+        prime: data[38],
+        cdp: data[39],
+        remarque: data[40],
+        mois: period.month,
+        annee: period.year
+      };
+      console.log('---------------222222222')
+
+      fetch(`../api/api.php?action=add_agent&mois=${period.month}&annee=${period.year}`, {
+        method: 'POST',
+        body: JSON.stringify(agent),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+        .then(res => res.json())
+        .then(res => console.log("DB Updated:", res));
+      /// salit zyada
+      return total.toFixed(2);
+    }
+
+    // Example logic for your Handsontable/JavaScript
+    /*function calculateTotalJours(row) {
+        const data = hot.getSourceDataAtRow(row);
+
+        // 1. Perform your calculation (summing the 30 days)
+        let total = 0;
+        for (let i = 5; i < 35; i++) { // Adjust indices based on your columns
+            let val = parseFloat(data[i]) || 0;
+            total += val;
+        }
+
+        // 2. Update the total in the data object
+        const agent = {
+            ste: data[0],
+            idFiscal: data[1],
+            nom: data[2],
+            prenom: data[3],
+            campagne: data[4],
+            totalJours: total, // The calculated value
+            assiduite: data[36],
+            avance: data[37],
+            prime: data[38],
+            cdp: data[39],
+            remarque: data[40]
+        };
+
+        // 3. Send to API
+        fetch('api.php?action=add_agent', {
+                method: 'POST',
+                body: JSON.stringify(agent),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(res => res.json())
+            .then(res => console.log("DB Updated:", res));
+    }*/
+
+    // async function loadData() {
+    //   const res = await fetch('../api/api.php?action=fetch');
+    //   let data = await res.json();
+
+
+    //   if (!data || data.length === 0) {
+    //     data = [new Array(headerRow2.length).fill('')];
+    //   }
+    //   hot.loadData(data);
+
+
+
+    //   const savedFilters = localStorage.getItem('grid_filter_settings');
+    //   if (savedFilters) {
+    //     const filtersPlugin = hot.getPlugin('filters');
+    //     const stack = JSON.parse(savedFilters);
+    //     filtersPlugin.removeConditions();
+    //     stack.forEach(item => {
+    //       item.conditions.forEach(cond => {
+    //         filtersPlugin.addCondition(item.column, cond.name, cond.args);
+    //       });
+    //     });
+    //     filtersPlugin.filter();
+    //   }
+
+    //   const savedSort = localStorage.getItem('grid_sort_settings');
+    //   if (savedSort) {
+    //     const sortConfig = JSON.parse(savedSort);
+    //     hot.getPlugin('columnSorting').sort(sortConfig);
+    //   }
+    // }
+
+
+
+    async function loadData() {
+      // 1. Get month and year from the picker
+      const picker = document.getElementById('periodePicker');
+      let periodValue = picker.value; // Format "YYYY-MM"
+      if (!periodValue) {
+        const now = new Date();
+        const currentYear = now.getFullYear();
+        const currentMonth = String(now.getMonth() + 1).padStart(2, '0');
+        periodValue = `${currentYear}-${currentMonth}`;
+
+        // Optional: Update the input UI to match the default
+        picker.value = periodValue;
+      }
+      const [year, month] = periodValue.split('-');
+
+      // 2. Append parameters to the fetch URL
+      const res = await fetch(`../api/api.php?action=fetch&annee=${year}&mois=${parseInt(month)}`);
+      let data = await res.json();
+
+      if (!data || data.length === 0) {
+        // If no data exists for this month, show an empty row based on your headers
+        data = [new Array(headerRow2.length).fill('')];
+      }
+
+      // Load data into Handsontable (hot)
+      hot.loadData(data);
+
+      // --- Keep your existing filter/sort logic below ---
+      const savedFilters = localStorage.getItem('grid_filter_settings');
+      if (savedFilters) {
+        const filtersPlugin = hot.getPlugin('filters');
+        const stack = JSON.parse(savedFilters);
+        filtersPlugin.removeConditions();
+        stack.forEach(item => {
+          item.conditions.forEach(cond => {
+            filtersPlugin.addCondition(item.column, cond.name, cond.args);
+          });
+        });
+        filtersPlugin.filter();
+      }
+
+      const savedSort = localStorage.getItem('grid_sort_settings');
+      if (savedSort) {
+        const sortConfig = JSON.parse(savedSort);
+        hot.getPlugin('columnSorting').sort(sortConfig);
+      }
+    }
+
+
+    async function saveAgent() {
+      const period = getSelectedPeriod();
+      const agent = {
+        ste: document.getElementById('m_ste').value,
+        idFiscal: document.getElementById('m_id').value,
+        nom: document.getElementById('m_nom').value.toUpperCase(),
+        prenom: document.getElementById('m_prenom').value,
+        campagne: document.getElementById('m_camp').value
+      };
+      if (!agent.idFiscal) return alert("ID requis");
+      console.log('---------------33333')
+
+      await fetch(`../api/api.php?action=add_agent&mois=${period.month}&annee=${period.year}`, {
+        method: 'POST',
+        body: JSON.stringify(agent)
+      });
+      closeModal();
+      loadData();
+    }
+
+    function openModal() {
+      document.getElementById('modal').style.display = 'flex';
+    }
+
+    function closeModal() {
+      document.getElementById('modal').style.display = 'none';
+      ['m_ste', 'm_id', 'm_nom', 'm_prenom', 'm_camp'].forEach(id => document.getElementById(id).value = '');
+    }
+
+    function toggleMenu() {
+      const menu = document.getElementById('dropdown');
+      menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+    }
+
+    // function saveTableState() {
+    //     const state = {
+    //         colWidths: hot.getColWidth(0),
+    //         sortConfig: hot.getPlugin('columnSorting').getSortConfig(),
+    //         filterConfig: hot.getPlugin('filters').formulaRegisterer
+    //     };
+    //     localStorage.setItem('myTableSettings', JSON.stringify(state));
+    // }
+
+    // function loadTableState() {
+    //     const saved = localStorage.getItem('myTableSettings');
+    //     if (saved) {
+    //         const state = JSON.parse(saved);
+    //     }
+    // }
+
+    function clearAllSettings() {
+      localStorage.removeItem('grid_filter_settings');
+      localStorage.removeItem('grid_sort_settings');
+      localStorage.clear();
+      location.reload();
+    }
+
+    // window.onclick = function (event) {
+    //   if (!event.target.closest('.user-profile')) {
+    //     document.getElementById('dropdown').style.display = 'none';
+    //   }
+    // }
+
+    // searchField.addEventListener('keyup', function(event) {
+    //     const search = hot.getPlugin('search');
+    //     const queryResult = search.query(this.value);
+    //     hot.render();
+    // });
+
+    loadData();
+
+  </script>
+</body>
+
+</html>
