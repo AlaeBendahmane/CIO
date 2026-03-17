@@ -163,11 +163,13 @@ isAlreadyAuth();
         });
       }
     });
+    let pattern = "";
     document.getElementById('loginForm').addEventListener('submit', async function(e) {
       e.preventDefault();
       const email = document.getElementById('loginEmail').value;
       const password = document.getElementById('loginPassword').value;
       const remember = document.getElementById('flexCheckDefault').checked;
+      const myRegex = new RegExp(pattern);
       if (!email || email == "" || !password || password == "") {
         Swal.fire({
           icon: "error",
@@ -176,12 +178,22 @@ isAlreadyAuth();
         });
         return
       }
+
+      if (!myRegex.test(password)) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Vérifiez votre mot de passe",
+        });
+        return
+      }
+
       if (remember) {
         localStorage.setItem('rememberedEmail', email);
-
       } else {
         localStorage.removeItem('rememberedEmail');
       }
+
       try {
         const response = await fetch('../api/auth.php', {
           method: 'POST',
@@ -210,6 +222,27 @@ isAlreadyAuth();
           text: "Impossible de contacter le serveur.",
         });
       }
+    });
+
+    //pw
+    document.addEventListener('DOMContentLoaded', async function() {
+      async function loadPasswordConfig() {
+        try {
+          // We call our PHP API
+          const response = await fetch('../api/getParams.php');
+          const data = await response.json();
+
+          if (data.success) {
+            pattern = data?.message?.slice(1, -1);
+          } else {
+            console.error("Error:", data.message);
+          }
+        } catch (error) {
+          console.error("Fetch failed:", error);
+        }
+      }
+
+      await loadPasswordConfig()
     });
   </script>
 </body>
