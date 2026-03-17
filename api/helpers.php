@@ -191,3 +191,46 @@ function logActivity($pdo, $action, $idFiscal, $data, $m = null, $a = null, $by 
         $by
     ]);
 }
+
+
+function getParam($pdo, $key)
+{
+    try {
+        $stmt = $pdo->prepare("SELECT `valueP` FROM `parametres` WHERE `keyP` = :key LIMIT 1");
+        $stmt->execute(['key' => $key]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result ? $result['valueP'] : null;
+    } catch (PDOException $e) {
+        // Log error silently in production
+        echo $e->getMessage();
+        return null;
+    }
+}
+
+
+/**
+ * Set or Update a dynamic parameter value by its key
+ * @param PDO $pdo Your database connection
+ * @param string $key The key name (e.g., 'PasswordRegex')
+ * @param string $value The value to store
+ * @return bool Returns true on success, false on failure
+ */
+function setParam($pdo, $key, $value)
+{
+    try {
+        $sql = "INSERT INTO `parametres` (`keyP`, `valueP`) 
+                VALUES (:key, :value) 
+                ON DUPLICATE KEY UPDATE `valueP` = :value_update";
+
+        $stmt = $pdo->prepare($sql);
+        return $stmt->execute([
+            'key'          => $key,
+            'value'        => $value,
+            'value_update' => $value
+        ]);
+    } catch (PDOException $e) {
+        // You can log $e->getMessage() here if needed for debugging
+        echo $e->getMessage();
+        return false;
+    }
+}
