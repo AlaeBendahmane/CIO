@@ -43,35 +43,47 @@ if (isset($_GET['action']) && $_GET['action'] === 'change_password') {
     $oldPw = $data['oldPw'] ?? '';
     $newPw = $data['newPw'] ?? '';
 
-    if (!$idFiscal || empty($oldPw) || empty($newPw)) {
-        echo json_encode(['success' => false, 'message' => 'Données incomplètes ou session expirée']);
-        exit;
-    }
+    if ($data['from'] == "required") {
 
-    if ($oldPw == $newPw) {
-        echo json_encode(['success' => false, 'message' => 'Le nouveau mot de passe ne doit pas être similaire à l’ancien.']);
-        exit;
-    }
-
-    // 1. Hash the OLD password provided to compare with DB
-    $oldHashed = md5(md5($oldPw));
-
-    // 2. Verify if the old password matches what is in the DB
-    $stmt = $pdo->prepare("SELECT password FROM agents WHERE idFiscal = ? AND isDeleted = 0 LIMIT 1");
-    $stmt->execute([$idFiscal]);
-    $user = $stmt->fetch();
-
-    if ($user && $oldHashed === $user['password']) {
-        // 3. Hash the NEW password using your double MD5 logic
         $newHashed = md5(md5($newPw));
 
         // 4. Update the database
-        $update = $pdo->prepare("UPDATE agents SET password = ? WHERE idFiscal = ?");
+        $update = $pdo->prepare("UPDATE agents SET password = ? , needReset=0 WHERE idFiscal = ?");
         $update->execute([$newHashed, $idFiscal]);
-
+        $_SESSION['needReset'] = 0;
         echo json_encode(['success' => true, 'message' => 'Mot de passe mis à jour']);
-    } else {
-        echo json_encode(['success' => false, 'message' => 'L\'ancien mot de passe est incorrect']);
+    } else  if ($data['from'] == "profile") {
+
+        if (!$idFiscal || empty($oldPw) || empty($newPw)) {
+            echo json_encode(['success' => false, 'message' => 'Données incomplètes ou session expirée']);
+            exit;
+        }
+
+        if ($oldPw == $newPw) {
+            echo json_encode(['success' => false, 'message' => 'Le nouveau mot de passe ne doit pas être similaire à l’ancien.']);
+            exit;
+        }
+
+        // 1. Hash the OLD password provided to compare with DB
+        $oldHashed = md5(md5($oldPw));
+
+        // 2. Verify if the old password matches what is in the DB
+        $stmt = $pdo->prepare("SELECT password FROM agents WHERE idFiscal = ? AND isDeleted = 0 LIMIT 1");
+        $stmt->execute([$idFiscal]);
+        $user = $stmt->fetch();
+
+        if ($user && $oldHashed === $user['password']) {
+            // 3. Hash the NEW password using your double MD5 logic
+            $newHashed = md5(md5($newPw));
+
+            // 4. Update the database
+            $update = $pdo->prepare("UPDATE agents SET password = ? , needReset=0 WHERE idFiscal = ?");
+            $update->execute([$newHashed, $idFiscal]);
+
+            echo json_encode(['success' => true, 'message' => 'Mot de passe mis à jour']);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'L\'ancien mot de passe est incorrect']);
+        }
     }
     exit;
 }

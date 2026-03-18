@@ -67,7 +67,11 @@ ob_end_flush();
 <body class="fixed-header layout-fixed sidebar-expand-lg bg-body-tertiary">
   <!--  -->
   <?php
-  include './components/splashscreen.php';
+  if ($_SESSION['needReset']) {
+    include './components/resetModal.php';
+  } else {
+    include './components/splashscreen.php';
+  }
   ?>
   <!--  -->
   <div class="app-wrapper">

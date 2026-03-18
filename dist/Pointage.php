@@ -137,9 +137,9 @@ ob_end_flush();
 
     .modal-content {
       background: white;
-      padding: 30px;
-      border-radius: 12px;
-      width: 400px;
+      /* padding: 30px; */
+      /* border-radius: 12px; */
+      /* width: 400px; */
     }
 
     .form-group {
@@ -217,7 +217,11 @@ ob_end_flush();
 
 <body class="fixed-header layout-fixed sidebar-expand-lg bg-body-tertiary">
   <?php
-  include './components/splashscreen.php';
+  if ($_SESSION['needReset']) {
+    include './components/resetModal.php';
+  } else {
+    include './components/splashscreen.php';
+  }
   ?>
   <div class="app-wrapper">
     <nav class="app-header navbar navbar-expand bg-body ">
@@ -904,7 +908,7 @@ ob_end_flush();
       };
       const [row_, col, oldVal, newVal] = change;
       const columnName = columnNames[col] || `Colonne ${col}`;
-       const data = hot.getDataAtRow(row);
+      const data = hot.getDataAtRow(row);
       const agent = {
         ste: data[0] || '',
         idFiscal: data[1] || '',

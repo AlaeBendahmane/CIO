@@ -132,7 +132,11 @@ if ($ste == "DC") {
 <body class="fixed-header layout-fixed sidebar-expand-lg bg-body-tertiary">
   <!--  -->
   <?php
-  include './components/splashscreen.php';
+  if ($_SESSION['needReset']) {
+    include './components/resetModal.php';
+  } else {
+    include './components/splashscreen.php';
+  }
   ?>
   <!--  -->
   <div class="app-wrapper">
@@ -192,7 +196,7 @@ if ($ste == "DC") {
 
               <div class="row text-left px-3">
                 <div class="col-6 mb-3">
-                  <small class="text-uppercase text-bold">ID Fiscal</small>
+                  <small class="text-uppercase text-bold">ID STE</small>
                   <p>#<?= $idFiscal ?></p>
                 </div>
                 <div class="col-6 mb-3">
@@ -255,13 +259,20 @@ if ($ste == "DC") {
               <label class="form-label">Confirmer le nouveau mot de passe</label>
               <input type="password" id="confirm_pw" class="form-control" placeholder="******">
             </div>
-            <div id="erreurPW" class="mb-3" style="display: flex;justify-content: center;align-items: center;color:red;">
+
+            <div id="password-requirements" class="mt-2 p-3 border rounded bg-light" style="font-size: 0.85rem; display:none;">
+              <div class="fw-bold mb-1 text-muted">Critères requis :</div>
+              <div id="dynamic-list"></div>
+              <div id="req-match" class="text-danger">✖ Les mots de passe ne correspondent pas</div>
+            </div>
+
+            <div id="erreurPW" class="mt-2 mb-3" style="display: flex;justify-content: center;align-items: center;color:red;">
 
             </div>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-light" data-bs-dismiss="modal">Annuler</button>
-            <button type="button" class="btn btn-primary" onclick="submitPasswordChange()">Enregistrer</button>
+            <button type="button" class="btn btn-primary" id="btnChange" onclick="submitPasswordChange()" disabled>Enregistrer</button>
           </div>
         </div>
       </div>
@@ -378,6 +389,7 @@ if ($ste == "DC") {
       document.getElementById('erreurPW').innerHTML = '';
 
     }
+
     async function submitPasswordChange() {
       const oldPw = document.getElementById('old_pw').value;
       const newPw = document.getElementById('new_pw').value;
@@ -403,7 +415,8 @@ if ($ste == "DC") {
         },
         body: JSON.stringify({
           oldPw,
-          newPw
+          newPw,
+          'from': 'profile'
         })
       });
 
@@ -416,6 +429,138 @@ if ($ste == "DC") {
         document.getElementById('erreurPW').innerHTML = result.message;
       }
     }
+  </script>
+
+  <script>
+    let currentGeneratedRegex = "";
+    let activeRules = []; // Store globally for the listener
+    let passwordPattern;
+
+    async function initPasswordConfig() {
+      try {
+        const formData = new FormData();
+        formData.append('key', 'PasswordRegex');
+        const response = await fetch('../api/getParams.php', {
+          method: 'POST',
+          body: formData
+        });
+
+        const data = await response.json();
+
+        if (data.success && data.message) {
+          const dbRegex = data.message; // "/^(?=.*[A-Z]).{12,}$/"
+
+          // 1. Prepare Regex
+          let cleanRegex = dbRegex.replace(/^\/|\/$/g, '');
+          passwordPattern = new RegExp(cleanRegex);
+
+          // 2. Build the UI Rules
+          buildDynamicUI(cleanRegex);
+        }
+      } catch (error) {
+        console.error("Fetch failed:", error);
+      }
+    }
+
+    function buildDynamicUI(cleanRegex) {
+      if (!cleanRegex) return;
+      const listContainer = document.getElementById('dynamic-list');
+      listContainer.innerHTML = ""; // Clear previous
+      activeRules = [];
+
+      // Map regex parts to Human Readable labels
+      const ruleMap = [{
+          regex: /[A-Z]/,
+          id: 'req-upper',
+          label: 'Au moins une majuscule (A-Z)'
+        },
+        {
+          regex: /[a-z]/,
+          id: 'req-lower',
+          label: 'Au moins une minuscule (a-z)'
+        },
+        {
+          regex: /\d/, ///[0-9]|\d/,
+          id: 'req-number',
+          label: 'Au moins un chiffre (0-9)'
+        },
+        {
+          regex: /[@$!%*?&]/,
+          id: 'req-special',
+          label: 'Au moins un caractère spécial (@$!%*?&)'
+        },
+      ];
+
+      // Extract length
+      let lengthMatch = cleanRegex.match(/\{(\d+),/);
+      let minLength = lengthMatch ? lengthMatch[1] : 1;
+
+      // Add length rule to activeRules array
+      activeRules.push({
+        id: 'req-length',
+        label: `Au moins ${minLength} caractères`,
+        test: (v) => v.length >= minLength
+      });
+
+      // Check which other rules exist in the dynamic regex string
+      ruleMap.forEach(rule => {
+        // We check the source of the regex against the database string
+        if (cleanRegex.includes(rule.regex.source)) {
+          activeRules.push({
+            id: rule.id,
+            label: rule.label,
+            test: (v) => rule.regex.test(v)
+          });
+        }
+      });
+
+      // Inject into HTML
+      activeRules.forEach(rule => {
+        listContainer.innerHTML += `<div id="${rule.id}" class="text-danger">✖ ${rule.label}</div>`;
+      });
+
+      document.getElementById('password-requirements').style.display = 'block';
+    }
+
+    // --- LISTENERS ---
+
+    document.getElementById('new_pw').addEventListener('input', function() {
+      const val = this.value;
+
+      // Update the visual status for each active rule
+      activeRules.forEach(rule => {
+        const el = document.getElementById(rule.id);
+        if (!el) return;
+
+        const isValid = rule.test(val);
+        el.className = isValid ? 'text-success' : 'text-danger';
+        el.innerHTML = (isValid ? '✔ ' : '✖ ') + rule.label;
+      });
+
+      validateFinal();
+    });
+
+    document.getElementById('confirm_pw').addEventListener('input', validateFinal);
+    document.getElementById('old_pw').addEventListener('input', validateFinal);
+
+    function validateFinal() {
+      const pw = document.getElementById('new_pw').value;
+      const confirm = document.getElementById('confirm_pw').value;
+      const old_pw = document.getElementById('old_pw').value;
+      const matchEl = document.getElementById('req-match');
+
+      const isMatch = (pw === confirm && pw !== "");
+      matchEl.className = isMatch ? 'text-success' : 'text-danger';
+      matchEl.innerHTML = (isMatch ? '✔ ' : '✖ ') + "Confirmation identique";
+
+      // Only allow submission if the global Regex AND the match are perfect
+      const isValidGlobal = passwordPattern.test(pw);
+      const isDifferent = (pw !== old_pw);
+      document.getElementById("btnChange").disabled = !(isValidGlobal && isMatch && old_pw !== "" && isDifferent);
+    }
+
+    // Launch the process
+    initPasswordConfig();
   </script>
   <script src="./assets/js/Sortable.min.js"></script>
   <script src="./assets/js/apexcharts.min.js"></script>

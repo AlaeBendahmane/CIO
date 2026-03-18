@@ -68,7 +68,11 @@ ob_end_flush();
 <body class="fixed-header layout-fixed sidebar-expand-lg bg-body-tertiary">
     <!--  -->
     <?php
-    include './components/splashscreen.php';
+    if ($_SESSION['needReset']) {
+        include './components/resetModal.php';
+    } else {
+        include './components/splashscreen.php';
+    }
     ?>
     <!--  -->
     <div class="app-wrapper">
@@ -143,7 +147,7 @@ ob_end_flush();
                                                     <div class="mb-3">
                                                         <div class="form-check">
                                                             <input class="form-check-input pw-rule" type="checkbox" id="rule-min-length" checked>
-                                                            <label class="form-check-label" for="rule-min-length">Minimum 12 caractères</label>
+                                                            <label class="form-check-label" for="rule-min-length">Minimum 8 caractères</label>
                                                         </div>
                                                         <div class="form-check">
                                                             <input class="form-check-input pw-rule" type="checkbox" id="rule-upper">
@@ -413,7 +417,7 @@ ob_end_flush();
                         document.getElementById('rule-lower').checked = dbRegex.includes('a-z');
                         document.getElementById('rule-number').checked = dbRegex.includes('\\d');
                         document.getElementById('rule-special').checked = dbRegex.includes('@$!%*?&');
-                        document.getElementById('rule-min-length').checked = dbRegex.includes('{12,');
+                        document.getElementById('rule-min-length').checked = dbRegex.includes('{8,');
                     }
                 } catch (error) {
                     console.error("Fetch failed:", error);
@@ -429,7 +433,7 @@ ob_end_flush();
                 if (document.getElementById('rule-number').checked) regexParts += "(?=.*\\d)";
                 if (document.getElementById('rule-special').checked) regexParts += "(?=.*[@$!%*?&])";
 
-                const minLength = document.getElementById('rule-min-length').checked ? "12" : "1";
+                const minLength = document.getElementById('rule-min-length').checked ? "8" : "1";
                 regexParts += `.{${minLength},}$`;
 
                 // Update the display with slashes

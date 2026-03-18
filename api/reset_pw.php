@@ -19,7 +19,7 @@ if (!$idFiscal) {
 $hashedPassword =  md5(md5("Cio2025"));
 
 try {
-    $sql = "UPDATE agents SET password = :pw WHERE id = :id";
+    $sql = "UPDATE agents SET password = :pw , needReset=1 WHERE id = :id";
     $stmt = $pdo->prepare($sql);
     $stmt->execute([
         ':pw' => $hashedPassword,

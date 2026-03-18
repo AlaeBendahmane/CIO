@@ -29,6 +29,7 @@ $user = $stmt->fetch();
 if ($user) {
     // 2. Vérifier le mot de passe (Haché ou clair selon votre base actuelle)
     // Note : Utilisez password_verify() si vous utilisez password_hash() en PHP
+    $user = array_map('trim', $user);
     if ($hashedPassword === $user['password']) {
         $token = bin2hex(random_bytes(8));
         $reformatedToken = str_replace(' ', '', $token);
@@ -54,6 +55,7 @@ if ($user) {
         $_SESSION['role'] = $user['role'];
         $_SESSION['profilePic'] = $user['profilePic'];
         $_SESSION['token'] = $reformatedToken;
+        $_SESSION['needReset'] = $user['needReset'];
 
         echo json_encode(['success' => true]);
     } else {
