@@ -1128,45 +1128,45 @@ ob_end_flush();
       }
     }
 
-    async function saveAgent() {
-      const period = getSelectedPeriod();
-      const agent = {
-        ste: document.getElementById('m_ste').value,
-        idFiscal: document.getElementById('m_id').value,
-        nom: document.getElementById('m_nom').value.toUpperCase(),
-        prenom: document.getElementById('m_prenom').value,
-        campagne: document.getElementById('m_camp').value
-      };
-      if (!agent.idFiscal) return
+    // async function saveAgent() {
+    //   const period = getSelectedPeriod();
+    //   const agent = {
+    //     ste: document.getElementById('m_ste').value,
+    //     idFiscal: document.getElementById('m_id').value,
+    //     nom: document.getElementById('m_nom').value.toUpperCase(),
+    //     prenom: document.getElementById('m_prenom').value,
+    //     campagne: document.getElementById('m_camp').value
+    //   };
+    //   if (!agent.idFiscal) return
 
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: "ID requis",
-      });
+    //   Swal.fire({
+    //     icon: "error",
+    //     title: "Oops...",
+    //     text: "ID requis",
+    //   });
 
 
-      await fetch(`../api/api.php?action=add_agent&mois=${period.month}&annee=${period.year}`, {
-        method: 'POST',
-        body: JSON.stringify(agent)
-      });
-      closeModal();
-      // loadData();
-    }
+    //   await fetch(`../api/api.php?action=add_agent&mois=${period.month}&annee=${period.year}`, {
+    //     method: 'POST',
+    //     body: JSON.stringify(agent)
+    //   });
+    //   closeModal();
+    //   // loadData();
+    // }
 
-    function openModal() {
-      document.getElementById('modal').style.display = 'flex';
-    }
+    // function openModal() {
+    //   document.getElementById('modal').style.display = 'flex';
+    // }
 
-    function closeModal() {
-      document.getElementById('modal').style.display = 'none';
-      ['m_ste', 'm_id', 'm_nom', 'm_prenom', 'm_camp'].forEach(id => document.getElementById(id).value = '');
-    }
+    // function closeModal() {
+    //   document.getElementById('modal').style.display = 'none';
+    //   ['m_ste', 'm_id', 'm_nom', 'm_prenom', 'm_camp'].forEach(id => document.getElementById(id).value = '');
+    // }
 
-    function toggleMenu() {
-      const menu = document.getElementById('dropdown');
-      menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
-    }
+    // function toggleMenu() {
+    //   const menu = document.getElementById('dropdown');
+    //   menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+    // }
     ///
     const exportBtn = document.getElementById('export-file');
     //old jdid lih jeda wl9dima la tfrt fih 
