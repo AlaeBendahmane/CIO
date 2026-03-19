@@ -29,6 +29,7 @@
         </div>
     </div>
 </div>
+<script src="./assets/js/bootstrap.min.js" crossorigin="anonymous"></script>
 <script>
     let activeRules = [];
     let passwordPattern = "";
