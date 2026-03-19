@@ -22,9 +22,9 @@ $hashedPassword = md5(md5(string: $password));
 // var_dump($hashedPassword);die;
 
 // 1. Chercher l'agent (on vérifie aussi qu'il n'est pas supprimé)
-$stmt = $pdo->prepare("SELECT * FROM agents WHERE email = ? AND isDeleted = 0 LIMIT 1");
+$stmt = $pdo->prepare("SELECT id,idFiscal,idProx,nom,prenom,email,password,ste,role,token,createdAt,isDeleted,needReset, campagne,profilePic FROM agents WHERE email = ? AND isDeleted = 0 LIMIT 1");
 $stmt->execute([$email]);
-$user = $stmt->fetch();
+$user = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if ($user) {
     // 2. Vérifier le mot de passe (Haché ou clair selon votre base actuelle)
@@ -51,11 +51,11 @@ if ($user) {
         $_SESSION['prenom'] = $user['prenom'];
         $_SESSION['email'] = $user['email'];
         $_SESSION['ste'] = $user['ste'];
-        $_SESSION['campagne'] = $user['campagne'];
         $_SESSION['role'] = $user['role'];
-        $_SESSION['profilePic'] = $user['profilePic'];
         $_SESSION['token'] = $reformatedToken;
         $_SESSION['needReset'] = $user['needReset'];
+        $_SESSION['campagne'] = $user['campagne'];
+        $_SESSION['profilePic'] = $user['profilePic'];
 
         echo json_encode(['success' => true]);
     } else {
