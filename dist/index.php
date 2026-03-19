@@ -80,8 +80,8 @@ isAlreadyAuth();
               <input id="loginPassword" type="password" class="form-control" placeholder="" />
               <label for="loginPassword">Mot de passe</label>
             </div>
-            <div class="input-group-text">
-              <span class="bi bi-lock-fill"></span>
+            <div class="input-group-text" style="cursor: pointer;" onclick="seePw()">
+              <span class="bi bi-lock-fill" id="pw-icon"></span>
             </div>
           </div>
           <!--begin::Row-->
@@ -121,6 +121,7 @@ isAlreadyAuth();
   <script src="./assets/js/adminlte.js"></script>
   <!--end::Required Plugin(AdminLTE)--><!--begin::OverlayScrollbars Configure-->
   <script src="./assets/js/sweetalert2@11.js"></script>
+  <script src="./assets/js/jquery-3.7.0.min.js"></script>
 
   <script>
     const SELECTOR_SIDEBAR_WRAPPER = '.sidebar-wrapper';
@@ -224,6 +225,18 @@ isAlreadyAuth();
       }
     });
 
+    function seePw() {
+      const passwordInput = $('#loginPassword');
+      const icon = $('#pw-icon');
+
+      if (passwordInput.attr('type') === 'password') {
+        passwordInput.attr('type', 'text');
+        icon.removeClass('bi-lock-fill').addClass('bi-unlock-fill');
+      } else {
+        passwordInput.attr('type', 'password');
+        icon.removeClass('bi-unlock-fill').addClass('bi-lock-fill');
+      }
+    }
     //pw
     document.addEventListener('DOMContentLoaded', async function() {
       async function loadPasswordConfig() {
