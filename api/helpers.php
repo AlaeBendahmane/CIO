@@ -156,27 +156,76 @@ function getDatabaseSize()
     return round($result['total_size'], 2); // Returns size in MB
 }
 
-function getTableSize($table)
+function getTableSize()
 {
     $host = 'localhost';
     $db   = 'pointagedb';
     $user = 'root';
     $pass = '';
-    $pdo = new PDO(
-        "mysql:host=$host;dbname=$db;charset=utf8mb4",
-        $user,
-        $pass,
-        [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
-    );
-    $stmt = $pdo->prepare("SELECT ROUND((data_length + index_length) / 1024 / 1024, 2) AS size 
-                       FROM information_schema.TABLES 
-                       WHERE table_schema = 'pointagedb' AND table_name = '$table'");
-    $stmt->execute();
-    $tableSize = $stmt->fetchColumn();
-    return round($tableSize, 2); // Returns size in MB
+
+    try {
+        $pdo = new PDO("mysql:host=$host;dbname=$db;charset=utf8mb4", $user, $pass);
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+        $query = "
+        SELECT 
+            table_name AS 'Table', 
+            table_rows AS 'Lignes',
+            ROUND(((data_length + index_length) / 1024 / 1024), 2) AS 'Taille_MB'
+        FROM information_schema.TABLES 
+        WHERE table_schema = :db_name
+        ORDER BY (data_length + index_length) DESC";
+
+        $stmt = $pdo->prepare($query);
+        $stmt->execute(['db_name' => $db]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        die("Erreur : " . $e->getMessage());
+    }
 }
 
+function reformatNameTables($table)
+{
+    switch ($table) {
+        case 'agents':
+            return "Agents";
 
+        case 'user_performance':
+            // Correction : "Performances" avec un 'a'
+            return "Performances des utilisateurs";
+
+        case 'compagne':
+            // Si votre table s'appelle 'compagne', on retourne 'Campagnes' (avec un 'a')
+            return "Campagnes";
+
+        case 'logs':
+            return "Journal d'activités";
+
+        case 'logs_auth':
+            return "Journal d'authentification";
+
+        case 'pointages':
+            return "Pointages";
+
+        case 'roles':
+            return "Rôles";
+
+        case 'ste':
+            // Correction : "Société" (majuscule et accents)
+            return "Sociétés";
+
+        case 'activity_logs':
+            return "Journal de pointage";
+
+        case 'parametres':
+            // Correction : "Paramètres" (accent)
+            return "Paramètres";
+
+        default:
+            // Nettoyage automatique pour les autres tables
+            return ucwords(str_replace(['_', '-'], ' ', $table));
+    }
+}
 
 function logActivity($pdo, $action, $idFiscal, $data, $m = null, $a = null, $by = null)
 {
@@ -207,14 +256,6 @@ function getParam($pdo, $key)
     }
 }
 
-
-/**
- * Set or Update a dynamic parameter value by its key
- * @param PDO $pdo Your database connection
- * @param string $key The key name (e.g., 'PasswordRegex')
- * @param string $value The value to store
- * @return bool Returns true on success, false on failure
- */
 function setParam($pdo, $key, $value)
 {
     try {

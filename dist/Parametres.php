@@ -6,6 +6,8 @@ include '../api/helpers.php';
 include '../api/session_info.php';
 isAuthPath();
 isAdminPath();
+$tables = getTableSize();
+$size = getDatabaseSize();
 include_once '../api/get_selects.php';
 ob_end_flush();
 ?>
@@ -121,6 +123,9 @@ ob_end_flush();
                                             <li class="nav-item">
                                                 <a class="nav-link js-tab-link text-black" href="#panel-campagne">Compagnes</a>
                                             </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link js-tab-link text-black" href="#panel-DB">Base de données</a>
+                                            </li>
                                         </ul>
                                     </div>
                                 </div>
@@ -133,10 +138,10 @@ ob_end_flush();
                                     <h3 class="card-title">Contenu</h3>
                                 </div>
                                 <div class="card-body" style="padding: 0px !important;">
-                                    <div class="direct-chat-messages" style="height: 500px !important;">
+                                    <div class="direct-chat-messages" style="height: 500px !important;padding-top:0px !important ;">
                                         <div class="tab-content">
                                             <div class="tab-pane fade show active" id="panel-password">
-                                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                                <div class="d-flex justify-content-between align-items-center mb-3 sticky-top" style="top: 0; z-index: 1020;background-color: white;padding-top: 15px !important;padding-bottom: 15px;margin-bottom: 0px !important">
                                                     <h4 class="mb-0">Configuration Mot de passe</h4>
                                                 </div>
                                                 <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapseRulesPassword" aria-expanded="false">
@@ -203,7 +208,7 @@ ob_end_flush();
 
                                             <div class="tab-pane fade" id="panel-ste">
 
-                                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                                <div class="d-flex justify-content-between align-items-center mb-3 sticky-top" style="top: 0; z-index: 1020;background-color: white;padding-top: 15px !important;padding-bottom: 15px;margin-bottom: 0px !important">
                                                     <h4 class="mb-0">Configuration Société</h4>
                                                     <button class="btn btn-sm btn-success" onclick="addCampagne()">
                                                         <i class="fas fa-plus"></i> Nouveau
@@ -242,7 +247,7 @@ ob_end_flush();
                                             </div>
 
                                             <div class="tab-pane fade" id="panel-campagne">
-                                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                                <div class="d-flex justify-content-between align-items-center mb-3 sticky-top" style="top: 0; z-index: 1020;background-color: white;padding-top: 15px !important;padding-bottom: 15px;margin-bottom: 0px !important">
                                                     <h4 class="mb-0">Configuration Campagne</h4>
                                                     <button class="btn btn-sm btn-success" onclick="addCampagne()">
                                                         <i class="fas fa-plus"></i> Nouveau
@@ -275,6 +280,68 @@ ob_end_flush();
                                                     <?php endforeach; ?>
                                                 </ul>
                                             </div>
+
+                                            <!--  -->
+                                            <div class="tab-pane fade" id="panel-DB">
+                                                <div class="d-flex justify-content-between align-items-center mb-3 sticky-top" style="top: 0; z-index: 1020;background-color: white;padding-top: 15px !important;padding-bottom: 15px;margin-bottom: 0px !important">
+                                                    <h4 class="mb-0">Configuration de la base de données</h4>
+                                                </div>
+                                                <ul class="list-group list-group-unbordered">
+                                                    <?php if (empty($tables)): ?>
+                                                        <li class="list-group-item text-center text-muted">
+                                                            Aucune Table trouvée.
+                                                        </li>
+                                                    <?php else: ?>
+                                                    <?php endif; ?>
+                                                    <?php foreach ($tables as $table):
+                                                        // Calcul du pourcentage d'occupation par rapport à la taille totale ($size)
+                                                        $percentage = ($size > 0) ? ($table['Taille_MB'] / $size) * 100 : 0;
+                                                        // Déterminer la couleur du badge de taille
+                                                        $badgeClass = ($percentage > 70) ? 'bg-danger' : (($percentage > 40) ? 'bg-warning' : 'bg-primary');
+                                                    ?>
+                                                        <li class="list-group-item d-flex justify-content-between align-items-center py-3">
+                                                            <div class="d-flex align-items-center flex-grow-1">
+                                                                <div class="icon-box me-3 text-muted">
+                                                                    <i class="bi bi-database-fill-gear fs-4"></i>
+                                                                </div>
+
+                                                                <div class="flex-grow-1">
+                                                                    <div class="d-flex align-items-center">
+                                                                        <h6 class="mb-0 me-1"><?= reformatNameTables($table['Table']) ?></h6>
+                                                                        <small class="text-muted">(<?= htmlspecialchars($table['Table']) ?>)</small>
+                                                                    </div>
+
+                                                                    <div class="progress mt-2" style="height: 4px; width: 200px;">
+                                                                        <div class="progress-bar <?= $badgeClass ?>" style="width: <?= $percentage ?>%"></div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="d-flex align-items-center gap-4">
+                                                                <div class="text-end d-none d-md-block">
+                                                                    <div class="fw-bold"><?= number_format($table['Lignes'], 0, '.', ' ') ?></div>
+                                                                    <small class="text-muted text-uppercase" style="font-size: 0.65rem;">Enregistrements</small>
+                                                                </div>
+
+                                                                <div class="text-end me-3">
+                                                                    <span class="badge <?= $badgeClass ?> rounded-pill">
+                                                                        <?= htmlspecialchars($table['Taille_MB']) ?> MB
+                                                                    </span>
+                                                                </div>
+
+                                                                <button type="button" class="btn btn-outline-danger btn-sm border-0"
+                                                                    onclick="clearTable('<?= reformatNameTables($table['Table']) ?>', '<?= $table['Table'] ?>')"
+                                                                    title="Vider la table">
+                                                                    <i class="bi bi-eraser-fill"></i>
+                                                                </button>
+                                                            </div>
+                                                        </li>
+                                                    <?php endforeach; ?>
+                                                </ul>
+
+                                            </div>
+
+                                            <!--  -->
                                         </div>
                                     </div>
                                 </div>
@@ -514,8 +581,41 @@ ob_end_flush();
                 }
             });
         }
+
+        function clearTable(namepurify, table) {
+            Swal.fire({
+                title: `Êtes-vous sûr de vouloir vider la table : ${namepurify +' ('+table+')'} ?`,
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#1ed760",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Oui, supprimer",
+                cancelButtonText: "Annuler"
+            }).then(async (resultconfirm) => {
+                //truly clear
+            })
+        }
     </script>
 
+    <script>
+        $(document).ready(function() {
+            const hash = window.location.hash;
+
+            if (hash) {
+                // 2. On cherche le lien qui a cet "href" spécifique
+                const $targetLink = $(`.js-tab-link[href="${hash}"]`);
+
+                if ($targetLink.length > 0) {
+                    // 3. On déclenche simplement un "click" sur l'élément
+                    // Cela va exécuter tout votre code (active showing, show active, etc.)
+                    $targetLink.trigger('click');
+
+                    // 4. NETTOYAGE : On retire le hash de l'URL pour que ce soit propre
+                    window.history.replaceState(null, null, window.location.pathname);
+                }
+            }
+        });
+    </script>
 
     <script src="./assets/js/Sortable.min.js"></script>
     <script src="./assets/js/apexcharts.min.js"></script>
