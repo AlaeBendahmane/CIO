@@ -5,7 +5,11 @@ include 'helpers.php';
 
 $key   = $_POST['key'] ?? '';
 $value = $_POST['value'] ?? '';
+$crypt = $_POST['crypt'] ?? 0;
 
+if ($crypt == 1) {
+    $value = md5(md5($value));
+}
 
 if (setParam($pdo, $key, $value)) {
     echo json_encode(['success' => true]);

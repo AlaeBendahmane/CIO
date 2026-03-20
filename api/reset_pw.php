@@ -16,7 +16,7 @@ if (!$idFiscal) {
 
 // 1. Define your default password
 // 2. Apply your double MD5 hash
-$hashedPassword =  md5(md5("Cio2025"));
+$hashedPassword = getParam($pdo, 'DefPassword'); // md5(md5("Cio2025"));
 
 try {
     $sql = "UPDATE agents SET password = :pw , needReset=1 WHERE id = :id";

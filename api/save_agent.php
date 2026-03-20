@@ -14,7 +14,7 @@ if (!$data) {
 }
 
 // Default password for new agents: 123456
-$defaultPassword = md5(md5("Cio2025"));
+$hashedPassword = getParam($pdo, 'DefPassword'); //md5(md5("Cio2025"));
 
 try {
     $sql = "INSERT INTO agents (idFiscal, idProx, nom, prenom, email, ste, campagne, role, password, isDeleted) 
