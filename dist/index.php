@@ -173,7 +173,7 @@ isAlreadyAuth();
       const myRegex = new RegExp(pattern);
       if (!email || email == "" || !password || password == "") {
         Swal.fire({
-          icon: "error",
+          icon: "info",
           title: "Oops...",
           text: "Veuillez remplir tous les champs",
         });
