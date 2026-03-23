@@ -1,0 +1,21 @@
+refresh sesion data
+
+
+
+
+
+// empty_table.php
+if (isset($_POST['table_name'])) {
+    $table = $_POST['table_name'];
+    
+    // SÉCURITÉ : Liste blanche des tables autorisées à être vidées
+    // Pour éviter qu'un utilisateur vide la table 'users' ou 'agents'
+    $allowed_tables = ['logs', 'notifications', 'temp_data']; 
+
+    if (in_array($table, $allowed_tables)) {
+        $pdo->exec("TRUNCATE TABLE " . $table);
+        echo "Table $table vidée avec succès.";
+    } else {
+        echo "Action non autorisée pour cette table.";
+    }
+}
