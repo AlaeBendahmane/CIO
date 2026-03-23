@@ -193,12 +193,15 @@ ob_end_flush();
                                                 <div class="collapse" id="collapseDefaultPassword" data-bs-parent="#panel-password">
                                                     <div class="">
                                                         <p class="text-muted" style="margin-bottom: 7px;">Mot de passe par défaut :</p>
-                                                        <input type="text" class="form-control mb-2" id="default-pw-input" placeholder="Ex: ChangeMe123">
+                                                        <input type="text" class="form-control mb-2" id="default-pw-input" placeholder="Mot de passe">
                                                         <p class="text-muted small mb-0">
                                                             Ce mot de passe sera attribué automatiquement lors d'une réinitialisation. Assurez-vous qu'il respecte les règles de sécurité configurées ci-dessus. </p>
                                                     </div>
+                                                    <div id="password-requirements" class="mt-2 p-3 border rounded bg-light" style="font-size: 0.85rem; display:none;">
+                                                        <div id="dynamic-list"></div>
+                                                    </div>
                                                     <div style="display: flex;justify-content: end;">
-                                                        <button class="btn btn-sm btn-success" onclick="saveDefPW()">
+                                                        <button class="btn btn-sm btn-success mt-1" onclick="saveDefPW()" id="btnChange" disabled>
                                                             <i class="fas fa-plus"></i> Sauvegarder
                                                         </button>
                                                     </div>
@@ -451,16 +454,26 @@ ob_end_flush();
                         showConfirmButton: false,
                         backdrop: false
                     });
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "Une erreur s'est produite.",
+                    });
                 }
             });
         }
     </script>
     <script>
         let currentGeneratedRegex = "";
+        let activeRules = [];
+        let passwordPattern = /./;
+
         document.addEventListener('DOMContentLoaded', async function() {
             const rules = document.querySelectorAll('.pw-rule');
             const testInput = document.getElementById('test-pw');
             const testResult = document.getElementById('test-result');
+            const defaultPwInput = document.getElementById('default-pw-input');
             // 1. Function to fetch from DB AND sync the checkboxes
             async function initPasswordConfig() {
                 try {
@@ -475,8 +488,7 @@ ob_end_flush();
 
                     if (data.success && data.message) {
                         const dbRegex = data.message;
-                        currentGeneratedRegex = dbRegex.slice(1, -1)
-                        // Show the DB regex in the <code> block
+                        currentGeneratedRegex = dbRegex.replace(/^\/|\/$/g, ''); //dbRegex.slice(1, -1)
 
                         // --- SYNC CHECKBOXES ---
                         // We check if specific patterns exist in the string
@@ -486,6 +498,9 @@ ob_end_flush();
                         document.getElementById('rule-special').checked = dbRegex.includes('@$!%*?&');
                         document.getElementById('rule-min-length').checked = dbRegex.includes('{8,');
                     }
+
+                    // Forcer la mise à jour globale après le fetch
+                    updateRegex();
                 } catch (error) {
                     console.error("Fetch failed:", error);
                 }
@@ -507,11 +522,35 @@ ob_end_flush();
                 // const finalRegexStr = "/" + regexParts + "/";
                 // regexDisplay.textContent = finalRegexStr;
                 currentGeneratedRegex = regexParts;
-                validateTest(new RegExp(regexParts));
+                passwordPattern = new RegExp(regexParts); // Crucial : on met à jour l'objet RegExp ici
+
+                // On rafraîchit l'UI des petites icônes (check/cross)
+                buildUI(currentGeneratedRegex);
+
+                // Si le champ test ou le champ mot de passe contient déjà du texte, on re-valide
+                validateTest();
+                validateFinal();
             }
 
-            // 3. Validation Logic
-            function validateTest(regex) {
+            // --- VALIDATION VISUELLE (Petites listes) ---
+            function validateFinal() {
+                const pw = defaultPwInput.value;
+                activeRules.forEach(rule => {
+                    const el = document.getElementById(rule.id);
+                    if (el) {
+                        const isValid = rule.test(pw);
+                        el.className = isValid ? 'text-success fw-bold' : 'text-danger';
+                        el.innerHTML = (isValid ? '✔ ' : '✖ ') + rule.label;
+                    }
+                });
+
+                const isValidGlobal = passwordPattern.test(pw);
+                const btnChange = document.getElementById("btnChange");
+                if (btnChange) btnChange.disabled = !isValidGlobal;
+            }
+
+            // --- VALIDATION TEST (Input secondaire) ---
+            function validateTest() {
                 const val = testInput.value;
                 if (val === "") {
                     testResult.textContent = "";
@@ -519,36 +558,125 @@ ob_end_flush();
                     return;
                 }
 
-                if (regex.test(val)) {
+                if (passwordPattern.test(val)) {
                     testResult.textContent = "✅ Mot de passe valide !";
                     testResult.style.color = "green";
-                    testInput.classList.replace('is-invalid', 'is-valid') || testInput.classList.add('is-valid');
+                    testInput.classList.remove('is-invalid');
+                    testInput.classList.add('is-valid');
                 } else {
                     testResult.textContent = "❌ Ne correspond pas aux critères.";
                     testResult.style.color = "red";
-                    testInput.classList.replace('is-valid', 'is-invalid') || testInput.classList.add('is-invalid');
+                    testInput.classList.remove('is-valid');
+                    testInput.classList.add('is-invalid');
                 }
             }
 
             // --- EVENT LISTENERS ---
             rules.forEach(checkbox => checkbox.addEventListener('change', updateRegex));
 
-            testInput.addEventListener('input', () => {
-                // Safe regex extraction: remove starting/ending slashes
-                // const currentRegexStr = regexDisplay.textContent.replace(/^\/|\/$/g, '');
-                validateTest(new RegExp(currentGeneratedRegex));
-            });
+            testInput.addEventListener('input', validateTest);
+            defaultPwInput.addEventListener('input', validateFinal);
 
             // --- EXECUTION ---
             await initPasswordConfig();
 
         });
 
-        function saveDefPW() {
-            const inputVal = document.getElementById('default-pw-input').value;
-            console.log('object', inputVal)
+        // --- FONCTIONS EXTERNES (Globales) ---
+        function buildUI(cleanRegex) {
+            const listContainer = document.getElementById('dynamic-list');
+            if (!listContainer) return;
+
+            listContainer.innerHTML = "";
+            activeRules = [];
+
+            const ruleMap = [{
+                    regex: /[A-Z]/,
+                    id: 'req-upper',
+                    label: 'Une majuscule (A-Z)'
+                },
+                {
+                    regex: /[a-z]/,
+                    id: 'req-lower',
+                    label: 'Une minuscule (a-z)'
+                },
+                {
+                    regex: /\d/,
+                    id: 'req-number',
+                    label: 'Un chiffre (0-9)'
+                },
+                {
+                    regex: /[@$!%*?&]/,
+                    id: 'req-special',
+                    label: 'Un caractère spécial (@$!%*?&)'
+                }
+            ];
+
+            let lengthMatch = cleanRegex.match(/\{(\d+),/);
+            let minLength = lengthMatch ? lengthMatch[1] : 1;
+
+            activeRules.push({
+                id: 'req-length',
+                label: `Au moins ${minLength} caractères`,
+                test: (v) => v.length >= minLength
+            });
+
+            ruleMap.forEach(rule => {
+                if (cleanRegex.includes(rule.regex.source)) {
+                    activeRules.push({
+                        id: rule.id,
+                        label: rule.label,
+                        test: (v) => rule.regex.test(v)
+                    });
+                }
+            });
+
+            activeRules.forEach(rule => {
+                listContainer.innerHTML += `<div id="${rule.id}" class="text-danger">✖ ${rule.label}</div>`;
+            });
+            document.getElementById('password-requirements').style.display = 'block';
         }
 
+        function saveDefPW() {
+            const inputVal = document.getElementById('default-pw-input').value;
+            if (inputVal.trim() === "") {
+                Swal.fire({
+                    icon: "info",
+                    title: "Oops...",
+                    text: "Veuillez saisir un mot de passe.",
+                });
+                return;
+            }
+            $.ajax({
+                url: '../api/setParams.php',
+                method: 'POST',
+                data: {
+                    key: 'DefPassword',
+                    value: inputVal,
+                    crypt: 1
+                },
+                dataType: 'json',
+                success: function(response) {
+                    if (response.success) {
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'success',
+                            title: "Configuration enregistrée!",
+                            showConfirmButton: false,
+                            timer: 3000
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Oops...",
+                            text: "Une erreur s'est produite.",
+                        });
+                    }
+                }
+            });
+        }
+        // 
         function saveLogic() {
             if (!currentGeneratedRegex) {
                 Swal.fire({
@@ -569,6 +697,7 @@ ob_end_flush();
                 dataType: 'json',
                 success: function(response) {
                     if (response.success) {
+                        buildUI(currentGeneratedRegex);
                         Swal.fire({
                             toast: true,
                             position: 'top-end',
@@ -576,6 +705,12 @@ ob_end_flush();
                             title: "Configuration enregistrée!",
                             showConfirmButton: false,
                             timer: 3000
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Oops...",
+                            text: "Une erreur s'est produite.",
                         });
                     }
                 }
