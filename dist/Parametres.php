@@ -121,7 +121,7 @@ ob_end_flush();
                                                 <a class="nav-link js-tab-link text-black" href="#panel-ste">Sociétés</a>
                                             </li>
                                             <li class="nav-item">
-                                                <a class="nav-link js-tab-link text-black" href="#panel-campagne">Compagnes</a>
+                                                <a class="nav-link js-tab-link text-black" href="#panel-campagne">Campagnes</a>
                                             </li>
                                             <li class="nav-item">
                                                 <a class="nav-link js-tab-link text-black" href="#panel-DB">Base de données</a>
