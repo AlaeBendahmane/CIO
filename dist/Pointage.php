@@ -706,7 +706,6 @@ ob_end_flush();
               count: bulkData.length
             })
           });
-          console.log("Bulk save completed for " + bulkData.length + " items.");
         }
 
         loadTimeline();
