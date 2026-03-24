@@ -365,3 +365,70 @@ if ($action == 'save_comment') {
     echo json_encode(['status' => 'success']);
     exit;
 }
+
+if ($action == 'save_bulk_pointage') {
+    $input = file_get_contents('php://input');
+    $data = json_decode($input, true);
+
+    $updates = $data['updates'] ?? [];
+    $mois = $_GET['mois'] ?? null;
+    $annee = $_GET['annee'] ?? null;
+
+    $days = array_column($updates, 'jour_index');
+    $fromDay = min($days);
+    $toDay   = max($days);
+
+    if (empty($updates) || !$mois || !$annee) {
+        echo json_encode(["status" => "error", "message" => "Missing data"]);
+        exit;
+    }
+
+    $agentStats = [];
+
+    try {
+        $pdo->beginTransaction();
+        $sql = "INSERT INTO pointage (agent_id_fiscal, jour_index, valeur, mois, annee) 
+                VALUES (:agent_id_fiscal, :jour_index, :valeur, :mois, :annee)
+                ON DUPLICATE KEY UPDATE valeur = VALUES(valeur)";
+
+        $stmt = $pdo->prepare($sql);
+
+        foreach ($updates as $row) {
+            $id = $row['agent_id_fiscal'];
+            $day = $row['jour_index'];
+            $stmt->execute([
+                ':agent_id_fiscal' => $row['agent_id_fiscal'],
+                ':jour_index'      => $row['jour_index'],
+                ':valeur'   => $row['valeur'],
+                ':mois'     => $mois,
+                ':annee'    => $annee
+            ]);
+
+            if (!isset($agentStats[$id])) {
+                $agentStats[$id] = ['days' => []];
+            }
+            $agentStats[$id]['days'][] = $day;
+        }
+
+        $pdo->commit();
+        foreach ($agentStats as $agentId => $data) {
+            $fromDay = min($data['days']);
+            $toDay   = max($data['days']);
+            $count   = count($data['days']);
+
+            logActivity(
+                $pdo,
+                'save_bulk_pointage',
+                $agentId,
+                ['From' => $fromDay, 'To' => $toDay, 'Count' => $count],
+                $mois,
+                $annee,
+                $sess
+            );
+        }
+        echo json_encode(["status" => "ok", "count" => count($updates)]);
+    } catch (Exception $e) {
+        $pdo->rollBack();
+        echo json_encode(["status" => "error", "message" => $e->getMessage()]);
+    }
+}

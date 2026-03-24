@@ -653,34 +653,62 @@ ob_end_flush();
       async afterChange(changes, source) {
         if (['loadData', 'updateCalcul'].includes(source) || !changes) return;
 
+        const isBulk = changes.length > 1;
+        const {
+          year,
+          month
+        } = getSelectedPeriod();
+        const numDays = getDaysInMonth(year, month);
+        const bulkData = [];
+
         for (const [row, col, oldVal, newVal] of changes) {
           if (oldVal === newVal) continue;
+
           const idFiscal = this.getDataAtCell(row, 1);
           if (!idFiscal) continue;
-
-          const {
-            year,
-            month
-          } = getSelectedPeriod();
-          const numDays = getDaysInMonth(year, month); //hadi zedtha
 
           // If editing pointage days
           if (col >= 5 && col < numDays + 5) {
             const total = calculateTotalJours(row);
             this.setDataAtCell(row, numDays + 5, total, 'updateCalcul'); // Note: index shifted based on numDays
 
-            await fetch(`../api/api.php?action=save_pointage&mois=${month}&annee=${year}`, {
-              method: 'POST',
-              body: JSON.stringify({
-                idFiscal,
-                day: col - 4,
+            if (isBulk) {
+              // Collect data for Bulk
+              bulkData.push({
+                agent_id_fiscal: idFiscal,
+                jour_index: col - 4,
                 valeur: newVal
-              })
-            });
+              });
+            } else {
+              await fetch(`../api/api.php?action=save_pointage&mois=${month}&annee=${year}`, {
+                method: 'POST',
+                body: JSON.stringify({
+                  idFiscal,
+                  day: col - 4,
+                  valeur: newVal
+                })
+              });
+            }
           } else {
             await syncAgentRow(row, [row, col, oldVal, newVal]);
           }
         }
+
+        // 2. BULK FETCH: This must be OUTSIDE the for loop
+        if (isBulk && bulkData.length > 0) {
+          await fetch(`../api/api.php?action=save_bulk_pointage&mois=${month}&annee=${year}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              updates: bulkData,
+              count: bulkData.length
+            })
+          });
+          console.log("Bulk save completed for " + bulkData.length + " items.");
+        }
+
         loadTimeline();
       },
 
@@ -1056,6 +1084,18 @@ ob_end_flush();
               icon: 'bi-download',
               color: 'text-bg-success',
               message: `<a href="javascript:void(0);"><strong>${authorName}</strong></a> a téléchargé le pointage de la periode <small class="badge text-bg-secondary">${periode}</small>`
+            };
+          } else if (log.action === 'save_bulk_pointage') {
+            const From = detailsObj.From || '';
+            const To = detailsObj.To || '';
+            const Count = detailsObj.Count || '';
+
+            config = {
+              icon: 'bi-calendar-range',
+              color: 'text-bg-warning',
+              message: `<a href="javascript:void(0);"><strong>${authorName}</strong></a> a mis à jour <strong>${Count} jours</strong> de pointage pour <strong>${targetName}</strong> pour la periode du
+                        <small class="badge text-bg-secondary">${periode}</small>
+                        <span class="text-muted">Du Jour  <small class="badge text-bg-secondary">${From}</small> au  <small class="badge text-bg-secondary">${To}</small></span>`
             };
           }
           // else if (log.action == "update_agent_Prénom" || log.action == "update_agent_Nom" || log.action == "update_agent_Campagne" || log.action == "update_agent_ID Fiscal" || log.action == "update_agent_STE") {
