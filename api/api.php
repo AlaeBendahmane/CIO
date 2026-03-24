@@ -170,12 +170,14 @@ if ($action == 'add_agent') {
     $m = $mois; // isset($_GET['mois']) ? (int)$_GET['mois'] : (int)date('m');
     $a = $annee; //isset($_GET['annee']) ? (int)$_GET['annee'] : (int)date('Y');
 
-    $sqlAgent = "INSERT INTO agents (ste, idFiscal, nom, prenom, campagne, role, isDeleted) 
-                 VALUES (?, ?, ?, ?, ?, 'U', 0)
+    $hashedPassword = getParam($pdo, 'DefPassword');
+
+    $sqlAgent = "INSERT INTO agents (ste, idFiscal, nom, prenom, campagne, role, isDeleted,password) 
+                 VALUES (?, ?, ?, ?, ?, 'U', 0,?)
                  ON DUPLICATE KEY UPDATE 
                  ste=VALUES(ste), nom=VALUES(nom), prenom=VALUES(prenom), campagne=VALUES(campagne), isDeleted=0";
 
-    $pdo->prepare($sqlAgent)->execute([$d['ste'] ?? "", $d['idFiscal'], $d['nom'] ?? "", $d['prenom'] ?? "", $d['campagne'] ?? ""]);
+    $pdo->prepare($sqlAgent)->execute([$d['ste'] ?? "", $d['idFiscal'], $d['nom'] ?? "", $d['prenom'] ?? "", $d['campagne'] ?? "", $hashedPassword]);
 
     $sqlPerf = "INSERT INTO user_performance (agent_id, mois, annee, totalJours, assiduite, avance, prime, cdp, remarque) 
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
