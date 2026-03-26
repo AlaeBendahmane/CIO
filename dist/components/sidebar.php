@@ -51,6 +51,13 @@
                     </li>
                 <?php endif; ?>
 
+                <li class="nav-item">
+                    <a href="./Contacts.php" class="nav-link <?php echo ($currentPage == 'contacts') ? 'active' : ''; ?>">
+                        <i class="bi bi-person-rolodex"></i>
+                        <p>Contacts</p>
+                    </a>
+                </li>
+
             </ul>
         </nav>
     </div>
