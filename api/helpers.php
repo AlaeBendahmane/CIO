@@ -6,6 +6,7 @@ ini_set('display_errors', 0);
 // Log the errors to a file instead so YOU can still see them
 ini_set('log_errors', 1);
 ini_set('error_log', 'C:/wamp64/logs/php_error_CIO.log');
+require '../api/conf.php';
 
 function isAuthPath()
 {
@@ -135,16 +136,7 @@ function getDaysInMonth($year, $month)
 
 function getDatabaseSize()
 {
-    $host = 'localhost';
-    $db   = 'pointagedb';
-    $user = 'root';
-    $pass = '';
-    $pdo = new PDO(
-        "mysql:host=$host;dbname=$db;charset=utf8mb4",
-        $user,
-        $pass,
-        [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
-    );
+    global $pdo;
     $sql = "SELECT 
                 SUM(data_length + index_length) / 1024 / 1024 AS total_size 
             FROM information_schema.TABLES 
@@ -158,13 +150,9 @@ function getDatabaseSize()
 
 function getTableSize()
 {
-    $host = 'localhost';
-    $db   = 'pointagedb';
-    $user = 'root';
-    $pass = '';
-
     try {
-        $pdo = new PDO("mysql:host=$host;dbname=$db;charset=utf8mb4", $user, $pass);
+        global $pdo;
+        global $db;
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
         $tablesStmt = $pdo->query("SHOW TABLES");

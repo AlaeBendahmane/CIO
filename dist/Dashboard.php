@@ -33,17 +33,13 @@ ob_end_flush();
   <link rel="stylesheet" href="./assets/css/adminlte.css" />
   <link rel="stylesheet" href="./assets/css/apexcharts.css" />
   <link rel="stylesheet" href="./assets/css/jsvectormap.min.css" />
-  <!-- <link rel="stylesheet" href="./assets/css/handsontable.full.min.css"> -->
-  <!-- 3ad zedt -->
   <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
   <script src="./assets/js/helper.js"></script>
 
   <style>
-    /* This class will be added by JS when you click the gear */
     .editing-mode {
       position: relative;
       z-index: 1040 !important;
-      /* Higher than the backdrop */
       box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
     }
 
@@ -52,20 +48,13 @@ ob_end_flush();
     }
 
     .ui-resizable-e {
-      /* background: #dc3545 !important; */
       width: 8px !important;
-      /* cursor: col-resize; */
       cursor: default;
     }
-  </style>
-  <!--  -->
-  <style>
-    /* @import url('./assets/css/css2.css'); */
   </style>
 </head>
 
 <body class="fixed-header layout-fixed sidebar-expand-lg bg-body-tertiary">
-  <!--  -->
   <?php
   if ($_SESSION['needReset']) {
     include './components/resetModal.php';
@@ -73,7 +62,6 @@ ob_end_flush();
     include './components/splashscreen.php';
   }
   ?>
-  <!--  -->
   <div class="app-wrapper">
     <nav class="app-header navbar navbar-expand bg-body">
       <div class="container-fluid">
@@ -104,9 +92,7 @@ ob_end_flush();
       <div class="app-content">
         <div class="container-fluid">
           <div class="row">
-            <!--begin::Col-->
             <div class="col-lg-3 col-6 ">
-              <!--begin::Small Box Widget 1-->
               <div class="small-box text-bg-primary "> <!--resizable-card-->
                 <div class="inner">
                   <h3>150</h3>
@@ -123,11 +109,8 @@ ob_end_flush();
                   Plus d'informations <i class="bi bi-link-45deg"></i>
                 </a>
               </div>
-              <!--end::Small Box Widget 1-->
             </div>
-            <!--end::Col-->
             <div class="col-lg-3 col-6 ">
-              <!--begin::Small Box Widget 2-->
               <div class="small-box text-bg-success"> <!--resizable-card-->
                 <div class="inner">
                   <h3>53<sup class="fs-5">%</sup></h3>
@@ -145,11 +128,8 @@ ob_end_flush();
                   Plus d'informations <i class="bi bi-link-45deg"></i>
                 </a>
               </div>
-              <!--end::Small Box Widget 2-->
             </div>
-            <!--end::Col-->
             <div class="col-lg-3 col-6 ">
-              <!--begin::Small Box Widget 3-->
               <div class="small-box text-bg-warning"> <!--resizable-card-->
                 <div class="inner">
                   <h3 id="nbr_all" style="color:#fff !important">-</h3>
@@ -163,11 +143,8 @@ ob_end_flush();
                   Plus d'informations <i class="bi bi-link-45deg"></i>
                 </a>
               </div>
-              <!--end::Small Box Widget 3-->
             </div>
-            <!--end::Col-->
             <div class="col-lg-3 col-6">
-              <!--begin::Small Box Widget 4-->
               <div class="small-box text-bg-danger"><!--resizable-card-->
                 <div class="inner">
                   <h3>
@@ -189,10 +166,7 @@ ob_end_flush();
                   Plus d'informations <i class="bi bi-link-45deg"></i>
                 </a>
               </div>
-              <!--end::Small Box Widget 4-->
             </div>
-            <!--end::Col-->
-
           </div>
           <div class="row" id="roooow">
             <div class="col-6">
@@ -210,7 +184,6 @@ ob_end_flush();
     crossorigin="anonymous"></script>
   <script src="./assets/js/bootstrap.min.js" crossorigin="anonymous"></script>
   <script src="./assets/js/adminlte.js"></script>
-  <!-- 3ad zedtha -->
   <script src="./assets/js/jquery-3.7.0.min.js"></script>
   <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
 
@@ -301,7 +274,6 @@ ob_end_flush();
       });
     });
   </script>
-  <!--  -->
   <script>
     const SELECTOR_SIDEBAR_WRAPPER = '.sidebar-wrapper';
     const Default = {

@@ -6,6 +6,7 @@ ini_set('memory_limit', '512M');
 header('Access-Control-Expose-Headers: Content-Disposition');
 require __DIR__ . '/../vendor/autoload.php';
 require_once 'helpers.php';
+require '../api/conf.php';
 session_start();
 isAuthQuery();
 isAdminQuery();
@@ -172,14 +173,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['table_data'])) {
         $writer->save('php://output');
 
         ///
-        $host = 'localhost';
-        $db   = 'pointagedb';
-        $user = 'root';
-        $pass = '';
-        $pdo = new PDO("mysql:host=$host;dbname=$db;charset=utf8mb4", $user, $pass, [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-        ]);
+        // $host = 'localhost';
+        // $db   = 'pointagedb';
+        // $user = 'root';
+        // $pass = '';
+        // $pdo = new PDO("mysql:host=$host;dbname=$db;charset=utf8mb4", $user, $pass, [
+        //     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        //     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+        // ]);
         logActivity($pdo, 'export_pointage', $idFiscal, ['comment' => ''], $month, $year, $idFiscal);
 
 
