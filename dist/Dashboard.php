@@ -173,7 +173,7 @@ ob_end_flush();
                   <h3>
                     <?= $size . " MB"; ?>
                   </h3>
-                  <p>Utilisation de la base de données</p>
+                  <p>Utilisation de la BD</p>
                 </div>
                 <svg class="small-box-icon" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
                   aria-hidden="true">
