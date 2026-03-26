@@ -29,7 +29,7 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
 if ($user) {
     // 2. Vérifier le mot de passe (Haché ou clair selon votre base actuelle)
     // Note : Utilisez password_verify() si vous utilisez password_hash() en PHP
-    $user = array_map('trim', $user);
+    // $user = array_map('trim', $user);
     if ($hashedPassword === $user['password']) {
         $token = bin2hex(random_bytes(8));
         $reformatedToken = str_replace(' ', '', $token);
@@ -45,6 +45,7 @@ if ($user) {
 
         session_start();
         // 3. Créer la session
+        $_SESSION['id'] = $user['id'];
         $_SESSION['idFiscal'] = $user['idFiscal'];
         $_SESSION['idProx'] = $user['idProx'];
         $_SESSION['nom'] = $user['nom'];

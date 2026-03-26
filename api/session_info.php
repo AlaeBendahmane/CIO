@@ -1,5 +1,6 @@
 <?php
 session_start();
+$id = $_SESSION['id'] ?? ""; //
 $idFiscal = $_SESSION['idFiscal'] ?? ""; //toprofile
 $idProx = $_SESSION['idProx'] ?? ""; //toprofile
 $nom = $_SESSION['nom'] ?? ""; //

@@ -14,9 +14,9 @@ if ($_GET['action'] === 'update_photo') {
     $json = file_get_contents('php://input');
     $data = json_decode($json, true);
 
-    if (isset($data['image']) && isset($_SESSION['idFiscal'])) {
+    if (isset($data['image']) && isset($_SESSION['id'])) {
         $base64 = $data['image'];
-        $userId = $_SESSION['idFiscal'];
+        $userId = $_SESSION['id'];
 
         try {
             // Update the user's profile_pic column
