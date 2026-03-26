@@ -179,7 +179,7 @@ if ($action == 'add_agent') {
                  ON DUPLICATE KEY UPDATE 
                  ste=VALUES(ste), nom=VALUES(nom), prenom=VALUES(prenom), campagne=VALUES(campagne), isDeleted=0";
 
-    $pdo->prepare($sqlAgent)->execute([$d['ste'] ?? "", $d['idFiscal'], $d['nom'] ?? "", $d['prenom'] ?? "", $d['campagne'] ?? "", $hashedPassword]);
+    $pdo->prepare($sqlAgent)->execute([$d['ste'] ?? "", $d['idFiscal'], mb_strtoupper($d['nom']) ?? "", $d['prenom'] ?? "", $d['campagne'] ?? "", $hashedPassword]);
 
     $sqlPerf = "INSERT INTO user_performance (agent_id, mois, annee, totalJours, assiduite, avance, prime, cdp, remarque) 
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)

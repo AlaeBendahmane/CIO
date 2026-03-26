@@ -24,7 +24,7 @@ try {
     $stmt->execute([
         ':idFiscal' => $data['idFiscal'],
         ':idProx'   => $data['idProx'],
-        ':nom'      => $data['nom'],
+        ':nom'      => mb_strtoupper($data['nom']),
         ':prenom'   => $data['prenom'],
         ':email'    => $data['email'],
         ':ste'      => $data['ste'],
