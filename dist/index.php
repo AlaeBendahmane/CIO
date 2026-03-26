@@ -242,7 +242,13 @@ isAlreadyAuth();
       async function loadPasswordConfig() {
         try {
           // We call our PHP API
-          const response = await fetch('../api/getParams.php');
+          const formData = new FormData();
+          formData.append('key', 'PasswordRegex');
+          const response = await fetch('../api/getParams.php', {
+            method: 'POST',
+            body: formData
+          });
+
           const data = await response.json();
 
           if (data.success) {
