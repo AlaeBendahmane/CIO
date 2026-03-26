@@ -167,6 +167,15 @@ function getTableSize()
         $pdo = new PDO("mysql:host=$host;dbname=$db;charset=utf8mb4", $user, $pass);
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
+        $tablesStmt = $pdo->query("SHOW TABLES");
+        $tables = $tablesStmt->fetchAll(PDO::FETCH_COLUMN);
+
+        if (!empty($tables)) {
+            $tableList = implode(', ', $tables);
+            $analyze = $pdo->query("ANALYZE TABLE $tableList");
+            $analyze->closeCursor();
+        }
+
         $query = "
         SELECT 
             table_name AS 'Table', 
