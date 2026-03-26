@@ -30,7 +30,7 @@ try {
         ':ste'      => $data['ste'],
         ':campagne' => $data['campagne'],
         ':role'     => $data['role'],
-        ':password' => $defaultPassword
+        ':password' => $hashedPassword
     ]);
 
     echo json_encode(['success' => true]);
