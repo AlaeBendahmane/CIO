@@ -1291,163 +1291,164 @@ ob_end_flush();
     //   }, 3000);
     // });
     // // // 
+    if (exportBtn) {
+      //---------------new 
+      exportBtn.addEventListener('click', async () => {
+        // 1. Get the settings from localStorage
+        // const sortSettings = JSON.parse(localStorage.getItem('grid_sort_settings'));
+        // const filterSettings = JSON.parse(localStorage.getItem('grid_filter_settings'));
 
-    //---------------new 
-    exportBtn.addEventListener('click', async () => {
-      // 1. Get the settings from localStorage
-      // const sortSettings = JSON.parse(localStorage.getItem('grid_sort_settings'));
-      // const filterSettings = JSON.parse(localStorage.getItem('grid_filter_settings'));
+        // 2. Check if they are active
+        // We check if sortSettings exists/has length, and if filterSettings has keys
+        // const isSorted = sortSettings && Object.keys(sortSettings).length > 0;
+        // const isFiltered = filterSettings && Object.keys(filterSettings).length > 0;
+        let timerInterval;
+        Swal.fire({
+          title: 'Génération de l\'export',
+          html: '<span id="swal-status-text">Initialisation...</span>',
+          allowOutsideClick: false,
+          showConfirmButton: false,
+          didOpen: () => {
+            Swal.showLoading();
+            const statusText = document.getElementById('swal-status-text');
+            const messages = [
+              "Chargement des données...",
+              "Traitement des informations...",
+              "Astuce : vous pouvez ouvrir une nouvelle fenêtre et continuer votre travail pendant le chargement...",
+              "Calcul des heures en cours...",
+              "Astuce : ce traitement peut prendre quelques minutes selon le volume des données...",
+              "Structuration du tableau...",
+              "Astuce : évitez de fermer la page pendant le traitement...",
+              "Application des styles...",
+              "Astuce : vous pouvez revenir plus tard pour consulter le résultat...",
+              "Fusion des en-têtes...",
+              "Ajout des finitions...",
+              "Astuce : vous pouvez continuer à utiliser la plateforme pendant la génération...",
+              "Vérification finale...",
+              "Finalisation en cours...",
+              "C'est presque fini, merci de patienter...",
+              "Encore quelques secondes..."
+            ];
+            let i = 0;
 
-      // 2. Check if they are active
-      // We check if sortSettings exists/has length, and if filterSettings has keys
-      // const isSorted = sortSettings && Object.keys(sortSettings).length > 0;
-      // const isFiltered = filterSettings && Object.keys(filterSettings).length > 0;
-      let timerInterval;
-      Swal.fire({
-        title: 'Génération de l\'export',
-        html: '<span id="swal-status-text">Initialisation...</span>',
-        allowOutsideClick: false,
-        showConfirmButton: false,
-        didOpen: () => {
-          Swal.showLoading();
-          const statusText = document.getElementById('swal-status-text');
-          const messages = [
-            "Chargement des données...",
-            "Traitement des informations...",
-            "Astuce : vous pouvez ouvrir une nouvelle fenêtre et continuer votre travail pendant le chargement...",
-            "Calcul des heures en cours...",
-            "Astuce : ce traitement peut prendre quelques minutes selon le volume des données...",
-            "Structuration du tableau...",
-            "Astuce : évitez de fermer la page pendant le traitement...",
-            "Application des styles...",
-            "Astuce : vous pouvez revenir plus tard pour consulter le résultat...",
-            "Fusion des en-têtes...",
-            "Ajout des finitions...",
-            "Astuce : vous pouvez continuer à utiliser la plateforme pendant la génération...",
-            "Vérification finale...",
-            "Finalisation en cours...",
-            "C'est presque fini, merci de patienter...",
-            "Encore quelques secondes..."
-          ];
-          let i = 0;
-
-          // Change message every 3 seconds
-          timerInterval = setInterval(() => {
-            statusText.innerText = messages[i];
-            i = (i + 1) % messages.length;
-          }, 6000);
-        },
-        willClose: () => {
-          clearInterval(timerInterval);
-        }
-      });
-      // 1. UI: Disable button and show loader
-      const originalContent = exportBtn.innerHTML;
-      exportBtn.disabled = true;
-      exportBtn.innerHTML = `Exportation... <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>`;
-
-      try {
-        // 2. Prepare Data (Same logic you had)
-        const rawData = hot.getData();
-        const tableDataWithComments = rawData.map((row, rowIndex) => {
-          return row.map((cellValue, colIndex) => {
-            const cellMeta = hot.getCellMeta(rowIndex, colIndex);
-            const commentText = (cellMeta && cellMeta.comment && cellMeta.comment.value) ?
-              cellMeta.comment.value : null;
-
-            if (commentText && commentText.trim() !== "") {
-              return {
-                value: cellValue,
-                comment: commentText
-              };
-            }
-            return cellValue;
-          });
-        });
-
-        const initialHeaders = generateHeaders();
-        const {
-          year,
-          month
-        } = getSelectedPeriod();
-
-        // 3. Send Request via Fetch
-        const response = await fetch('../api/export_excel.php', /*export_excelV2*/ {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
+            // Change message every 3 seconds
+            timerInterval = setInterval(() => {
+              statusText.innerText = messages[i];
+              i = (i + 1) % messages.length;
+            }, 6000);
           },
-          body: new URLSearchParams({
-            'table_data': JSON.stringify(tableDataWithComments),
-            'nested_headers': JSON.stringify({
-              row1: initialHeaders.headerRow1,
-              row2: initialHeaders.headerRow2
-            }),
-            'month': month,
-            'year': year
-          })
-        });
-        if (!response.ok) throw new Error('Network response was not ok');
-        //Alae
-        let suffix = "";
-        // if (isSorted) suffix += "_Sorted";
-        // if (isFiltered) suffix += "_Filtered";
-        let fileName = `Pointage_${month}_${year}${suffix}.xlsx`; // Fallback name
-        const disposition = response.headers.get('Content-Disposition');
-
-        if (disposition && disposition.indexOf('attachment') !== -1) {
-          const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
-          const matches = filenameRegex.exec(disposition);
-          if (matches != null && matches[1]) {
-            // let rawName = matches[1].replace(/['"]/g, '');
-            // fileName = rawName.replace('.xlsx', `${suffix}.xlsx`);
-            // Remove quotes if present
-            fileName = matches[1].replace(/['"]/g, '');
+          willClose: () => {
+            clearInterval(timerInterval);
           }
+        });
+        // 1. UI: Disable button and show loader
+        const originalContent = exportBtn.innerHTML;
+        exportBtn.disabled = true;
+        exportBtn.innerHTML = `Exportation... <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>`;
+
+        try {
+          // 2. Prepare Data (Same logic you had)
+          const rawData = hot.getData();
+          const tableDataWithComments = rawData.map((row, rowIndex) => {
+            return row.map((cellValue, colIndex) => {
+              const cellMeta = hot.getCellMeta(rowIndex, colIndex);
+              const commentText = (cellMeta && cellMeta.comment && cellMeta.comment.value) ?
+                cellMeta.comment.value : null;
+
+              if (commentText && commentText.trim() !== "") {
+                return {
+                  value: cellValue,
+                  comment: commentText
+                };
+              }
+              return cellValue;
+            });
+          });
+
+          const initialHeaders = generateHeaders();
+          const {
+            year,
+            month
+          } = getSelectedPeriod();
+
+          // 3. Send Request via Fetch
+          const response = await fetch('../api/export_excel.php', /*export_excelV2*/ {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+              'table_data': JSON.stringify(tableDataWithComments),
+              'nested_headers': JSON.stringify({
+                row1: initialHeaders.headerRow1,
+                row2: initialHeaders.headerRow2
+              }),
+              'month': month,
+              'year': year
+            })
+          });
+          if (!response.ok) throw new Error('Network response was not ok');
+          //Alae
+          let suffix = "";
+          // if (isSorted) suffix += "_Sorted";
+          // if (isFiltered) suffix += "_Filtered";
+          let fileName = `Pointage_${month}_${year}${suffix}.xlsx`; // Fallback name
+          const disposition = response.headers.get('Content-Disposition');
+
+          if (disposition && disposition.indexOf('attachment') !== -1) {
+            const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+            const matches = filenameRegex.exec(disposition);
+            if (matches != null && matches[1]) {
+              // let rawName = matches[1].replace(/['"]/g, '');
+              // fileName = rawName.replace('.xlsx', `${suffix}.xlsx`);
+              // Remove quotes if present
+              fileName = matches[1].replace(/['"]/g, '');
+            }
+          }
+
+
+          //
+          // // 4. Handle File Download (Blob)
+          const blob = await response.blob();
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          // Dynamically name the file (Optional: pull from response headers if you prefer)
+          a.download = fileName; //`Pointage_CIO_${month}_${year}.xlsx`;
+
+          document.body.appendChild(a);
+          a.click();
+
+          Swal.fire({
+            icon: 'success',
+            title: 'Export Prêt !',
+            text: "Le processus d'exportation s'est terminé avec succès",
+            timer: 2000,
+            showConfirmButton: false
+          });
+          // Cleanup
+          window.URL.revokeObjectURL(url);
+          document.body.removeChild(a);
+          loadTimeline();
+
+        } catch (error) {
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Une erreur est survenue lors de l'exportation." + error,
+          });
+        } finally {
+          // 5. UI: Re-enable button immediately when finished
+          exportBtn.disabled = false;
+          exportBtn.innerHTML = originalContent;
         }
 
 
-        //
-        // // 4. Handle File Download (Blob)
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        // Dynamically name the file (Optional: pull from response headers if you prefer)
-        a.download = fileName; //`Pointage_CIO_${month}_${year}.xlsx`;
-
-        document.body.appendChild(a);
-        a.click();
-
-        Swal.fire({
-          icon: 'success',
-          title: 'Export Prêt !',
-          text: "Le processus d'exportation s'est terminé avec succès",
-          timer: 2000,
-          showConfirmButton: false
-        });
-        // Cleanup
-        window.URL.revokeObjectURL(url);
-        document.body.removeChild(a);
-        loadTimeline();
-
-      } catch (error) {
-        Swal.fire({
-          icon: "error",
-          title: "Oops...",
-          text: "Une erreur est survenue lors de l'exportation." + error,
-        });
-      } finally {
-        // 5. UI: Re-enable button immediately when finished
-        exportBtn.disabled = false;
-        exportBtn.innerHTML = originalContent;
-      }
 
 
-
-
-      /////
-    });
+        /////
+      });
+    }
     //-----------
     function clearAllSettings() {
       localStorage.removeItem('grid_filter_settings');
