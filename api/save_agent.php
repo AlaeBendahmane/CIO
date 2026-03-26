@@ -25,7 +25,7 @@ try {
         ':idFiscal' => $data['idFiscal'],
         ':idProx'   => $data['idProx'],
         ':nom'      => mb_strtoupper($data['nom']),
-        ':prenom'   => $data['prenom'],
+        ':prenom'   => ucfirst(mb_strtolower($data['prenom'], 'UTF-8')),
         ':email'    => $data['email'],
         ':ste'      => $data['ste'],
         ':campagne' => $data['campagne'],
