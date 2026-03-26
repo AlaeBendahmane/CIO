@@ -170,9 +170,10 @@ ob_end_flush();
           </div>
           <div class="row" id="roooow">
             <div class="col-6">
-              <?php include './components/agentsPERcompagne.php' ?>
+              <?php if ($role == 'A'): ?>
+                <?php include './components/agentsPERcompagne.php' ?>
+              <?php endif; ?>
             </div>
-
           </div>
         </div>
       </div>
@@ -189,6 +190,8 @@ ob_end_flush();
 
   <script>
     $(document).ready(function() {
+      const chartElement = document.getElementById('agentDonutChart');
+      if (!chartElement) return
       // 1. Render the Chart
       var options = {
         series: <?php echo json_encode($agentCounts); ?>,
@@ -219,7 +222,7 @@ ob_end_flush();
           position: 'bottom'
         }
       };
-      var chart = new ApexCharts(document.querySelector("#agentDonutChart"), options);
+      var chart = new ApexCharts(chartElement, options);
       chart.render();
 
       // 2. Initialize Resizable but keep it DISABLED by default
@@ -333,6 +336,8 @@ ob_end_flush();
 
 
     async function loadDashboardStats() {
+      const chartElement = document.getElementById('agentDonutChart');
+      if (!chartElement) return
       try {
         const response = await fetch('../api/get_number_users.php');
 
