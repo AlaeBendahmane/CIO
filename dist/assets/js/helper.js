@@ -25,11 +25,21 @@ function createNotification(title, message) {
         body: message,
         icon: './img/C.png',
         silent: false,
-        requireInteraction: false
+        requireInteraction: true
     };
 
     new Notification(title, options);
 }
 
-// showTeamsNotification("Pointage Update", 'log.message');
+// showTeamsNotification("Pointage Update", 'Test');
 //getnotifications
+
+function initPWA(swPath = '../sw.js') {
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register(swPath)
+                // .then(reg => console.log('PWA Service Worker Registered!', reg))
+                // .catch(err => console.error('PWA Registration Failed:', err));
+        });
+    }
+}

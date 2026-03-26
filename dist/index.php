@@ -16,7 +16,8 @@ isAlreadyAuth();
   <meta name="theme-color" content="#007bff" media="(prefers-color-scheme: light)" />
   <meta name="theme-color" content="#1a1a1a" media="(prefers-color-scheme: dark)" />
   <!--end::Accessibility Meta Tags-->
-
+  <link rel="manifest" href="../manifest.json">
+  <meta name="theme-color" content="#6264a7">
   <!--begin::Primary Meta Tags-->
   <meta name="title" content="AdminLTE 4 | Login Page v2" />
   <meta name="author" content="ColorlibHQ" />
@@ -263,6 +264,9 @@ isAlreadyAuth();
 
       await loadPasswordConfig()
     });
+  </script>
+  <script>
+    initPWA()
   </script>
 </body>
 
