@@ -35,6 +35,15 @@
 
                 <?php if ($userRole == 'A'): ?>
                     <li class="nav-item">
+                        <a href="./Notifications.php" class="nav-link <?php echo ($currentPage == 'notifications') ? 'active' : ''; ?>">
+                            <i class="bi bi-bell"></i>
+                            <p>Notifications</p>
+                        </a>
+                    </li>
+                <?php endif; ?>
+
+                <?php if ($userRole == 'A'): ?>
+                    <li class="nav-item">
                         <a href="./Parametres.php" class="nav-link <?php echo ($currentPage == 'parametres') ? 'active' : ''; ?>">
                             <i class="bi bi-sliders"></i>
                             <p>Paramètres</p>
