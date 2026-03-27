@@ -5,10 +5,9 @@ ob_start();
 include '../api/helpers.php';
 include '../api/session_info.php';
 isAuthPath();
-isAdminPath();
-$tables = getTableSize();
-$size = getDatabaseSize();
-include_once '../api/get_selects.php';
+// isAdminPath();
+
+// include_once '../api/get_selects.php';
 ob_end_flush();
 ?>
 
@@ -64,6 +63,65 @@ ob_end_flush();
             background-color: white;
             border: 1px solid #ddd;
         }
+
+        /* Communication Buttons - Brand Colors */
+
+        /* Teams: Royal Purple */
+        .btn-teams {
+            background-color: #6264A7;
+            border-color: #6264A7;
+            color: white !important;
+        }
+
+        .btn-teams:hover {
+            background-color: #4B4D8A;
+            border-color: #4B4D8A;
+        }
+
+        /* WhatsApp: Teal Green */
+        .btn-whatsapp {
+            background-color: #25D366;
+            border-color: #25D366;
+            color: white !important;
+        }
+
+        .btn-whatsapp:hover {
+            background-color: #128C7E;
+            border-color: #128C7E;
+        }
+
+        /* Gmail: Google Red */
+        .btn-gmail {
+            background-color: #EA4335;
+            border-color: #EA4335;
+            color: white !important;
+        }
+
+        .btn-gmail:hover {
+            background-color: #C5221F;
+            border-color: #C5221F;
+        }
+
+        /* Outlook: Microsoft Blue */
+        .btn-outlook {
+            background-color: #0078D4;
+            border-color: #0078D4;
+            color: white !important;
+        }
+
+        .btn-outlook:hover {
+            background-color: #005A9E;
+            border-color: #005A9E;
+        }
+
+        /* General button styling for smooth transitions */
+        .btn-sm {
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            /* Space between icon and text */
+        }
     </style>
 </head>
 
@@ -105,7 +163,10 @@ ob_end_flush();
             </div>
             <div class="app-content">
                 <div class="container-fluid">
-                    aaa
+
+                    <div class="row" id="containerContacts">
+                    </div>
+
                 </div>
             </div>
         </main>
@@ -172,7 +233,73 @@ ob_end_flush();
     <script src="./assets/js/apexcharts.min.js"></script>
     <script src="./assets/js/jsvectormap.min.js"></script>
     <script src="./assets/js/world.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const container = document.getElementById('containerContacts');
 
+            fetch('../api/get_contacts.php')
+                .then(res => res.json())
+                .then(response => {
+                    const data = response.data;
+                    // Since your API returns the array directly:
+                    if (Array.isArray(data) && data.length > 0) {
+                        container.innerHTML = ''; // Clear static placeholder
+
+                        data.forEach(contact => {
+                            const fullName = `${contact.nom} ${contact.prenom}`;
+                            const email = contact.email || '';
+                            const imgSrc = (contact.profilePic && contact.profilePic.trim() !== '') ?
+                                contact.profilePic :
+                                `https://ui-avatars.com/api/?name=${encodeURIComponent(contact.prenom)}+${encodeURIComponent(contact.nom)}&background=random&color=fff`;
+                            const cardHtml = `
+                        <div class="col-12 col-sm-6 col-md-4 d-flex align-items-stretch flex-column mb-3">
+                            <div class="card bg-light d-flex flex-fill shadow-sm">
+                                <div class="card-header text-muted border-bottom-0">
+                                    <!--<span class="badge badge-info">${contact.campagne || 'N/A'}</span> 
+                                    <small class="float-right">${contact.role}</small>-->
+                                </div>
+                                <div class="card-body pt-0">
+                                    <div class="row">
+                                        <div class="col-7">
+                                            <h2 class="lead"><b>${fullName}</b></h2>
+                                            <p class="text-muted text-sm mb-1"><b>STE: </b> ${contact.ste || '---'} </p>
+                                              <p class="text-muted text-sm mb-1"><b>Role: </b> ${contact.role || '---'} </p>
+                                            <p class="text-muted text-sm" style="display: flex;"><b>Email: </b>  ${'&nbsp;'+email} </p>                                                                                 
+                                        </div>
+                                        <div class="col-5 text-center">
+                                            <img src="${imgSrc}" 
+                                                 style="border-radius: 50%; width: 90px; height: 90px; object-fit: cover; border: 2px solid #ddd;">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer" style="background: rgba(0,0,0,0.03);">
+                                    <div class="text-center">
+                                        <a href="https://teams.microsoft.com/l/chat/0/0?users=${email}" target="_blank" class="btn btn-xs btn-outline-primary m-1">
+                                            <i class="bi bi-microsoft-teams"></i> Teams
+                                        </a>
+                                        <a href="mailto:${email}" class="btn btn-xs btn-outline-secondary m-1">
+                                            <i class="bi bi-envelope"></i> Outlook
+                                        </a>
+                                        <a href="https://mail.google.com/mail/?view=cm&fs=1&to=${email}" target="_blank" class="btn btn-xs btn-outline-danger m-1">
+                                            <i class="bi bi-google"></i> Gmail
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>`;
+
+                            container.insertAdjacentHTML('beforeend', cardHtml);
+                        });
+                    } else {
+                        container.innerHTML = '<div class="col-12 text-center p-5"><h5>Aucun contact trouvé.</h5></div>';
+                    }
+                })
+                .catch(err => {
+                    console.error("Error loading contacts:", err);
+                    container.innerHTML = '<div class="col-12 text-center text-danger p-5">Erreur de connexion au serveur.</div>';
+                });
+        });
+    </script>
 </body>
 
 </html>
