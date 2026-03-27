@@ -85,6 +85,18 @@ ob_end_flush();
       font-weight: bold;
     }
 
+    .bg-black {
+      color: #fff !important;
+      background-color: #000 !important;
+      font-weight: bold;
+    }
+
+    .bg-light-purple {
+      color: #fff !important;
+      background-color: #6373ba !important;
+      font-weight: bold;
+    }
+
     .bg-light-green {
       color: #000 !important;
       background-color: #ffff01 !important;
@@ -531,6 +543,8 @@ ob_end_flush();
         if (value === 'A') classes.push('bg-red');
         else if (value === 'SB') classes.push('bg-purple');
         else if (value === 'C') classes.push('bg-light-green');
+        else if (value === 'M') classes.push('bg-light-purple ');
+        else if (value === 'D') classes.push('bg-black');
 
         // Weekend Styling (Saturday/Sunday)
         else if (col >= 5 && col < (5 + numDays)) {
