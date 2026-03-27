@@ -26,7 +26,8 @@ ob_end_flush();
 
     <meta name="keywords"
         content="bootstrap 5, bootstrap, bootstrap 5 admin dashboard, bootstrap 5 dashboard, bootstrap 5 charts, bootstrap 5 calendar, bootstrap 5 datepicker, bootstrap 5 tables, bootstrap 5 datatable, vanilla js datatable, colorlibhq, colorlibhq dashboard, colorlibhq admin dashboard, accessible admin panel, WCAG compliant" />
-
+    <link rel="manifest" href="../manifest.json">
+    <meta name="theme-color" content="#6264a7">
     <meta name="supported-color-schemes" content="light dark" />
     <link rel="icon" type="image/png" sizes="32x32" href="./assets/img/C.png">
     <link rel="preload" href="./assets/css/adminlte.css" as="style" />

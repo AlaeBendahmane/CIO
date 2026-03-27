@@ -1,7 +1,7 @@
-console.log = function () { };
-console.info = function () { };
-console.warn = function () { };
-console.error = function () { };
+// console.log = function () { };
+// console.info = function () { };
+// console.warn = function () { };
+// console.error = function () { };
 
 function showTeamsNotification(title, message) {
     if (!("Notification" in window)) {
@@ -38,8 +38,11 @@ function initPWA(swPath = '../sw.js') {
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
             navigator.serviceWorker.register(swPath)
-                // .then(reg => console.log('PWA Service Worker Registered!', reg))
-                // .catch(err => console.error('PWA Registration Failed:', err));
+            // .then(reg => console.log('PWA Service Worker Registered!', reg))
+            // .catch(err => console.error('PWA Registration Failed:', err));
         });
     }
 }
+
+
+initPWA()

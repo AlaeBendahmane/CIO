@@ -265,9 +265,6 @@ isAlreadyAuth();
       await loadPasswordConfig()
     });
   </script>
-  <script>
-    initPWA()
-  </script>
 </body>
 
 </html>

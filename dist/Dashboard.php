@@ -17,7 +17,8 @@ ob_end_flush();
   <meta name="color-scheme" content="light dark" />
   <meta name="theme-color" content="#007bff" media="(prefers-color-scheme: light)" />
   <meta name="theme-color" content="#1a1a1a" media="(prefers-color-scheme: dark)" />
-
+  <link rel="manifest" href="../manifest.json">
+  <meta name="theme-color" content="#6264a7">
   <meta name="title" content="CIO v4 | Dashboard" />
   <meta name="author" content="ColorlibHQ" />
 
