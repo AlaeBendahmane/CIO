@@ -565,6 +565,9 @@ ob_end_flush();
     /**
      * INITIALIZATION
      */
+    function getResponsiveHeight() {
+      return window.innerHeight - 350;
+    }
     let isLoadingComments = false;
     const sessionV = document.getElementById('sessionV').value;
     const initialHeaders = generateHeaders();
@@ -573,7 +576,7 @@ ob_end_flush();
       id: 'main_pointage_table',
       data: [],
       width: '100%',
-      height: sessionV === 'A' ? 400 : 510,
+      height: getResponsiveHeight(), //sessionV === 'A' ? 400 : 510,
       minSpareRows: 1,
       rowHeaders: true,
       colHeaders: true,
@@ -1472,6 +1475,11 @@ ob_end_flush();
       location.reload();
     }
 
+    window.addEventListener('resize', () => {
+      hot.updateSettings({
+        height: getResponsiveHeight()
+      });
+    });
     // loadData();
     // loadTimeline();
   </script>
