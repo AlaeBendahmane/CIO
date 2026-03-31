@@ -52,6 +52,36 @@ ob_end_flush();
       width: 8px !important;
       cursor: default;
     }
+
+    #checkboxList .agent-item {
+      display: flex;
+      align-items: center;
+      padding: 5px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    #checkboxList .agent-item:hover {
+      background: #f8f9fa;
+    }
+
+    #checkboxList input[type="checkbox"] {
+      margin-right: 10px;
+      accent-color: #6264a7;
+      cursor: pointer;
+    }
+
+    #checkboxList label {
+      margin-bottom: 0;
+      cursor: pointer;
+      font-weight: normal;
+      width: 100%;
+    }
+
+    .btn-tool:focus {
+      box-shadow: none !important;
+      color: #fff;
+    }
   </style>
 </head>
 
@@ -169,10 +199,20 @@ ob_end_flush();
               </div>
             </div>
           </div>
-          <div class="row" id="roooow">
+          <div class="row mb-3" id="roooow">
             <div class="col-6">
               <?php if ($role == 'A'): ?>
                 <?php include './components/agentsPERcompagne.php' ?>
+              <?php endif; ?>
+            </div>
+            <div class="col-6">
+              Soon
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-12">
+              <?php if ($role == 'A'): ?>
+                <?php include './components/cumulAgents.php' ?>
               <?php endif; ?>
             </div>
           </div>
@@ -194,12 +234,12 @@ ob_end_flush();
       const chartElement = document.getElementById('agentDonutChart');
       if (!chartElement) return
 
-        const response = await fetch('../api/agentsPerCompagnes.php');
-        const data = await response.json();
+      const response = await fetch('../api/agentsPerCompagnes.php');
+      const data = await response.json();
 
-        if (data.error) {
-          console.error("API Error:", data.error);
-          return;
+      if (data.error) {
+        console.error("API Error:", data.error);
+        return;
       }
       // 1. Render the Chart
       var options = {
@@ -378,6 +418,134 @@ ob_end_flush();
 
 
     // Appeler la fonction au chargement de la page
+  </script>
+
+  <script>
+    const setPickerDefault = () => {
+      const now = new Date();
+      const year = now.getFullYear();
+      // getMonth() is 0-indexed (Jan is 0), so we add 1
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+
+      const defaultValue = `${year}-${month}`; // Becomes "2026-03"
+      document.getElementById('chartPeriod').value = defaultValue;
+    };
+    setPickerDefault()
+  </script>
+  <script>
+    let fullChartData = [];
+    let myChart = null;
+
+    async function loadAndInitChart() {
+      const dateVal = document.getElementById('chartPeriod').value; // e.g., "2026-03"
+      const [year, month] = dateVal.split('-');
+      const response = await fetch(`../api/cumul_agents.php?mois=${parseInt(month)}&annee=${year}`);
+      fullChartData = await response.json();
+
+      renderCheckboxList();
+      updateChart(fullChartData);
+    }
+    loadAndInitChart()
+
+    function filterList() {
+      const searchTerm = document.getElementById('agentSearch').value.toLowerCase();
+
+      // We pass the search term to the render function
+      renderCheckboxList(searchTerm);
+    }
+
+
+    function renderCheckboxList(searchTerm = "") {
+      const container = document.getElementById('checkboxList');
+      container.innerHTML = '';
+
+      fullChartData.forEach((agent, index) => {
+        const fullName = `${agent.nom} ${agent.prenom}`.toLowerCase();
+
+        if (searchTerm && !fullName.includes(searchTerm)) {
+          return;
+        }
+
+        const item = document.createElement('div');
+        item.className = 'agent-item';
+        item.innerHTML = `
+            <input type="checkbox" id="chk_${index}" ${agent.selected !== false ? 'checked' : ''} value="${index}" onchange="handleFilterChange()">
+            <label for="chk_${index}">${agent.nom} ${agent.prenom}</label>
+        `;
+
+        item.onclick = (e) => e.stopPropagation();
+        container.appendChild(item);
+      });
+    }
+
+    function selectAllAgents(val) {
+      document.querySelectorAll('#checkboxList input').forEach(cb => cb.checked = val);
+      handleFilterChange();
+    }
+
+    function handleFilterChange() {
+      document.querySelectorAll('#checkboxList input').forEach(cb => {
+        const index = cb.value;
+        fullChartData[index].selected = cb.checked;
+      });
+
+      const filteredData = fullChartData.filter(agent => agent.selected !== false);
+      updateChart(filteredData);
+    }
+
+    function updateChart(data) {
+      const categories = data.map(item => `${item.nom} ${item.prenom}`);
+      const seriesData = data.map(item => item.total_h);
+
+      const options = {
+        series: [{
+          name: 'Heures',
+          data: seriesData
+        }],
+        chart: {
+          type: 'bar',
+          height: 374,
+          toolbar: {
+            show: true
+          }
+        },
+        colors: ['#6264a7'],
+        plotOptions: {
+          bar: {
+            horizontal: false,
+            columnWidth: '55%',
+            dataLabels: {
+              position: 'top'
+            }
+          }
+        },
+        xaxis: {
+          categories: categories,
+          labels: {
+            show: false
+          },
+        },
+        dataLabels: {
+          enabled: false,
+          formatter: val => val + "h",
+          offsetY: -20
+        }
+      };
+
+      if (myChart) {
+        myChart.updateOptions({
+          xaxis: {
+            categories: categories
+          },
+          series: [{
+            data: seriesData
+          }]
+        });
+      } else {
+        myChart = new ApexCharts(document.querySelector("#cumulChart"), options);
+        myChart.render();
+      }
+    }
   </script>
   <script src="./assets/js/Sortable.min.js"></script>
   <script src="./assets/js/apexcharts.min.js"></script>
