@@ -10,12 +10,18 @@ $m = $_GET['mois'] ?? date('n');
 $a = $_GET['annee'] ?? date('Y');
 
 try {
-    $sql = "SELECT a.nom, a.prenom, SUM(CAST(p.valeur AS UNSIGNED)) as total_h 
-                FROM pointage p
-                JOIN agents a ON p.agent_id_fiscal  = a.idFiscal
-                WHERE p.mois = ? AND p.annee = ? AND a.isDeleted = 0
-                GROUP BY p.agent_id_fiscal 
-                ORDER BY total_h DESC ";
+    $sql = "SELECT a.nom,
+                a.prenom,
+                COALESCE(SUM(CAST(p.valeur AS UNSIGNED)), 0) as total_h
+            FROM agents a
+                LEFT JOIN pointage p ON a.idFiscal = p.agent_id_fiscal
+                AND p.mois = ?
+                AND p.annee = ?
+            WHERE a.isDeleted = 0
+            GROUP BY a.idFiscal,
+                a.nom,
+                a.prenom
+            ORDER BY total_h DESC";
 
     $stmt = $pdo->prepare($sql);
     $stmt->execute([$m, $a]);
