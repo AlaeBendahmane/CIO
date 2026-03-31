@@ -190,13 +190,25 @@ ob_end_flush();
   <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
 
   <script>
-    $(document).ready(function() {
+    $(document).ready(async function() {
       const chartElement = document.getElementById('agentDonutChart');
       if (!chartElement) return
+
+      try {
+        const response = await fetch('../api/agentsPerCompagnes.php');
+        const data = await response.json();
+
+        if (data.error) {
+          console.error("API Error:", data.error);
+          return;
+        }
+      } catch (error) {
+        console.error("Fetch Error:", error);
+      }
       // 1. Render the Chart
       var options = {
-        series: <?php echo json_encode($agentCounts); ?>,
-        labels: <?php echo json_encode($campagneNames); ?>,
+        series: data.series,
+        labels: data.labels,
         chart: {
           type: 'donut',
           height: 300
