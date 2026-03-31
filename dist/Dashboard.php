@@ -436,24 +436,58 @@ ob_end_flush();
     let fullChartData = [];
     let myChart = null;
 
+    document.addEventListener('DOMContentLoaded', () => {
+      const picker = document.getElementById('chartPeriod');
+
+      // 1. Get saved date or set current month as default
+      const savedDate = localStorage.getItem('CumulsUtilisateursPeriod');
+      if (savedDate) {
+        picker.value = savedDate;
+      } else {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        picker.value = `${year}-${month}`;
+      }
+
+      loadAndInitChart();
+    });
+
     async function loadAndInitChart() {
-      const dateVal = document.getElementById('chartPeriod').value; // e.g., "2026-03"
+      const picker = document.getElementById('chartPeriod');
+      const dateVal = picker.value;
+      if (!dateVal) return;
+
+      // 2. Save selected date to localStorage
+      localStorage.setItem('CumulsUtilisateursPeriod', dateVal);
+
       const [year, month] = dateVal.split('-');
       const response = await fetch(`../api/cumul_agents.php?mois=${parseInt(month)}&annee=${year}`);
       fullChartData = await response.json();
 
+      // 3. Retrieve saved agent selections
+      const savedAgents = JSON.parse(localStorage.getItem('CumulsUtilisateursAgents') || "[]");
+
+      fullChartData.forEach(agent => {
+        // If we have saved selections, use them; otherwise, default to true
+        if (savedAgents.length > 0) {
+          agent.selected = savedAgents.includes(`${agent.nom} ${agent.prenom}`);
+        } else {
+          agent.selected = true;
+        }
+      });
+
       renderCheckboxList();
-      updateChart(fullChartData);
+
+      // Update chart with only the selected agents
+      const filteredData = fullChartData.filter(agent => agent.selected !== false);
+      updateChart(filteredData);
     }
-    loadAndInitChart()
 
     function filterList() {
       const searchTerm = document.getElementById('agentSearch').value.toLowerCase();
-
-      // We pass the search term to the render function
       renderCheckboxList(searchTerm);
     }
-
 
     function renderCheckboxList(searchTerm = "") {
       const container = document.getElementById('checkboxList');
@@ -461,18 +495,14 @@ ob_end_flush();
 
       fullChartData.forEach((agent, index) => {
         const fullName = `${agent.nom} ${agent.prenom}`.toLowerCase();
-
-        if (searchTerm && !fullName.includes(searchTerm)) {
-          return;
-        }
+        if (searchTerm && !fullName.includes(searchTerm)) return;
 
         const item = document.createElement('div');
         item.className = 'agent-item';
         item.innerHTML = `
-            <input type="checkbox" id="chk_${index}" ${agent.selected !== false ? 'checked' : ''} value="${index}" onchange="handleFilterChange()">
-            <label for="chk_${index}">${agent.nom} ${agent.prenom}</label>
-        `;
-
+                <input type="checkbox" id="chk_${index}" ${agent.selected !== false ? 'checked' : ''} value="${index}" onchange="handleFilterChange()">
+                <label for="chk_${index}">${agent.nom} ${agent.prenom}</label>
+            `;
         item.onclick = (e) => e.stopPropagation();
         container.appendChild(item);
       });
@@ -484,10 +514,21 @@ ob_end_flush();
     }
 
     function handleFilterChange() {
+      const selectedAgentNames = [];
+
       document.querySelectorAll('#checkboxList input').forEach(cb => {
         const index = cb.value;
-        fullChartData[index].selected = cb.checked;
+        const isChecked = cb.checked;
+        fullChartData[index].selected = isChecked;
+
+        // Collect names of selected agents for storage
+        if (isChecked) {
+          selectedAgentNames.push(`${fullChartData[index].nom} ${fullChartData[index].prenom}`);
+        }
       });
+
+      // 4. Save selected agent names to localStorage
+      localStorage.setItem('CumulsUtilisateursAgents', JSON.stringify(selectedAgentNames));
 
       const filteredData = fullChartData.filter(agent => agent.selected !== false);
       updateChart(filteredData);
