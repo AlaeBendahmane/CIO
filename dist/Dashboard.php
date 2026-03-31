@@ -194,16 +194,12 @@ ob_end_flush();
       const chartElement = document.getElementById('agentDonutChart');
       if (!chartElement) return
 
-      try {
         const response = await fetch('../api/agentsPerCompagnes.php');
         const data = await response.json();
 
         if (data.error) {
           console.error("API Error:", data.error);
           return;
-        }
-      } catch (error) {
-        console.error("Fetch Error:", error);
       }
       // 1. Render the Chart
       var options = {
