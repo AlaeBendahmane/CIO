@@ -36,7 +36,7 @@
         </div>
     </div>
 
-    <div class="card-body">
+    <div class="card-body" style="padding-bottom: 0px!important;padding-left: 0px!important;padding-right: 0px!important;">
         <div id="cumulChart" style="width: 100%;"></div>
     </div>
 </div>
