@@ -206,7 +206,9 @@ ob_end_flush();
               <?php endif; ?>
             </div>
             <div class="col-6">
-              Soon
+              <?php if ($role == 'A'): ?>
+                <?php include './components/soon.php' ?>
+              <?php endif; ?>
             </div>
           </div>
           <div class="row mb-3">
