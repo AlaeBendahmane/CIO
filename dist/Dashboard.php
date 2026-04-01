@@ -545,7 +545,7 @@ ob_end_flush();
         }],
         chart: {
           type: 'bar',
-          height: 374,
+          height: 300,
           toolbar: {
             show: true
           }
