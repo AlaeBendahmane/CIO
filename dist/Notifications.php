@@ -106,7 +106,7 @@ ob_end_flush();
             </div>
             <div class="app-content">
                 <div class="container-fluid">
-                    aaa
+                    Soon
                 </div>
             </div>
         </main>
