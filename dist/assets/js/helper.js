@@ -84,6 +84,38 @@ function createNotification(title, message, notifId, senderPic) {
     };
 }
 
+function generateLocalAvatar(name, size = 100, shape = 'circle') {
+    const canvas = document.createElement('canvas');
+    canvas.width = size;
+    canvas.height = size;
+    const context = canvas.getContext('2d');
+
+    // 1. Determine Background Color
+    const colors = ["#1abc9c", "#2ecc71", "#3498db", "#9b59b6", "#34495e", "#f1c40f", "#e67e22", "#e74c3c"];
+    const charCodeSum = name.split('').reduce((sum, char) => sum + char.charCodeAt(0), 0);
+    const color = colors[charCodeSum % colors.length];
+
+    // 2. Draw the Shape
+    context.fillStyle = color;
+    if (shape === 'circle') {
+        context.beginPath();
+        context.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2);
+        context.fill();
+    } else {
+        // Default to Rectangle
+        context.fillRect(0, 0, size, size);
+    }
+
+    // 3. Draw Initials
+    const initials = name.split(' ').filter(n => n).map(n => n[0]).join('').toUpperCase().substring(0, 2);
+    context.font = `bold ${size / 2.2}px Arial`;
+    context.fillStyle = "#FFFFFF";
+    context.textAlign = "center";
+    context.textBaseline = "middle";
+    context.fillText(initials, size / 2, size / 2);
+
+    return canvas.toDataURL();
+}
 
 
 
