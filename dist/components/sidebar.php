@@ -52,6 +52,13 @@
                 <?php endif; ?>
 
                 <li class="nav-item">
+                    <a href="./Documents.php" class="nav-link <?php echo ($currentPage == 'documents') ? 'active' : ''; ?>">
+                        <i class="bi bi-archive"></i>
+                        <p>Documents</p>
+                    </a>
+                </li>
+
+                <li class="nav-item">
                     <a href="./Contacts.php" class="nav-link <?php echo ($currentPage == 'contacts') ? 'active' : ''; ?>">
                         <i class="bi bi-person-rolodex"></i>
                         <p>Contacts</p>
