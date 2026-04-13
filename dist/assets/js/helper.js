@@ -117,8 +117,108 @@ function generateLocalAvatar(name, size = 100, shape = 'circle') {
     return canvas.toDataURL();
 }
 
+async function refreshNotifications() {
+    try {
+        const response = await fetch('../api/notifications.php?action=get_notifications_nav');
+        const data = await response.json();
+
+        console.log(data)
+        if (data.status === 'success') {
+            const badge = document.getElementById('notifCount');
+            const dropMenu = document.getElementById('notifDrop');
+
+            // 1. Update Badge
+            if (badge) {
+                badge.innerText = data.unreadCount;
+                badge.style.display = data.unreadCount > 0 ? 'block' : 'none';
+            }
+
+            if (dropMenu) {
+                /** * 2. RESET THE MENU 
+                 * We overwrite the entire menu with just the static Header and Footer.
+                 * This automatically "clears" all previous notifications and dividers.
+                 **/
+                dropMenu.innerHTML = `
+                    <span class="dropdown-item dropdown-header" id="unrededCount">
+                        ${data.unreadCount} Notifications non lues
+                    </span>
+                    <div class="dropdown-divider"></div>
+                    <div id="notifItemsContainer"></div>
+                    <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
+                `;
+
+                const container = document.getElementById('notifItemsContainer');
+
+                // 3. Inject new notifications
+                if (data.notifications.length === 0) {
+                    container.innerHTML = '<a href="#" class="dropdown-item text-center text-muted">Aucune notification</a>';
+                } else {
+                    let htmlBuffer = '';
+                    data.notifications.forEach(notif => {
+                        // Determine if the notification is unread
+                        const isUnread = notif.isSeen == 0;
+                        // Added 'is-unread' here so the JS can find it
+                        const unreadClass = isUnread ? 'bg-light is-unread' : '';
+
+                        htmlBuffer += `
+                            <a href="#" class="dropdown-item d-flex align-items-center p-3 ${unreadClass} notif-link" 
+                                data-id="${notif.id}"
+                                title="Envoyé par ${notif.sender}" 
+                                style="border-left: ${isUnread ? '4px solid #007bff' : '4px solid transparent'}; transition: all 0.2s;">
+                                
+                                <div class="me-3 position-relative">
+                                    <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(notif.sender)}&background=random&color=fff"
+                                        class="img-circle elevation-1"
+                                        alt="User Image"
+                                        style="width: 40px; height: 40px; min-width: 40px; object-fit: cover; border-radius: 50%;">
+                                    
+                                    ${isUnread ? '<span class="unread-dot position-absolute top-0 start-100 translate-middle p-1 bg-primary border border-light rounded-circle"></span>' : ''}
+                                </div>
+
+                                <div class="flex-grow-1 overflow-hidden">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="${isUnread ? 'fw-bolder' : 'fw-bold'} text-dark text-sm">${notif.sender}</span>
+                                        <span class="text-secondary fs-8">${formatRelativeTime(notif.createdAt)}</span>
+                                    </div>
+                                    <div class="text-muted fs-6 text-truncate">${notif.title}</div>
+                                    <div class="text-muted fs-7 text-truncate" style="white-space: nowrap;">${notif.content}</div>
+                                </div>
+                            </a>
+                            <div class="dropdown-divider m-0"></div>
+                        `;
+                    });
+                    container.innerHTML = htmlBuffer;
+                }
+            }
+        }
+    } catch (error) {
+        console.error("Erreur notifications:", error);
+    }
+}
+/**
+ * Formats date to short strings like 5m, 2h, 1j
+ */
+
+function formatRelativeTime(dateString) {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diff = Math.floor((now - date) / 1000);
+    if (diff < 60) return "Maintenant";
+    if (diff < 3600) return Math.floor(diff / 60) + "m";
+    if (diff < 86400) return Math.floor(diff / 3600) + "h";
+    return Math.floor(diff / 86400) + "j";
+}
+
+
+
 
 
 initPWA()
-checkMyNotifications();
-setInterval(checkMyNotifications, 15000);
+document.addEventListener('DOMContentLoaded', () => {
+    checkMyNotifications();
+    refreshNotifications();
+    setInterval(() => {
+        checkMyNotifications();
+        refreshNotifications();
+    }, 15000);
+})
