@@ -43,7 +43,7 @@ if ($role == "U") {
             <i class="bi bi-bell"></i>
             <span class="navbar-badge badge text-bg-warning text-white" style="right: 5px;border-radius: 5px;top: 8px;min-width: 17px;" id="notifCount">15</span>
         </a>
-        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end" id="notifDrop">
+        <div class="dropdown-menu dropdown-menu-xl dropdown-menu-end" id="notifDrop">
             <span class="dropdown-item dropdown-header" id="unrededCount"></span>
         </div>
     </li>
