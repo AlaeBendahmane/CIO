@@ -50,7 +50,7 @@ if ($action == 'mark_read') {
     $id = (int)$_GET['id'];
     $stmt = $pdo->prepare("UPDATE notifications SET isSeen = 1 WHERE id = ?");
     $stmt->execute([$id]);
-    echo json_encode(['status' => true, 'message' => 'read']);
+    echo json_encode(['status' => "success", 'message' => 'read']);
     exit;
 }
 
