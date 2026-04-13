@@ -143,8 +143,8 @@ async function refreshNotifications() {
                         ${data.unreadCount} Notifications non lues
                     </span>
                     <div class="dropdown-divider"></div>
-                    <div id="notifItemsContainer"></div>
-                    <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
+                    <div id="notifItemsContainer" style="max-height:300px;overflow-y:scroll"></div>
+                    <a href="Inbox.php" class="dropdown-item dropdown-footer">Afficher toutes les notifications</a>
                 `;
 
                 const container = document.getElementById('notifItemsContainer');
@@ -161,7 +161,7 @@ async function refreshNotifications() {
                         const unreadClass = isUnread ? 'bg-light is-unread' : '';
 
                         htmlBuffer += `
-                            <a href="#" class="dropdown-item d-flex align-items-center p-3 ${unreadClass} notif-link" 
+                            <a href="Inbox.php" class="dropdown-item d-flex align-items-center p-3 ${unreadClass} notif-link" 
                                 data-id="${notif.id}"
                                 title="Envoyé par ${notif.sender}" 
                                 style="border-left: ${isUnread ? '4px solid #007bff' : '4px solid transparent'}; transition: all 0.2s;">
