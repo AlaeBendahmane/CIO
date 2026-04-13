@@ -441,8 +441,8 @@ ob_end_flush();
                 text: "Cette campagne sera définitivement supprimée.",
                 icon: "warning",
                 showCancelButton: true,
-                confirmButtonColor: "#dc3545",
-                cancelButtonColor: "#6c757d",
+                confirmButtonColor: "#1ed760",
+                cancelButtonColor: "#d33",
                 confirmButtonText: "Oui, supprimer",
                 cancelButtonText: "Annuler",
                 backdrop: true

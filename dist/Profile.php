@@ -560,6 +560,7 @@ if ($ste == "DC") {
     // Launch the process
     initPasswordConfig();
   </script>
+  <script src="./assets/js/sweetalert2@11.js"></script>
   <script src="./assets/js/Sortable.min.js"></script>
   <script src="./assets/js/apexcharts.min.js"></script>
   <script src="./assets/js/jsvectormap.min.js"></script>
