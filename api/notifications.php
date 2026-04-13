@@ -21,7 +21,8 @@ if ($action == 'get_notifs') {
                 n.id as id, 
                 n.title as title, 
                 n.content as content, 
-                CONCAT(u.nom, ' ', u.prenom) AS sender,
+                ---CONCAT(u.nom, ' ', u.prenom) AS sender,
+                COALESCE(CONCAT(u.nom, ' ', u.prenom), 'Admin System') AS sender, 
                 u.profilePic as senderPic
             FROM notifications n
             LEFT JOIN agents u ON n.fromAdmin = u.id
@@ -89,4 +90,37 @@ if ($action == 'send_notif') {
             "message" => "Erreur DB: " . $e->getMessage()
         ]);
     }
+}
+
+if ($action == 'get_notifications_nav') {
+    $sess = $_SESSION['id'] ?? '';
+    $stmt = $pdo->prepare("
+        SELECT 
+            n.id, 
+            n.title, 
+            n.content, 
+            COALESCE(CONCAT(u.nom, ' ', u.prenom), 'Admin System') AS sender, 
+            n.isSeen, 
+            n.createdAt 
+        FROM notifications n
+        LEFT JOIN agents u ON n.fromAdmin = u.idFiscal
+        WHERE n.toUser = ? 
+        ORDER BY n.createdAt DESC 
+        LIMIT 20
+    ");
+    $stmt->execute([$sess]);
+    $notifs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // 2. Count unread specifically for the badge
+    $countStmt = $pdo->prepare("SELECT COUNT(*) FROM notifications WHERE toUser = ? AND isSeen = 0");
+    $countStmt->execute([$sess]);
+    $unreadCount = $countStmt->fetchColumn();
+
+    header('Content-Type: application/json');
+    echo json_encode([
+        'status' => 'success',
+        'unreadCount' => (int)$unreadCount,
+        'notifications' => $notifs
+    ]);
+    exit;
 }
