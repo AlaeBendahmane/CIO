@@ -69,10 +69,11 @@ function createNotification(title, message, notifId, senderPic) {
     // If user clicks the notification itself
     n.onclick = function () {
         window.focus();
-        if (notifId) {
-            fetch(`../api/notifications.php?action=mark_read&id=${notifId}`);
-        }
-        this.close();
+        // if (notifId) {
+        //     fetch(`../api/notifications.php?action=mark_read&id=${notifId}`);
+        // }
+        window.location.href = "Inbox.php";
+        // this.close();
     };
 
     // If user clicks "Fermer" (Close)
@@ -220,5 +221,6 @@ document.addEventListener('DOMContentLoaded', () => {
     setInterval(() => {
         checkMyNotifications();
         refreshNotifications();
+        loadInbox()
     }, 15000);
 })
