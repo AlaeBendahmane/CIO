@@ -144,7 +144,7 @@ async function refreshNotifications() {
                         ${data.unreadCount} Notifications non lues
                     </span>
                     <div class="dropdown-divider"></div>
-                    <div id="notifItemsContainer" style="max-height:300px;overflow-y:scroll"></div>
+                    <div id="notifItemsContainer" style="max-height:300px;overflow-y:auto"></div>
                     <a href="Inbox.php" class="dropdown-item dropdown-footer">Afficher toutes les notifications</a>
                 `;
 
