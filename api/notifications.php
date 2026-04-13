@@ -3,7 +3,7 @@ require_once 'helpers.php';
 require '../api/conf.php';
 session_start();
 isAuthQuery();
-isAdminQuery();
+
 header('Content-Type: application/json');
 
 $action = $_GET['action'] ?? '';
@@ -55,6 +55,7 @@ if ($action == 'mark_read') {
 }
 
 if ($action == 'send_notif') {
+    isAdminQuery();
     $rawData = file_get_contents("php://input");
     $data = json_decode($rawData, true);
 
