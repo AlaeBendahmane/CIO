@@ -140,7 +140,7 @@ ob_end_flush();
                                                 placeholder="Titre de la notification..." required>
                                         </div>
 
-                                        <div class="form-group">
+                                        <div class="form-group mt-2">
                                             <label class="small text-muted font-weight-bold">MESSAGE</label>
                                             <textarea class="form-control" id="notifContent" rows="12"
                                                 placeholder="Tapez votre contenu ici..." style="resize: none;" required></textarea>
