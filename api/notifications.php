@@ -103,7 +103,7 @@ if ($action == 'get_notifications_nav') {
             n.isSeen, 
             n.createdAt 
         FROM notifications n
-        LEFT JOIN agents u ON n.fromAdmin = u.idFiscal
+        LEFT JOIN agents u ON n.fromAdmin = u.id
         WHERE n.toUser = ? 
         ORDER BY n.createdAt DESC 
         LIMIT 20
