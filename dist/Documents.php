@@ -202,7 +202,9 @@ ob_end_flush();
 
         #statt {
             position: sticky;
-            top: 60px;
+            top: 55px
+                /*60px*/
+            ;
             background: #fff;
             z-index: 1020;
             padding: 10px 0;
