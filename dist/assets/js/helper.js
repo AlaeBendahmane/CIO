@@ -210,7 +210,50 @@ function formatRelativeTime(dateString) {
     return Math.floor(diff / 86400) + "j";
 }
 
+async function loadInbox() {
+    try {
+        const response = await fetch('../api/notifications.php?action=get_notifications_nav');
+        const data = await response.json();
 
+        if (data.status === 'success') {
+            const list = document.getElementById('inbox-list');
+
+            if (data.notifications.length === 0) {
+                list.innerHTML = '<div class="p-5 text-center text-muted">Aucune notification trouvée.</div>';
+                return;
+            }
+
+            list.innerHTML = data.notifications.map(n => {
+                const isUnread = n.isSeen == 0;
+                const unreadClass = isUnread ? 'is-unread fw-bold bg-light' : 'text-secondary';
+                const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(n.sender)}&background=random&color=fff&rounded=true`;
+
+                return `
+                    <div class="inbox-item p-3 border-bottom ${unreadClass}" 
+                         role="button" 
+                         data-id="${n.id}"
+                         data-full='${JSON.stringify(n).replace(/'/g, "&apos;")}'
+                         style="cursor: pointer; position: relative; border-left: ${isUnread ? '4px solid #007bff' : '4px solid transparent'}; transition: all 0.2s;">
+                        
+                        <div class="d-flex align-items-center">
+                            <img src="${avatarUrl}" class="img-circle me-3" style="width: 35px; height: 35px;">
+                            <div class="flex-grow-1 overflow-hidden">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="text-truncate text-dark" style="max-width: 150px;">${n.sender}</span>
+                                    <small class="text-muted" style="font-size: 0.7rem;">${formatRelativeTime(n.createdAt)}</small>
+                                </div>
+                                <div class="text-truncate text-muted" style="font-size: 0.85rem;">${n.title}</div>
+                            </div>
+                            ${isUnread ? '<span class="unread-dot-small"></span>' : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+    } catch (err) {
+        console.error("Failed to load inbox:", err);
+    }
+}
 
 
 
