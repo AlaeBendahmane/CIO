@@ -119,7 +119,7 @@ ob_end_flush();
                                         <button class="btn btn-xs btn-primary w-100 mt-1" onclick="selectAllUsers()">Tout sélectionner</button>
                                     </div>
 
-                                    <div id="userListContainer" style="height: 500px; overflow-y: auto;">
+                                    <div id="userListContainer" style="height: 500px;overflow: hidden ;overflow-y: auto;">
                                         <ul class="list-group list-group-flush" id="user-notifications-list">
                                         </ul>
                                     </div>
