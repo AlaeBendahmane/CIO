@@ -211,6 +211,9 @@ function formatRelativeTime(dateString) {
 }
 
 async function loadInbox() {
+    if (!document.getElementById('Inbox')) {
+        return;
+    }
     try {
         const response = await fetch('../api/notifications.php?action=get_notifications_nav');
         const data = await response.json();
@@ -260,7 +263,7 @@ async function loadInbox() {
 initPWA()
 document.addEventListener('DOMContentLoaded', () => {
     if (document.getElementById('loginPart')) {
-        return; 
+        return;
     }
     checkMyNotifications();
     refreshNotifications();

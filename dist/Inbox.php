@@ -124,7 +124,7 @@ ob_end_flush();
   </style>
 </head>
 
-<body class="fixed-header layout-fixed sidebar-expand-lg bg-body-tertiary">
+<body class="fixed-header layout-fixed sidebar-expand-lg bg-body-tertiary" id="Inbox">
   <!--  -->
   <?php
   if ($_SESSION['needReset']) {
@@ -315,8 +315,6 @@ ob_end_flush();
         document.getElementById('detail-avatar').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(data.sender)}&background=random&color=fff&size=128&rounded=true`;
       });
     });
-
-
   </script>
   <script src="./assets/js/sweetalert2@11.js"></script>
   <script src="./assets/js/Sortable.min.js"></script>
