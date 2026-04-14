@@ -56,7 +56,7 @@ isAlreadyAuth();
 <!--end::Head-->
 <!--begin::Body-->
 
-<body class="login-page bg-body-secondary">
+<body class="login-page bg-body-secondary" id="loginPart">
   <div class="login-box">
     <div class="card card-outline card-primary">
       <div class="card-header">

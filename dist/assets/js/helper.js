@@ -1,7 +1,7 @@
-console.log = function () { };
-console.info = function () { };
-console.warn = function () { };
-console.error = function () { };
+// console.log = function () { };
+// console.info = function () { };
+// console.warn = function () { };
+// console.error = function () { };
 
 function initPWA(swPath = '../sw.js') {
     if ('serviceWorker' in navigator) {
@@ -259,6 +259,9 @@ async function loadInbox() {
 
 initPWA()
 document.addEventListener('DOMContentLoaded', () => {
+    if (document.getElementById('loginPart')) {
+        return; 
+    }
     checkMyNotifications();
     refreshNotifications();
     setInterval(() => {
