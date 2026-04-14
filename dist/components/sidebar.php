@@ -36,11 +36,57 @@
                 <?php if ($userRole == 'A'): ?>
                     <li class="nav-item">
                         <a href="./Notifications.php" class="nav-link <?php echo ($currentPage == 'notifications') ? 'active' : ''; ?>">
-                            <i class="bi bi-bell"></i>
+                            <i class="bi bi-bell-fill"></i>
                             <p>Notifications</p>
                         </a>
                     </li>
                 <?php endif; ?>
+
+                <?php if ($userRole === 'A'): ?>
+                    <?php $isDocumentsSection = in_array($currentPage, ['documents', 'massSend']); ?>
+                    <li class="nav-item <?= $isDocumentsSection ? 'menu-open' : '' ?>">
+                        <a href="#" class="nav-link" <?= $isDocumentsSection ? 'style="background: transparent !important;"' : '' ?>">
+                            <i class="nav-icon bi bi-archive-fill"></i>
+                            <p>
+                                Documents
+                                <i class="nav-arrow bi bi-chevron-right"></i>
+                            </p>
+                        </a>
+
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="./Documents.php" class="nav-link <?= ($currentPage === 'documents') ? 'active' : '' ?>">
+                                    <i class="nav-icon bi bi-folder-fill"></i>
+                                    <p>Mes documents</p>
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a href="./Envoie.php" class="nav-link <?= ($currentPage === 'massSend') ? 'active' : '' ?>">
+                                    <i class="nav-icon bi bi-folder-symlink"></i>
+                                    <p>Envoi en masse</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                <?php else: ?>
+
+                    <li class="nav-item">
+                        <a href="./Documents.php" class="nav-link <?= ($currentPage === 'documents') ? 'active' : '' ?>">
+                            <i class="bi bi-folder-fill"></i>
+                            <p>Mes Documents</p>
+                        </a>
+                    </li>
+
+                <?php endif; ?>
+
+                <li class="nav-item">
+                    <a href="./Contacts.php" class="nav-link <?php echo ($currentPage == 'contacts') ? 'active' : ''; ?>">
+                        <i class="bi bi-person-rolodex"></i>
+                        <p>Contacts</p>
+                    </a>
+                </li>
 
                 <?php if ($userRole == 'A'): ?>
                     <li class="nav-item">
@@ -50,20 +96,6 @@
                         </a>
                     </li>
                 <?php endif; ?>
-
-                <li class="nav-item">
-                    <a href="./Documents.php" class="nav-link <?php echo ($currentPage == 'documents') ? 'active' : ''; ?>">
-                        <i class="bi bi-archive"></i>
-                        <p>Documents</p>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a href="./Contacts.php" class="nav-link <?php echo ($currentPage == 'contacts') ? 'active' : ''; ?>">
-                        <i class="bi bi-person-rolodex"></i>
-                        <p>Contacts</p>
-                    </a>
-                </li>
 
             </ul>
         </nav>
