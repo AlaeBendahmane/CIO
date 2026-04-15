@@ -43,7 +43,7 @@
                 <?php endif; ?>
 
                 <?php if ($userRole === 'A'): ?>
-                    <?php $isDocumentsSection = in_array($currentPage, ['documents', 'massSend']); ?>
+                    <?php $isDocumentsSection = in_array($currentPage, ['documents', 'massSend', 'documentsOne']); ?>
                     <li class="nav-item <?= $isDocumentsSection ? 'menu-open' : '' ?>">
                         <a href="#" class="nav-link" <?= $isDocumentsSection ? 'style="background: transparent !important;"' : '' ?>">
                             <i class="nav-icon bi bi-archive-fill"></i>
@@ -55,9 +55,16 @@
 
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
-                                <a href="./Documents.php" class="nav-link <?= ($currentPage === 'documents') ? 'active' : '' ?>">
+                                <a href="./Documents.php?view=single" class="nav-link <?= ($currentPage === 'documentsOne') ? 'active' : '' ?>">
                                     <i class="nav-icon bi bi-folder-fill"></i>
                                     <p>Mes documents</p>
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a href="./Documents.php?view=multiple" class="nav-link <?= ($currentPage === 'documents') ? 'active' : '' ?>">
+                                    <i class="nav-icon bi bi-folder-fill"></i>
+                                    <p>Bibliothèque</p>
                                 </a>
                             </li>
 

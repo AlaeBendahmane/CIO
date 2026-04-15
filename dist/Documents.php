@@ -260,14 +260,16 @@ ob_end_flush();
                     </li>
                 </ul>
                 <?php
-                $currentPage = 'documents';
+                $view = isset($_GET['view']) ? $_GET['view'] : 'multiple';
+                $currentPage = $view == 'single' ? 'documentsOne' : 'documents';
                 include './components/profileNav.php';
                 ?>
             </div>
         </nav>
         <?php
         $userRole = $role;
-        $currentPage = 'documents';
+        $view = isset($_GET['view']) ? $_GET['view'] : 'multiple';
+        $currentPage = $view == 'single' ? 'documentsOne' : 'documents';
         include './components/sidebar.php';
         ?>
         <main class="app-main">
@@ -281,10 +283,10 @@ ob_end_flush();
 
                     <div id="file-manager">
 
-                        <div id="statt" style="gap:<?= $user_role == 'A' ? '40px' : '0' ?>;">
+                        <div id="statt" style="gap:<?= $user_role == 'A' &&  $view == 'multiple' ? '40px' : '0' ?>;">
                             <div id="current-path">/</div>
                             <div>
-                                <div id="search-container" style="display: <?= $user_role == 'A' ? 'block' : 'none' ?>;">
+                                <div id="search-container" style="display: <?= $user_role == 'A' &&  $view == 'multiple' ? 'block' : 'none' ?>;">
                                     <input type="text" id="search-input" placeholder="Chercher ...">
                                     <!-- 
                                     <button id="upload-btn">Upload
@@ -309,7 +311,7 @@ ob_end_flush();
 
 
                         </div>
-                        <div id="customMenu" class="context-menu" style="visibility: <?= $user_role == 'A' ? 'visible !important' : 'hidden !important' ?>;">
+                        <div id="customMenu" class="context-menu" style="visibility: <?= $user_role == 'A' &&  $view == 'multiple' ? 'visible !important' : 'hidden !important' ?>;">
                             <div class="menu-item" id="switchVisibility">Switch visibility</div>
                             <div class="menu-item" id="deleteFile">Delete</div>
                         </div>
@@ -402,18 +404,24 @@ ob_end_flush();
         ];
 
         const allowedExtensions = ["pdf", "doc", "docx", "xls", "xlsx", "txt"];
+        const view = new URLSearchParams(window.location.search).get('view');
 
         function fetchRootDirectory() {
-            $.getJSON(API_ENDPOINT)
+            $.getJSON(API_ENDPOINT, {
+                    'view': view
+                })
                 // .done(function(data) {
                 //     fileSystem = data;
                 //     currentDirectory = fileSystem;
                 //     renderDirectory();
                 // })
                 .done(function(response) {
+                    console.log(response)
                     if (response.status === "success") {
                         fileSystem = response.data;
                         currentDirectory = fileSystem;
+                    } else if (response.status == "error" && response.message == "Invalid view parameter") {
+                        window.location.href = "../dist/404.html";
                     } else {
                         fileSystem = {};
                         currentDirectory = {};
@@ -682,6 +690,7 @@ ob_end_flush();
                 let formData = new FormData();
                 formData.append('file', file);
                 formData.append('ref_user_id', userId);
+                formData.append('sendType', 'single');
 
                 $.ajax({
                     url: '../api/upload_pdf.php',

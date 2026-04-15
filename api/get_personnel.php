@@ -14,8 +14,15 @@ header('Content-Type: application/json');
 $root_folders = [];
 
 try {
+    if (!isset($_GET['view']) || !in_array($_GET['view'], ['single', 'multiple'])) {
+        echo json_encode([
+            "status" => "error",
+            "message" => "Invalid view parameter"
+        ]);
+        exit();
+    }
 
-    if ($user_role == "A") {
+    if ($user_role == "A" &&  $_GET['view'] == 'multiple') {
         $sql = "SELECT id, nom, prenom FROM agents ORDER BY nom";
     } else {
         $sql = "SELECT id, nom, prenom FROM agents where id = $user_indice ORDER BY nom";
