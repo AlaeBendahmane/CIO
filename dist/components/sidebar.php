@@ -36,14 +36,14 @@
                 <?php if ($userRole == 'A'): ?>
                     <li class="nav-item">
                         <a href="./Notifications.php" class="nav-link <?php echo ($currentPage == 'notifications') ? 'active' : ''; ?>">
-                            <i class="bi bi-bell-fill"></i>
+                            <i class="nav-icon bi bi-bell-fill"></i>
                             <p>Notifications</p>
                         </a>
                     </li>
                 <?php endif; ?>
 
                 <?php if ($userRole === 'A'): ?>
-                    <?php $isDocumentsSection = in_array($currentPage, ['documents', 'massSend', 'documentsOne']); ?>
+                    <?php $isDocumentsSection = in_array($currentPage, ['documents', 'massSend', 'documentsOne', 'fiches']); ?>
                     <li class="nav-item <?= $isDocumentsSection ? 'menu-open' : '' ?>">
                         <a href="#" class="nav-link" <?= $isDocumentsSection ? 'style="background: transparent !important;"' : '' ?>">
                             <i class="nav-icon bi bi-archive-fill"></i>
@@ -63,7 +63,7 @@
 
                             <li class="nav-item">
                                 <a href="./Documents.php?view=multiple" class="nav-link <?= ($currentPage === 'documents') ? 'active' : '' ?>">
-                                    <i class="nav-icon bi bi-folder-fill"></i>
+                                    <i class="nav-icon bi bi-window-dock"></i>
                                     <p>Bibliothèque</p>
                                 </a>
                             </li>
@@ -74,6 +74,13 @@
                                     <p>Envoi en masse</p>
                                 </a>
                             </li>
+
+                            <li class="nav-item">
+                                <a href="./Fiches.php" class="nav-link <?= ($currentPage === 'fiches') ? 'active' : '' ?>">
+                                    <i class="nav-icon bi bi-journal-text"></i>
+                                    <p>Fiches</p>
+                                </a>
+                            </li>
                         </ul>
                     </li>
 
@@ -81,7 +88,7 @@
 
                     <li class="nav-item">
                         <a href="./Documents.php" class="nav-link <?= ($currentPage === 'documents') ? 'active' : '' ?>">
-                            <i class="bi bi-folder-fill"></i>
+                            <i class="nav-icon bi bi-folder-fill"></i>
                             <p>Mes Documents</p>
                         </a>
                     </li>
@@ -90,7 +97,7 @@
 
                 <li class="nav-item">
                     <a href="./Contacts.php" class="nav-link <?php echo ($currentPage == 'contacts') ? 'active' : ''; ?>">
-                        <i class="bi bi-person-rolodex"></i>
+                        <i class="nav-icon bi bi-person-rolodex"></i>
                         <p>Contacts</p>
                     </a>
                 </li>
@@ -98,7 +105,7 @@
                 <?php if ($userRole == 'A'): ?>
                     <li class="nav-item">
                         <a href="./Parametres.php" class="nav-link <?php echo ($currentPage == 'parametres') ? 'active' : ''; ?>">
-                            <i class="bi bi-sliders"></i>
+                            <i class="nav-icon bi bi-sliders"></i>
                             <p>Paramètres</p>
                         </a>
                     </li>

@@ -467,12 +467,12 @@ ob_end_flush();
                 formData.append('sendType', 'multiple');
             }
 
-
-            Swal.fire({
-                title: 'Envoi en cours...',
-                didOpen: () => Swal.showLoading()
-            });
-
+            if (selectedUsers.length > 10) {
+                Swal.fire({
+                    title: 'Envoi en cours...',
+                    didOpen: () => Swal.showLoading()
+                });
+            }
 
 
             fetch('../api/upload_pdf.php', {
