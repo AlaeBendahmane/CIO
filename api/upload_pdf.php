@@ -67,6 +67,13 @@ if (!empty($_FILES['file'])) {
         }
 
         $pdo->commit();
+        sendBulkNotification(
+            'Nouveau document',
+            'Je vous ai envoyé le document: ' . $finalName . " .\n" .
+                'Pour le visualiser, accédez à l’onglet "Mes documents".',
+            $user_ids,
+            $_SESSION['id']
+        );
         echo json_encode([
             "status" => "success",
             "message" => "Upload complete: " . count($user_ids) . " users updated."

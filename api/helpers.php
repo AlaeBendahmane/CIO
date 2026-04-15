@@ -272,3 +272,41 @@ function setParam($pdo, $key, $value)
         return false;
     }
 }
+
+function sendBulkNotification($title, $content, $agents, $from)
+{
+    include 'conf.php';
+    try {
+        $pdo->beginTransaction();
+
+        $sql = "INSERT INTO notifications (title, content, fromAdmin, toUser, isSent, isSeen) 
+                VALUES (?, ?, ?, ?, 0, 0)";
+        $stmt = $pdo->prepare($sql);
+
+        $successCount = 0;
+
+        foreach ($agents as $agentId) {
+            // Ensure agentId is not empty
+            if (empty($agentId)) continue;
+
+            if ($stmt->execute([$title, $content, $from, $agentId])) {
+                $successCount++;
+            }
+        }
+
+        $pdo->commit();
+
+        return [
+            "status" => "success",
+            "count" => $successCount
+        ];
+    } catch (PDOException $e) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
+        return [
+            "status" => "error",
+            "message" => $e->getMessage()
+        ];
+    }
+}
