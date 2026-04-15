@@ -191,9 +191,9 @@ ob_end_flush();
                                                 <div class="drop-zone-content">
                                                     <i class="bi bi-cloud-arrow-up-fill" style="font-size: 2.5rem; color: #6264a7;"></i>
                                                     <p class="mb-0 mt-2">Glissez votre fichier ici ou <strong>cliquez pour choisir</strong></p>
-                                                    <span class="text-muted small">PDF, Image, Excel...</span>
+                                                    <span class="text-muted small">PDF, Doc, Excel...</span>
                                                 </div>
-                                                <input type="file" id="fileInput" style="display: none;">
+                                                <input type="file" id="fileInput" accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.txt" style="display: none;">
                                                 <div id="file-info" class="d-none">
                                                     <div class="card shadow-sm border-0 bg-light">
                                                         <div class="card-body p-2 d-flex align-items-center" style="height: 116px;">
