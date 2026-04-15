@@ -1,7 +1,7 @@
 <?php
 // include '../api/agentsPERcompagnes.php';
 ?>
-<div class="card card-primary shadow-sm"><!--resizable-card-->
+<div class="card card-primary shadow-sm" id="donutId"><!--resizable-card-->
     <div class="card-header ">
         <h3 class="card-title">Utilisateurs par Campagnes</h3>
         <!-- <div class="card-tools">

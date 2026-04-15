@@ -1,4 +1,4 @@
-<div class="card card-primary shadow-sm">
+<div class="card card-primary shadow-sm" id="cumulId">
     <div class="card-header d-flex align-items-center">
         <div class="card-tools" style="display: flex;justify-content: space-between;width: 100%;align-items: center;">
             <h3 class="card-title mb-0">Cumuls Utilisateurs</h3>
