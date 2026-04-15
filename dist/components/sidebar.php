@@ -53,7 +53,7 @@
                             </p>
                         </a>
 
-                        <ul class="nav nav-treeview">
+                        <ul class="nav nav-treeview mb-1">
                             <li class="nav-item">
                                 <a href="./Documents.php?view=single" class="nav-link <?= ($currentPage === 'documentsOne') ? 'active' : '' ?>">
                                     <i class="nav-icon bi bi-folder-fill"></i>
