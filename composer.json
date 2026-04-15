@@ -23,6 +23,9 @@
     "issues": "https://github.com/ColorlibHQ/AdminLTE/issues"
   },
   "require": {
-    "phpoffice/phpspreadsheet": "^5.5"
+    "phpoffice/phpspreadsheet": "^5.5",
+    "smalot/pdfparser": "^2.12",
+    "setasign/fpdi": "^2.6",
+    "setasign/fpdf": "^1.8"
   }
 }
