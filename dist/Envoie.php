@@ -429,6 +429,15 @@ ob_end_flush();
             fileInfo.classList.add('d-none');
         }
 
+        function clearForm() {
+            // 1. Reset the standard form fields (Title, etc.)
+            const form = document.getElementById('notificationForm');
+            form.reset();
+
+            // 2. Call our specific file clearing logic
+            clearFile();
+        }
+
         function sendDoc() {
             const title = document.getElementById('docTitle').value;
             const selectedUsers = Array.from(document.querySelectorAll('.user-checkbox:checked'))
