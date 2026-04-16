@@ -625,7 +625,7 @@ ob_end_flush();
       };
 
       // 2. Simple Validation
-      if (!agentData.idFiscal || !agentData.nom || !agentData.email || agentData.ste == -1 || agentData.campagne == -1 || agentData.role == -1) {
+      if (!agentData.idFiscal || !agentData.nom /*|| !agentData.email */|| agentData.ste == -1 || agentData.campagne == -1 || agentData.role == -1) {
         document.getElementById('errorinsert').innerHTML = "Veuillez remplir les champs obligatoires";
         return;
       }
@@ -668,7 +668,14 @@ ob_end_flush();
             }
           });
         } else {
-          document.getElementById('errorinsert').innerHTML = "Erreur: " + result.message;
+          let errorMsg = result.message;
+          // Check if the error message contains the MySQL duplicate key signature
+          if (errorMsg.includes('Duplicate entry') || errorMsg.includes('1062')) {
+            errorMsg = "⚠️ Cet Agent (ID) existe déjà .";
+          } else {
+            errorMsg = "❌ Erreur: " + result.message;
+          }
+          document.getElementById('errorinsert').innerHTML = "Erreur: " + errorMsg;
         }
       } catch (error) {
         Swal.fire({
