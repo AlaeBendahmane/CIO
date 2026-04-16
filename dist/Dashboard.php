@@ -442,166 +442,167 @@ ob_end_flush();
     }
   </script>
   <script>
-    (function() {
+    let fullChartData = [];
+    let myChart = null;
+
+
+    async function loadAndInitChart() {
+      const picker = document.getElementById('chartPeriod');
+      const dateVal = picker.value;
+      if (!dateVal) return;
+
+      // 2. Save selected date to localStorage
+      localStorage.setItem('CumulsUtilisateursPeriod', dateVal);
+
+      const [year, month] = dateVal.split('-');
+      const response = await fetch(`../api/cumul_agents.php?mois=${parseInt(month)}&annee=${year}`);
+      fullChartData = await response.json();
+
+      // 3. Retrieve saved agent selections
+      const savedAgents = JSON.parse(localStorage.getItem('CumulsUtilisateursAgents') || "[]");
+
+      fullChartData.forEach(agent => {
+        // If we have saved selections, use them; otherwise, default to true
+        if (savedAgents.length > 0) {
+          agent.selected = savedAgents.includes(`${agent.nom} ${agent.prenom}`);
+        } else {
+          agent.selected = true;
+        }
+      });
+
+
+
+      // Update chart with only the selected agents
+      const filteredData = fullChartData.filter(agent => agent.selected !== false);
+      updateChart(filteredData);
+    }
+
+    function filterList() {
+      const searchTerm = document.getElementById('agentSearch').value.toLowerCase();
+      renderCheckboxList(searchTerm);
+    }
+
+    function renderCheckboxList(searchTerm = "") {
+      const container = document.getElementById('checkboxList');
+      container.innerHTML = '';
+
+      fullChartData.forEach((agent, index) => {
+        const fullName = `${agent.nom} ${agent.prenom}`.toLowerCase();
+        if (searchTerm && !fullName.includes(searchTerm)) return;
+
+        const item = document.createElement('div');
+        item.className = 'agent-item';
+        item.innerHTML = `
+                <input type="checkbox" id="chk_${index}" ${agent.selected !== false ? 'checked' : ''} value="${index}" onchange="handleFilterChange()">
+                <label for="chk_${index}">${agent.nom} ${agent.prenom}</label>
+            `;
+        item.onclick = (e) => e.stopPropagation();
+        container.appendChild(item);
+      });
+    }
+
+    function selectAllAgents(val) {
+      document.querySelectorAll('#checkboxList input').forEach(cb => cb.checked = val);
+      handleFilterChange();
+    }
+
+    function handleFilterChange() {
+      const selectedAgentNames = [];
+
+      document.querySelectorAll('#checkboxList input').forEach(cb => {
+        const index = cb.value;
+        const isChecked = cb.checked;
+        fullChartData[index].selected = isChecked;
+
+        // Collect names of selected agents for storage
+        if (isChecked) {
+          selectedAgentNames.push(`${fullChartData[index].nom} ${fullChartData[index].prenom}`);
+        }
+      });
+
+      // 4. Save selected agent names to localStorage
+      localStorage.setItem('CumulsUtilisateursAgents', JSON.stringify(selectedAgentNames));
+
+      const filteredData = fullChartData.filter(agent => agent.selected !== false);
+      updateChart(filteredData);
+    }
+
+    function updateChart(data) {
+      const categories = data.map(item => `${item.nom} ${item.prenom}`);
+      const seriesData = data.map(item => item.total_h);
+
+      const options = {
+        series: [{
+          name: 'Heures',
+          data: seriesData
+        }],
+        chart: {
+          type: 'bar',
+          height: 300,
+          toolbar: {
+            show: true
+          }
+        },
+        colors: ['#6264a7'],
+        plotOptions: {
+          bar: {
+            horizontal: false,
+            columnWidth: '55%',
+            dataLabels: {
+              position: 'top'
+            }
+          }
+        },
+        xaxis: {
+          categories: categories,
+          labels: {
+            show: false
+          },
+        },
+        dataLabels: {
+          enabled: false,
+          formatter: val => val + "h",
+          offsetY: -20
+        }
+      };
+
+      if (myChart) {
+        myChart.updateOptions({
+          xaxis: {
+            categories: categories
+          },
+          series: [{
+            data: seriesData
+          }]
+        });
+      } else {
+        myChart = new ApexCharts(document.querySelector("#cumulChart"), options);
+        myChart.render();
+      }
+    }
+    // });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // const picker = document.getElementById('chartPeriod');
+
+      // // 1. Get saved date or set current month as default
+      // const savedDate = localStorage.getItem('CumulsUtilisateursPeriod');
+      // if (savedDate) {
+      //   picker.value = savedDate;
+      // } else {
+      //   const now = new Date();
+      //   const year = now.getFullYear();
+      //   const month = String(now.getMonth() + 1).padStart(2, '0');
+      //   picker.value = `${year}-${month}`;
+      // }
+
       if (!document.getElementById('cumulId')) {
         return;
       }
 
-      let fullChartData = [];
-      let myChart = null;
-
-      // document.addEventListener('DOMContentLoaded', () => {
-      //   const picker = document.getElementById('chartPeriod');
-
-      //   // 1. Get saved date or set current month as default
-      //   const savedDate = localStorage.getItem('CumulsUtilisateursPeriod');
-      //   if (savedDate) {
-      //     picker.value = savedDate;
-      //   } else {
-      //     const now = new Date();
-      //     const year = now.getFullYear();
-      //     const month = String(now.getMonth() + 1).padStart(2, '0');
-      //     picker.value = `${year}-${month}`;
-      //   }
-
-      //   loadAndInitChart();
-      // });
-
-      async function loadAndInitChart() {
-        const picker = document.getElementById('chartPeriod');
-        const dateVal = picker.value;
-        if (!dateVal) return;
-
-        // 2. Save selected date to localStorage
-        localStorage.setItem('CumulsUtilisateursPeriod', dateVal);
-
-        const [year, month] = dateVal.split('-');
-        const response = await fetch(`../api/cumul_agents.php?mois=${parseInt(month)}&annee=${year}`);
-        fullChartData = await response.json();
-
-        // 3. Retrieve saved agent selections
-        const savedAgents = JSON.parse(localStorage.getItem('CumulsUtilisateursAgents') || "[]");
-
-        fullChartData.forEach(agent => {
-          // If we have saved selections, use them; otherwise, default to true
-          if (savedAgents.length > 0) {
-            agent.selected = savedAgents.includes(`${agent.nom} ${agent.prenom}`);
-          } else {
-            agent.selected = true;
-          }
-        });
-
-        renderCheckboxList();
-
-        // Update chart with only the selected agents
-        const filteredData = fullChartData.filter(agent => agent.selected !== false);
-        updateChart(filteredData);
-      }
-
-      function filterList() {
-        const searchTerm = document.getElementById('agentSearch').value.toLowerCase();
-        renderCheckboxList(searchTerm);
-      }
-
-      function renderCheckboxList(searchTerm = "") {
-        const container = document.getElementById('checkboxList');
-        container.innerHTML = '';
-
-        fullChartData.forEach((agent, index) => {
-          const fullName = `${agent.nom} ${agent.prenom}`.toLowerCase();
-          if (searchTerm && !fullName.includes(searchTerm)) return;
-
-          const item = document.createElement('div');
-          item.className = 'agent-item';
-          item.innerHTML = `
-                <input type="checkbox" id="chk_${index}" ${agent.selected !== false ? 'checked' : ''} value="${index}" onchange="handleFilterChange()">
-                <label for="chk_${index}">${agent.nom} ${agent.prenom}</label>
-            `;
-          item.onclick = (e) => e.stopPropagation();
-          container.appendChild(item);
-        });
-      }
-
-      function selectAllAgents(val) {
-        document.querySelectorAll('#checkboxList input').forEach(cb => cb.checked = val);
-        handleFilterChange();
-      }
-
-      function handleFilterChange() {
-        const selectedAgentNames = [];
-
-        document.querySelectorAll('#checkboxList input').forEach(cb => {
-          const index = cb.value;
-          const isChecked = cb.checked;
-          fullChartData[index].selected = isChecked;
-
-          // Collect names of selected agents for storage
-          if (isChecked) {
-            selectedAgentNames.push(`${fullChartData[index].nom} ${fullChartData[index].prenom}`);
-          }
-        });
-
-        // 4. Save selected agent names to localStorage
-        localStorage.setItem('CumulsUtilisateursAgents', JSON.stringify(selectedAgentNames));
-
-        const filteredData = fullChartData.filter(agent => agent.selected !== false);
-        updateChart(filteredData);
-      }
-
-      function updateChart(data) {
-        const categories = data.map(item => `${item.nom} ${item.prenom}`);
-        const seriesData = data.map(item => item.total_h);
-
-        const options = {
-          series: [{
-            name: 'Heures',
-            data: seriesData
-          }],
-          chart: {
-            type: 'bar',
-            height: 300,
-            toolbar: {
-              show: true
-            }
-          },
-          colors: ['#6264a7'],
-          plotOptions: {
-            bar: {
-              horizontal: false,
-              columnWidth: '55%',
-              dataLabels: {
-                position: 'top'
-              }
-            }
-          },
-          xaxis: {
-            categories: categories,
-            labels: {
-              show: false
-            },
-          },
-          dataLabels: {
-            enabled: false,
-            formatter: val => val + "h",
-            offsetY: -20
-          }
-        };
-
-        if (myChart) {
-          myChart.updateOptions({
-            xaxis: {
-              categories: categories
-            },
-            series: [{
-              data: seriesData
-            }]
-          });
-        } else {
-          myChart = new ApexCharts(document.querySelector("#cumulChart"), options);
-          myChart.render();
-        }
-      }
-    })();
+      loadAndInitChart();
+      renderCheckboxList();
+    });
   </script>
   <script src="./assets/js/Sortable.min.js"></script>
   <script src="./assets/js/apexcharts.min.js"></script>
