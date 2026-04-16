@@ -450,22 +450,22 @@ ob_end_flush();
       let fullChartData = [];
       let myChart = null;
 
-      document.addEventListener('DOMContentLoaded', () => {
-        const picker = document.getElementById('chartPeriod');
+      // document.addEventListener('DOMContentLoaded', () => {
+      //   const picker = document.getElementById('chartPeriod');
 
-        // 1. Get saved date or set current month as default
-        const savedDate = localStorage.getItem('CumulsUtilisateursPeriod');
-        if (savedDate) {
-          picker.value = savedDate;
-        } else {
-          const now = new Date();
-          const year = now.getFullYear();
-          const month = String(now.getMonth() + 1).padStart(2, '0');
-          picker.value = `${year}-${month}`;
-        }
+      //   // 1. Get saved date or set current month as default
+      //   const savedDate = localStorage.getItem('CumulsUtilisateursPeriod');
+      //   if (savedDate) {
+      //     picker.value = savedDate;
+      //   } else {
+      //     const now = new Date();
+      //     const year = now.getFullYear();
+      //     const month = String(now.getMonth() + 1).padStart(2, '0');
+      //     picker.value = `${year}-${month}`;
+      //   }
 
-        loadAndInitChart();
-      });
+      //   loadAndInitChart();
+      // });
 
       async function loadAndInitChart() {
         const picker = document.getElementById('chartPeriod');
