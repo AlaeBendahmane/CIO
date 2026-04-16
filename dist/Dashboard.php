@@ -160,44 +160,48 @@ ob_end_flush();
                 </a>
               </div>
             </div>
-            <div class="col-lg-3 col-6 ">
-              <div class="small-box text-bg-warning"> <!--resizable-card-->
-                <div class="inner">
-                  <h3 id="nbr_all" style="color:#fff !important">-</h3>
+            <?php if ($role == 'A'): ?>
+              <div class="col-lg-3 col-6 " id="statsUsers">
+                <div class="small-box text-bg-warning"> <!--resizable-card-->
+                  <div class="inner">
+                    <h3 id="nbr_all" style="color:#fff !important">-</h3>
 
-                  <p style="color:#fff !important">Utilisateurs</p>
+                    <p style="color:#fff !important">Utilisateurs</p>
+                  </div>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="small-box-icon" viewBox="0 0 16 16" aria-hidden="true">
+                    <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5.784 6A2.24 2.24 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.3 6.3 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1zM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5" />
+                  </svg>
+                  <a href="Utilisateurs.php" class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover redirect-dash" style="color:#fff !important">
+                    Plus d'informations <i class="bi bi-link-45deg"></i>
+                  </a>
                 </div>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="small-box-icon" viewBox="0 0 16 16" aria-hidden="true">
-                  <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5.784 6A2.24 2.24 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.3 6.3 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1zM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5" />
-                </svg>
-                <a href="Utilisateurs.php" class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover redirect-dash" style="color:#fff !important">
-                  Plus d'informations <i class="bi bi-link-45deg"></i>
-                </a>
               </div>
-            </div>
-            <div class="col-lg-3 col-6">
-              <div class="small-box text-bg-danger"><!--resizable-card-->
-                <div class="inner">
-                  <h3>
-                    <?= $size . " MB"; ?>
-                  </h3>
-                  <p>Utilisation de la BD</p>
+            <?php endif; ?>
+            <?php if ($role == 'A'): ?>
+              <div class="col-lg-3 col-6">
+                <div class="small-box text-bg-danger"><!--resizable-card-->
+                  <div class="inner">
+                    <h3>
+                      <?= $size . " MB"; ?>
+                    </h3>
+                    <p>Utilisation de la BD</p>
+                  </div>
+                  <svg class="small-box-icon" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true">
+                    <path clip-rule="evenodd" fill-rule="evenodd"
+                      d="M2.25 13.5a8.25 8.25 0 018.25-8.25.75.75 0 01.75.75v6.75H18a.75.75 0 01.75.75 8.25 8.25 0 01-16.5 0z">
+                    </path>
+                    <path clip-rule="evenodd" fill-rule="evenodd"
+                      d="M12.75 3a.75.75 0 01.75-.75 8.25 8.25 0 018.25 8.25.75.75 0 01-.75.75h-7.5a.75.75 0 01-.75-.75V3z">
+                    </path>
+                  </svg>
+                  <a href="Parametres.php#panel-DB"
+                    class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover redirect-dash">
+                    Plus d'informations <i class="bi bi-link-45deg"></i>
+                  </a>
                 </div>
-                <svg class="small-box-icon" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
-                  aria-hidden="true">
-                  <path clip-rule="evenodd" fill-rule="evenodd"
-                    d="M2.25 13.5a8.25 8.25 0 018.25-8.25.75.75 0 01.75.75v6.75H18a.75.75 0 01.75.75 8.25 8.25 0 01-16.5 0z">
-                  </path>
-                  <path clip-rule="evenodd" fill-rule="evenodd"
-                    d="M12.75 3a.75.75 0 01.75-.75 8.25 8.25 0 018.25 8.25.75.75 0 01-.75.75h-7.5a.75.75 0 01-.75-.75V3z">
-                  </path>
-                </svg>
-                <a href="Parametres.php#panel-DB"
-                  class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover redirect-dash">
-                  Plus d'informations <i class="bi bi-link-45deg"></i>
-                </a>
               </div>
-            </div>
+            <?php endif; ?>
           </div>
           <div class="row mb-3" id="roooow">
             <div class="col-6">
@@ -388,8 +392,8 @@ ob_end_flush();
 
 
     async function loadDashboardStats() {
-      const chartElement = document.getElementById('agentDonutChart');
-      if (!chartElement) return
+      const statsUsers = document.getElementById('statsUsers');
+      if (!statsUsers) return
       try {
         const response = await fetch('../api/get_number_users.php');
 
