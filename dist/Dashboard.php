@@ -452,14 +452,14 @@ ob_end_flush();
       if (!dateVal) return;
 
       // 2. Save selected date to localStorage
-      localStorage.setItem('CumulsUtilisateursPeriod', dateVal);
+      // localStorage.setItem('CumulsUtilisateursPeriod', dateVal);
 
       const [year, month] = dateVal.split('-');
       const response = await fetch(`../api/cumul_agents.php?mois=${parseInt(month)}&annee=${year}`);
       fullChartData = await response.json();
 
       // 3. Retrieve saved agent selections
-      const savedAgents = JSON.parse(localStorage.getItem('CumulsUtilisateursAgents') || "[]");
+      const savedAgents = JSON.parse( /*localStorage.getItem('CumulsUtilisateursAgents') ||*/ "[]");
 
       fullChartData.forEach(agent => {
         // If we have saved selections, use them; otherwise, default to true
@@ -522,7 +522,7 @@ ob_end_flush();
       });
 
       // 4. Save selected agent names to localStorage
-      localStorage.setItem('CumulsUtilisateursAgents', JSON.stringify(selectedAgentNames));
+      // localStorage.setItem('CumulsUtilisateursAgents', JSON.stringify(selectedAgentNames));
 
       const filteredData = fullChartData.filter(agent => agent.selected !== false);
       updateChart(filteredData);
