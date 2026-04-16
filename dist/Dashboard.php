@@ -475,6 +475,7 @@ ob_end_flush();
       // Update chart with only the selected agents
       const filteredData = fullChartData.filter(agent => agent.selected !== false);
       updateChart(filteredData);
+      renderCheckboxList();
     }
 
     function filterList() {
@@ -596,12 +597,10 @@ ob_end_flush();
       //   picker.value = `${year}-${month}`;
       // }
 
-      if (!document.getElementById('cumulId')) {
-        return;
+      if (document.getElementById('cumulId')) {
+        loadAndInitChart();
+        renderCheckboxList();
       }
-
-      loadAndInitChart();
-      renderCheckboxList();
     });
   </script>
   <script src="./assets/js/Sortable.min.js"></script>
