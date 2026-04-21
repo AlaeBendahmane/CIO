@@ -34,6 +34,17 @@ if ($role == "U") {
         color: #6c757d !important;
         /* Force muted color for read names */
     }
+
+    @media (max-width: 576px) {
+        #notifDrop {
+            position: fixed !important;
+            top: 60px;
+            left: 10px;
+            right: 10px;
+            width: auto;
+            max-width: none;
+        }
+    }
 </style>
 
 <ul class="navbar-nav ms-auto">
