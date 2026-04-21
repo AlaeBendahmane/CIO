@@ -152,7 +152,7 @@ ob_end_flush();
             <div class="app-content">
                 <div class="container-fluid">
                     <div class="row">
-                        <div class="col-md-12">
+                        <div class="col-md-12 mb-3">
                             <div class="card card-primary card-outline shadow-none">
                                 <div class="card-header">
                                     <h3 class="card-title">Document</h3>

@@ -118,7 +118,7 @@ ob_end_flush();
         <div class="container-fluid">
           <div class="row">
             <div class="col-md-12">
-              <div class="card mb-4 card-primary card-outline">
+              <div class="card mb-3 card-primary card-outline">
                 <div class="card-header">
                   <div class="d-flex justify-content-between">
                     <h3 class="card-title">Utilisateurs</h3>

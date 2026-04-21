@@ -152,7 +152,7 @@ ob_end_flush();
             <div class="app-content">
                 <div class="container-fluid">
                     <div class="row">
-                        <div class="col-md-4 col-lg-4">
+                        <div class="col-md-4 col-lg-4 mb-3">
                             <div class="card card-primary card-outline shadow-none">
                                 <div class="card-header">
                                     <h3 class="card-title">Destinataires</h3>
@@ -172,7 +172,7 @@ ob_end_flush();
                             </div>
                         </div>
 
-                        <div class="col-md-8">
+                        <div class="col-md-8 mb-3">
                             <div class="card card-primary card-outline shadow-none">
                                 <div class="card-header">
                                     <h3 class="card-title">Document</h3>

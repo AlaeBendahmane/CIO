@@ -269,7 +269,7 @@ ob_end_flush();
         <div class="container-fluid">
           <div class="row">
             <div class="col-lg-12">
-              <div class="card mb-4 card-primary card-outline">
+              <div class="card mb-3 card-primary card-outline">
                 <div class="card-header border-0">
                   <div class="d-flex justify-content-between align-items-center">
                     <h3 class="card-title">Pointage</h3>
@@ -299,7 +299,7 @@ ob_end_flush();
 
 
               <?php if ($userRole == 'A'): ?>
-                <div class="card mb-4 card-primary card-outline collapsed-card">
+                <div class="card mb-3 card-primary card-outline collapsed-card">
                   <div class="card-header border-0">
                     <div class="d-flex justify-content-between align-items-center">
                       <h3 class="card-title">Historique</h3>

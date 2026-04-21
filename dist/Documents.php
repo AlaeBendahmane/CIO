@@ -283,7 +283,7 @@ ob_end_flush();
                 <div class="container-fluid">
                 </div>
             </div>
-            <div class="app-content">
+            <div class="app-content mb-3">
                 <div class="container-fluid">
                     <!--  -->
 

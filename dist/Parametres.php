@@ -107,7 +107,7 @@ ob_end_flush();
             <div class="app-content">
                 <div class="container-fluid">
                     <div class="row">
-                        <div class="col-md-3">
+                        <div class="col-md-3 mb-3">
                             <div class="card card-primary card-outline shadow-none">
                                 <div class="card-header">
                                     <h3 class="card-title">Paramètres</h3>
@@ -133,7 +133,7 @@ ob_end_flush();
                             </div>
                         </div>
 
-                        <div class="col-md-9">
+                        <div class="col-md-9 mb-3">
                             <div class="card card-primary card-outline shadow-sm">
                                 <div class="card-header">
                                     <h3 class="card-title">Contenu</h3>
