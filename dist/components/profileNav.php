@@ -41,7 +41,7 @@ if ($role == "U") {
     <li class="nav-item dropdown">
         <a class="nav-link" data-bs-toggle="dropdown" href="#">
             <i class="bi bi-bell"></i>
-            <span class="navbar-badge badge text-bg-warning text-white" style="right: 5px;border-radius: 5px;top: 8px;min-width: 17px;" id="notifCount">15</span>
+            <span class="navbar-badge badge text-bg-warning text-white" style="right: 5px;border-radius: 5px;top: 8px;min-width: 17px;" id="notifCount">0</span>
         </a>
         <div class="dropdown-menu dropdown-menu-xl dropdown-menu-end" id="notifDrop">
             <span class="dropdown-item dropdown-header" id="unrededCount"></span>
