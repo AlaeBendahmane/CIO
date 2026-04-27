@@ -12,13 +12,13 @@ ob_end_flush();
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-   <title>
-    CIO | 
-    <?php 
+    <title>
+        CIO |
+        <?php
         $view = isset($_GET['view']) ? $_GET['view'] : 'multiple';
         echo ($view === 'single') ? 'Mes Documents' : 'Bibliothèque';
-    ?>
-</title>
+        ?>
+    </title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
     <meta name="color-scheme" content="light dark" />
@@ -47,11 +47,12 @@ ob_end_flush();
     <script src="./assets/js/helper.js"></script>
     <style>
         #file-manager {
-            border: 1px solid #ccc;
+            /* border: 1px solid #ccc; */
             margin: 10px;
             padding: 15px;
             background-color: #fff;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
+            height: calc(100vh - 150px);
         }
 
         #current-path {
@@ -72,6 +73,7 @@ ob_end_flush();
             gap: 25px;
             padding: 10px;
             min-height: 100px;
+            overflow-y: auto;
         }
 
         .file-item {
@@ -287,7 +289,7 @@ ob_end_flush();
                 <div class="container-fluid">
                     <!--  -->
 
-                    <div id="file-manager">
+                    <div id="file-manager" class="card mb-3 card-primary card-outline">
 
                         <div id="statt" style="gap:<?= $user_role == 'A' &&  $view == 'multiple' ? '40px' : '0' ?>;">
                             <div id="current-path">/</div>
@@ -310,7 +312,7 @@ ob_end_flush();
                                 </div>
                             </div>
                         </div>
-                        <div id="file-view" style="height: 25%; overflow: hidden;">
+                        <div id="file-view"> <!--style="height: 25%; overflow: hidden;" -->
                             <div style="text-align:center; padding: 20px; width: 100%;"><i class="fas fa-spinner fa-spin"></i>
                                 Chargement...
                             </div>
