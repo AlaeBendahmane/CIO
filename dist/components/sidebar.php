@@ -35,6 +35,15 @@
 
                 <?php if ($userRole == 'A'): ?>
                     <li class="nav-item">
+                        <a href="./Planing.php" class="nav-link <?php echo ($currentPage == 'Planing') ? 'active' : ''; ?>">
+                            <i class="nav-icon bi bi-calendar-plus-fill"></i>
+                            <p>Planing</p>
+                        </a>
+                    </li>
+                <?php endif; ?>
+
+                <?php if ($userRole == 'A'): ?>
+                    <li class="nav-item">
                         <a href="./Notifications.php" class="nav-link <?php echo ($currentPage == 'notifications') ? 'active' : ''; ?>">
                             <i class="nav-icon bi bi-bell-fill"></i>
                             <p>Notifications</p>

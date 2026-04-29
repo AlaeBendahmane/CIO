@@ -12,6 +12,7 @@ $a = $_GET['annee'] ?? date('Y');
 try {
     $sql = "SELECT a.nom,
                 a.prenom,
+                a.idProx,
                 COALESCE(SUM(CAST(p.valeur AS UNSIGNED)), 0) as total_h
             FROM agents a
                 LEFT JOIN pointage p ON a.idFiscal = p.agent_id_fiscal
