@@ -624,8 +624,11 @@ ob_end_flush();
     }
 
     document.addEventListener('DOMContentLoaded', function() {
-      const calendarEl = document.getElementById('calendar');
 
+      const calendarEl = document.getElementById('calendar');
+      if (!calendarEl) {
+        return
+      }
       const calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth',
         locale: 'fr',
