@@ -195,7 +195,7 @@ ob_end_flush();
 
             <div class="col input-group mb-2">
               <div class="form-floating">
-                <input type="number" class="form-control" id="idProx" placeholder="Enter email">
+                <input type="text" class="form-control" id="idProx" placeholder="Enter email">
                 <label for="idProx">idProx</label>
               </div>
             </div>
@@ -302,6 +302,7 @@ ob_end_flush();
   <!--  -->
   <script src="./assets/js/sweetalert2@11.js"></script>
   <!--  -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.8/jquery.inputmask.min.js"></script>
   <script>
     const SELECTOR_SIDEBAR_WRAPPER = '.sidebar-wrapper';
     const Default = {
@@ -310,7 +311,20 @@ ob_end_flush();
       scrollbarClickScroll: true,
     };
 
-
+    $(document).ready(function() {
+      $('#idProx').inputmask({
+        regex: "id[0-9]*",
+        placeholder: "",
+        isComplete: function(buffer, opts) {
+          return buffer.length >= 3; // Ensures at least 'id' + 1 digit
+        },
+        // This forces the "id" to stay there and not be deleted easily
+        onBeforeMask: function(value, opts) {
+          if (!value.startsWith("id")) return "id" + value;
+          return value;
+        }
+      });
+    });
 
 
     document.addEventListener('DOMContentLoaded', function() {
@@ -625,7 +639,7 @@ ob_end_flush();
       };
 
       // 2. Simple Validation
-      if (!agentData.idFiscal || !agentData.nom /*|| !agentData.email */|| agentData.ste == -1 || agentData.campagne == -1 || agentData.role == -1) {
+      if (!agentData.idFiscal || !agentData.nom /*|| !agentData.email */ || agentData.ste == -1 || agentData.campagne == -1 || agentData.role == -1) {
         document.getElementById('errorinsert').innerHTML = "Veuillez remplir les champs obligatoires";
         return;
       }
