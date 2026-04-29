@@ -506,7 +506,7 @@ ob_end_flush();
         item.className = 'agent-item';
         item.innerHTML = `
                 <input type="checkbox" id="chk_${index}" ${agent.selected !== false ? 'checked' : ''} value="${index}" onchange="handleFilterChange()">
-                <label for="chk_${index}">${agent.nom} ${agent.prenom} (${agent.idProx})</label>
+                <label for="chk_${index}">${agent.nom} ${agent.prenom} (${agent.idProx? agent.idProx :'----'})</label>
             `;
         item.onclick = (e) => e.stopPropagation();
         container.appendChild(item);
