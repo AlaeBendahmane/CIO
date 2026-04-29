@@ -13,23 +13,26 @@
                         style="background: rgba(255,255,255,0.2); color: white;">
                         <i class="fas fa-filter mr-1"></i> Filtrer Utilisateurs
                     </button>
-                    <div class="dropdown-menu dropdown-menu-right dropdown-menu-end p-3 shadow"
+                    <div class="dropdown-menu dropdown-menu-right dropdown-menu-end p-0 shadow"
                         aria-labelledby="filterDropdown" style="min-width: 250px;width: 340px; max-height: 400px; overflow-y: auto;">
 
-                        <div class="mb-2">
-                            <input type="text" id="agentSearch" class="form-control form-control-sm"
-                                placeholder="Rechercher un utilisateur..." onkeyup="filterList()">
-                        </div>
+                        <div style="position: sticky; top: 0; background: white; z-index: 10; padding: 1rem 1rem 0 1rem;">
 
-                        <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-2">
-                            <span class="text-bold small">Utilisateurs</span>
-                            <div>
-                                <button class="btn btn-xs btn-link p-0 mr-2" onclick="selectAllAgents(true)">Tous</button>
-                                <button class="btn btn-xs btn-link p-0 text-danger" onclick="selectAllAgents(false)">Aucun</button>
+                            <div class="mb-2">
+                                <input type="text" id="agentSearch" class="form-control form-control-sm"
+                                    placeholder="Rechercher un utilisateur..." onkeyup="filterList()">
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-0">
+                                <span class="text-bold small">Utilisateurs</span>
+                                <div>
+                                    <button class="btn btn-xs btn-link p-0 mr-2" onclick="selectAllAgents(true)">Tous</button>
+                                    <button class="btn btn-xs btn-link p-0 text-danger" onclick="selectAllAgents(false)">Aucun</button>
+                                </div>
                             </div>
                         </div>
 
-                        <div id="checkboxList"></div>
+                        <div id="checkboxList" class="p-3"></div>
                     </div>
                 </div>
             </div>
