@@ -499,14 +499,14 @@ ob_end_flush();
       container.innerHTML = '';
 
       fullChartData.forEach((agent, index) => {
-        const fullName = `${agent.nom} ${agent.prenom}`.toLowerCase();
+        const fullName = `${agent.nom} ${agent.prenom} (${agent.idProx})`.toLowerCase();
         if (searchTerm && !fullName.includes(searchTerm)) return;
 
         const item = document.createElement('div');
         item.className = 'agent-item';
         item.innerHTML = `
                 <input type="checkbox" id="chk_${index}" ${agent.selected !== false ? 'checked' : ''} value="${index}" onchange="handleFilterChange()">
-                <label for="chk_${index}">${agent.nom} ${agent.prenom}</label>
+                <label for="chk_${index}">${agent.nom} ${agent.prenom} (${agent.idProx})</label>
             `;
         item.onclick = (e) => e.stopPropagation();
         container.appendChild(item);
