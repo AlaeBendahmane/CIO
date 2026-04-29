@@ -116,93 +116,97 @@ ob_end_flush();
     include './components/sidebar.php';
     ?>
     <main class="app-main">
-      <div class="app-content-header">
-        <div class="container-fluid">
+      <?php if ($role == 'A'): ?>
+        <div class="app-content-header">
+          <div class="container-fluid">
+          </div>
         </div>
-      </div>
+      <?php endif; ?>
       <div class="app-content">
         <div class="container-fluid">
-          <div class="row">
-            <div class="col-lg-3 col-6 ">
-              <div class="small-box text-bg-primary "> <!--resizable-card-->
-                <div class="inner">
-                  <h3>150</h3>
-                  <p>New Orders</p>
-                </div>
-                <svg class="small-box-icon" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
-                  aria-hidden="true">
-                  <path
-                    d="M2.25 2.25a.75.75 0 000 1.5h1.386c.17 0 .318.114.362.278l2.558 9.592a3.752 3.752 0 00-2.806 3.63c0 .414.336.75.75.75h15.75a.75.75 0 000-1.5H5.378A2.25 2.25 0 017.5 15h11.218a.75.75 0 00.674-.421 60.358 60.358 0 002.96-7.228.75.75 0 00-.525-.965A60.864 60.864 0 005.68 4.509l-.232-.867A1.875 1.875 0 003.636 2.25H2.25zM3.75 20.25a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM16.5 20.25a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0z">
-                  </path>
-                </svg>
-                <a href="#"
-                  class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover redirect-dash">
-                  Plus d'informations <i class="bi bi-link-45deg"></i>
-                </a>
-              </div>
-            </div>
-            <div class="col-lg-3 col-6 ">
-              <div class="small-box text-bg-success"> <!--resizable-card-->
-                <div class="inner">
-                  <h3>53<sup class="fs-5">%</sup></h3>
-
-                  <p>Bounce Rate</p>
-                </div>
-                <svg class="small-box-icon" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
-                  aria-hidden="true">
-                  <path
-                    d="M18.375 2.25c-1.035 0-1.875.84-1.875 1.875v15.75c0 1.035.84 1.875 1.875 1.875h.75c1.035 0 1.875-.84 1.875-1.875V4.125c0-1.036-.84-1.875-1.875-1.875h-.75zM9.75 8.625c0-1.036.84-1.875 1.875-1.875h.75c1.036 0 1.875.84 1.875 1.875v11.25c0 1.035-.84 1.875-1.875 1.875h-.75a1.875 1.875 0 01-1.875-1.875V8.625zM3 13.125c0-1.036.84-1.875 1.875-1.875h.75c1.036 0 1.875.84 1.875 1.875v6.75c0 1.035-.84 1.875-1.875 1.875h-.75A1.875 1.875 0 013 19.875v-6.75z">
-                  </path>
-                </svg>
-                <a href="#"
-                  class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover redirect-dash">
-                  Plus d'informations <i class="bi bi-link-45deg"></i>
-                </a>
-              </div>
-            </div>
-            <?php if ($role == 'A'): ?>
-              <div class="col-lg-3 col-6 " id="statsUsers">
-                <div class="small-box text-bg-warning"> <!--resizable-card-->
+          <?php if ($role == 'A'): ?>
+            <div class="row">
+              <div class="col-lg-3 col-6 ">
+                <div class="small-box text-bg-primary "> <!--resizable-card-->
                   <div class="inner">
-                    <h3 id="nbr_all" style="color:#fff !important">-</h3>
-
-                    <p style="color:#fff !important">Utilisateurs</p>
-                  </div>
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="small-box-icon" viewBox="0 0 16 16" aria-hidden="true">
-                    <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5.784 6A2.24 2.24 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.3 6.3 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1zM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5" />
-                  </svg>
-                  <a href="Utilisateurs.php" class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover redirect-dash" style="color:#fff !important">
-                    Plus d'informations <i class="bi bi-link-45deg"></i>
-                  </a>
-                </div>
-              </div>
-            <?php endif; ?>
-            <?php if ($role == 'A'): ?>
-              <div class="col-lg-3 col-6">
-                <div class="small-box text-bg-danger"><!--resizable-card-->
-                  <div class="inner">
-                    <h3>
-                      <?= $size . " MB"; ?>
-                    </h3>
-                    <p>Utilisation de la BD</p>
+                    <h3>150</h3>
+                    <p>New Orders</p>
                   </div>
                   <svg class="small-box-icon" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
                     aria-hidden="true">
-                    <path clip-rule="evenodd" fill-rule="evenodd"
-                      d="M2.25 13.5a8.25 8.25 0 018.25-8.25.75.75 0 01.75.75v6.75H18a.75.75 0 01.75.75 8.25 8.25 0 01-16.5 0z">
-                    </path>
-                    <path clip-rule="evenodd" fill-rule="evenodd"
-                      d="M12.75 3a.75.75 0 01.75-.75 8.25 8.25 0 018.25 8.25.75.75 0 01-.75.75h-7.5a.75.75 0 01-.75-.75V3z">
+                    <path
+                      d="M2.25 2.25a.75.75 0 000 1.5h1.386c.17 0 .318.114.362.278l2.558 9.592a3.752 3.752 0 00-2.806 3.63c0 .414.336.75.75.75h15.75a.75.75 0 000-1.5H5.378A2.25 2.25 0 017.5 15h11.218a.75.75 0 00.674-.421 60.358 60.358 0 002.96-7.228.75.75 0 00-.525-.965A60.864 60.864 0 005.68 4.509l-.232-.867A1.875 1.875 0 003.636 2.25H2.25zM3.75 20.25a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM16.5 20.25a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0z">
                     </path>
                   </svg>
-                  <a href="Parametres.php#panel-DB"
+                  <a href="#"
                     class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover redirect-dash">
                     Plus d'informations <i class="bi bi-link-45deg"></i>
                   </a>
                 </div>
               </div>
-            <?php endif; ?>
-          </div>
+              <div class="col-lg-3 col-6 ">
+                <div class="small-box text-bg-success"> <!--resizable-card-->
+                  <div class="inner">
+                    <h3>53<sup class="fs-5">%</sup></h3>
+
+                    <p>Bounce Rate</p>
+                  </div>
+                  <svg class="small-box-icon" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true">
+                    <path
+                      d="M18.375 2.25c-1.035 0-1.875.84-1.875 1.875v15.75c0 1.035.84 1.875 1.875 1.875h.75c1.035 0 1.875-.84 1.875-1.875V4.125c0-1.036-.84-1.875-1.875-1.875h-.75zM9.75 8.625c0-1.036.84-1.875 1.875-1.875h.75c1.036 0 1.875.84 1.875 1.875v11.25c0 1.035-.84 1.875-1.875 1.875h-.75a1.875 1.875 0 01-1.875-1.875V8.625zM3 13.125c0-1.036.84-1.875 1.875-1.875h.75c1.036 0 1.875.84 1.875 1.875v6.75c0 1.035-.84 1.875-1.875 1.875h-.75A1.875 1.875 0 013 19.875v-6.75z">
+                    </path>
+                  </svg>
+                  <a href="#"
+                    class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover redirect-dash">
+                    Plus d'informations <i class="bi bi-link-45deg"></i>
+                  </a>
+                </div>
+              </div>
+              <?php if ($role == 'A'): ?>
+                <div class="col-lg-3 col-6 " id="statsUsers">
+                  <div class="small-box text-bg-warning"> <!--resizable-card-->
+                    <div class="inner">
+                      <h3 id="nbr_all" style="color:#fff !important">-</h3>
+
+                      <p style="color:#fff !important">Utilisateurs</p>
+                    </div>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="small-box-icon" viewBox="0 0 16 16" aria-hidden="true">
+                      <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5.784 6A2.24 2.24 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.3 6.3 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1zM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5" />
+                    </svg>
+                    <a href="Utilisateurs.php" class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover redirect-dash" style="color:#fff !important">
+                      Plus d'informations <i class="bi bi-link-45deg"></i>
+                    </a>
+                  </div>
+                </div>
+              <?php endif; ?>
+              <?php if ($role == 'A'): ?>
+                <div class="col-lg-3 col-6">
+                  <div class="small-box text-bg-danger"><!--resizable-card-->
+                    <div class="inner">
+                      <h3>
+                        <?= $size . " MB"; ?>
+                      </h3>
+                      <p>Utilisation de la BD</p>
+                    </div>
+                    <svg class="small-box-icon" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
+                      aria-hidden="true">
+                      <path clip-rule="evenodd" fill-rule="evenodd"
+                        d="M2.25 13.5a8.25 8.25 0 018.25-8.25.75.75 0 01.75.75v6.75H18a.75.75 0 01.75.75 8.25 8.25 0 01-16.5 0z">
+                      </path>
+                      <path clip-rule="evenodd" fill-rule="evenodd"
+                        d="M12.75 3a.75.75 0 01.75-.75 8.25 8.25 0 018.25 8.25.75.75 0 01-.75.75h-7.5a.75.75 0 01-.75-.75V3z">
+                      </path>
+                    </svg>
+                    <a href="Parametres.php#panel-DB"
+                      class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover redirect-dash">
+                      Plus d'informations <i class="bi bi-link-45deg"></i>
+                    </a>
+                  </div>
+                </div>
+              <?php endif; ?>
+            </div>
+          <?php endif; ?>
           <div class="row mb-3" id="roooow">
             <div class="col-6">
               <?php if ($role == 'A'): ?>
@@ -219,6 +223,13 @@ ob_end_flush();
             <div class="col-12">
               <?php if ($role == 'A'): ?>
                 <?php include './components/cumulAgents.php' ?>
+              <?php endif; ?>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-12">
+              <?php if ($role == 'U'): ?>
+                <?php include './components/Agenda.php' ?>
               <?php endif; ?>
             </div>
           </div>
@@ -601,6 +612,201 @@ ob_end_flush();
         loadAndInitChart();
         renderCheckboxList();
       }
+    });
+  </script>
+  <script src='https://cdn.jsdelivr.net/npm/fullcalendar/index.global.min.js'></script>
+
+  <script>
+    // 1. Move the helper function outside or keep it accessible
+    function getResponsiveHeight() {
+      // 140px accounts for your header and card padding
+      return window.innerHeight - 145;
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const calendarEl = document.getElementById('calendar');
+
+      const calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        locale: 'fr',
+        firstDay: 1,
+        dayMaxEvents: 1,
+        moreLinkContent: function(args) {
+          return "+ " + args.num + " en plus";
+        },
+        moreLinkClick: "popover",
+        // Initial Height
+        height: getResponsiveHeight(),
+        aspectRatio: 1.5,
+        expandRows: true,
+        handleWindowResize: true,
+
+        eventOverlap: false,
+        displayEventTime: false,
+        eventDisplay: 'block',
+        dayMaxEvents: true,
+
+        slotMinTime: '07:00:00',
+        slotMaxTime: '21:00:00',
+        slotDuration: '00:15:00',
+
+
+
+
+        headerToolbar: {
+          left: 'prev today next',
+          center: 'title',
+          right: 'dayGridMonth,timeGridWeek,timeGridDay,listDay'
+        },
+        buttonText: {
+          today: "Aujourd'hui",
+          month: "Mois",
+          week: "Semaine",
+          day: "Jour",
+          listDay: "Planing"
+        },
+
+        views: {
+          dayGridMonth: {
+            displayEventTime: false,
+            allDaySlot: false,
+          },
+          timeGridWeek: {
+            slotDuration: '00:30:00', // 30 min slots
+            slotLabelInterval: '01:00:00', // Only show the hour label (08:00, 09:00) to keep it clean
+            displayEventTime: false,
+            slotEventOverlap: false, // THIS IS THE KEY: No more merging/overlapping
+            eventMaxStack: 2,
+            allDaySlot: true,
+            allDayText: 'Toute la journée',
+            // aspectRatio: 1.2,
+            // contentWidth: '900px'
+          },
+          timeGridDay: {
+            displayEventTime: false,
+            slotEventOverlap: false,
+            slotDuration: '00:30:00', // 30 min slots
+            slotLabelInterval: '01:00:00',
+            allDaySlot: true,
+            allDayText: 'Toute la journée',
+          }
+        },
+        datesSet: function(info) {
+          const titleEl = document.querySelector('.fc-toolbar-title');
+          const viewBody = document.querySelector('.fc-timegrid-body');
+          const viewHeader = document.querySelector('.fc-col-header');
+
+          // 1. Detect View and apply 900px Logic
+          if (info.view.type === 'dayGridMonth') {
+            console.log('dayGridMonth')
+            calendarEl.style.setProperty('--day-height', '300px');
+          } else if (info.view.type === 'timeGridWeek') {
+            console.log('timeGridWeek')
+            calendarEl.style.setProperty('--day-height', '50px');
+          } else if (info.view.type === 'timeGridDay') {
+            console.log('timeGridDay')
+            calendarEl.style.setProperty('--day-height', '50px');
+          } else if (info.view.type === 'listDay') {
+            console.log('listDay')
+            calendarEl.style.removeProperty('--day-height');
+          }
+
+
+          // const stuckTooltips = document.querySelectorAll('.tooltip');
+          // stuckTooltips.forEach(t => t.remove());
+        },
+        // eventMouseEnter: function(info) {
+        //     // info.el.setAttribute('title', info.event.title + "Début :" + info.event.startStr + "Fin :" + info.event.endStr);
+        //     new bootstrap.Tooltip(info.el, {
+        //         title: info.event.title,
+        //         placement: 'top',
+        //         trigger: 'hover',
+        //         container: 'body'
+        //     });
+        // },
+        eventDidMount: function(info) {
+          if (info.view.type == 'listDay') {
+            return
+          }
+          info.el.addEventListener('mouseenter', () => {
+            // 1. Force hide ANY existing tooltips on the page
+            const existingTooltips = document.querySelectorAll('.tooltip');
+            existingTooltips.forEach(t => t.remove());
+
+            // 2. Initialize the tooltip for the current element
+            const tooltip = new bootstrap.Tooltip(info.el, {
+              title: info.event.title,
+              placement: 'top',
+              trigger: 'manual', // We trigger it manually for total control
+              container: 'body',
+              animation: false // Disabling animation makes it "snappier" and prevents ghosting
+            });
+
+            tooltip.show();
+
+            // 3. Hide it when leaving
+            info.el.addEventListener('mouseleave', () => {
+              tooltip.dispose();
+            }, {
+              once: true
+            });
+          });
+        },
+
+        //     eventClick: function(info) {
+        //         // 1. Remove any existing popovers first to avoid stacking
+        //         const oldPopover = bootstrap.Popover.getInstance(info.el);
+        //         if (oldPopover) {
+        //             oldPopover.dispose();
+        //         }
+
+        //         // 2. Initialize and show the popover
+        //         const popover = new bootstrap.Popover(info.el, {
+        //             title: info.event.title,
+        //             placement: 'top',
+        //             trigger: 'manual', // We trigger it manually on click
+        //             html: true,
+        //             container: 'body',
+        //             content: `
+        //     <div class="p-1">
+        //         <strong>Début:</strong> ${info.event.start.toLocaleTimeString('fr-FR', {hour: '2-digit', minute:'2-digit'})}<br>
+        //         <strong>Fin:</strong> ${info.event.end ? info.event.end.toLocaleTimeString('fr-FR', {hour: '2-digit', minute:'2-digit'}) : 'N/A'}<br>
+        //         <hr class="my-2">
+        //         <button class="btn btn-sm btn-primary w-100 mt-1">Modifier</button>
+        //     </div>
+        // `
+        //         });
+
+        //         popover.show();
+
+        //         // 3. Close the popover if user clicks anywhere else
+        //         document.addEventListener('click', function(e) {
+        //             if (!info.el.contains(e.target)) {
+        //                 popover.hide();
+        //             }
+        //         }, {
+        //             once: true
+        //         });
+        //     },
+        events: '../api/getShifts.php'
+      });
+
+      calendar.render();
+
+      // 2. Handle Window Resize (Height)
+      window.addEventListener('resize', () => {
+        calendar.setOption('height', getResponsiveHeight());
+      });
+
+      // 3. Handle Sidebar Toggle (Width)
+      const resizeObserver = new ResizeObserver(() => {
+        setTimeout(() => {
+          calendar.updateSize();
+        }, 50);
+      });
+
+      // Observing the card-body or parent ensures width fills correctly
+      resizeObserver.observe(calendarEl.parentElement);
     });
   </script>
   <script src="./assets/js/Sortable.min.js"></script>
