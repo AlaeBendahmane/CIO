@@ -28,6 +28,8 @@ async function checkMyNotifications() {
         const notifications = await res.json();
 
         if (notifications && notifications.length > 0) {
+            refreshNotifications();
+            loadInbox()
             for (const notif of notifications) {
                 // STEP 1: Immediately tell DB this is now "Sent" (isSent = 1)
                 // This stops the notification from popping up again in the next poll
@@ -269,7 +271,7 @@ document.addEventListener('DOMContentLoaded', () => {
     refreshNotifications();
     setInterval(() => {
         checkMyNotifications();
-        refreshNotifications();
-        loadInbox()
+        // refreshNotifications();
+        // loadInbox()
     }, 15000);
 })
