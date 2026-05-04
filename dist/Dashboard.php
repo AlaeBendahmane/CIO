@@ -632,6 +632,7 @@ ob_end_flush();
       const calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth',
         locale: 'fr',
+        noEventsContent: "Aucun événement à afficher",
         firstDay: 1,
         dayMaxEvents: 1,
         moreLinkContent: function(args) {
