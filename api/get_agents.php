@@ -9,7 +9,7 @@ isAdminQuery();
 $from = $_GET['from'] ?? null;
 try {
     if ($from == "notifications" || $from == "planing") {
-        $stmt = $pdo->prepare("SELECT id, idFiscal ,idProx, nom, prenom FROM agents WHERE isDeleted = 0");
+        $stmt = $pdo->prepare("SELECT id, idFiscal ,idProx, nom, prenom FROM agents WHERE isDeleted = 0 Order By nom asc");
         $stmt->execute();
         $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
