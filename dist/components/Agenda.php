@@ -144,7 +144,12 @@
 
 <div class="card card-primary card-outline shadow-sm">
     <div class="card-body" style="padding:10px">
+        <?php if ($userRole == 'A'): ?>
+            <div class="form-group mb-2">
+                <select id="agentSelect" class="form-control select2" style="width: 100%;">
+                </select>
+            </div>
+        <?php endif; ?>
         <div id='calendar'></div>
     </div>
 </div>
-
