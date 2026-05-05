@@ -8,7 +8,7 @@ isAuthQuery();
 
 $sessionAgentId = ''; //isset($_GET['agent_id']) ? $_GET['agent_id'] : $_SESSION['id'];
 
-if (isset($_GET['agent_id'])) {
+if (isset($_GET['agent_id']) && $_GET['agent_id'] !== '') {
     isAdminQuery();
     $sessionAgentId = $_GET['agent_id'] ?? $_SESSION['id'];
 } else {
