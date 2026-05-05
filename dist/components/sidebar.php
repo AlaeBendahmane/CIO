@@ -26,7 +26,7 @@
 
                 <?php if ($userRole == 'A'): ?>
                     <li class="nav-item">
-                        <a href="./Utilisateurs.php" class="nav-link <?php echo ($currentPage == 'Utilisateurs') ? 'active' : ''; ?>">
+                        <a href="./Utilisateurs.php" class="nav-link <?php echo ($currentPage == 'utilisateurs') ? 'active' : ''; ?>">
                             <i class="nav-icon bi bi-people-fill"></i>
                             <p>Utilisateurs</p>
                         </a>
@@ -35,7 +35,7 @@
 
                 <?php if ($userRole == 'A'): ?>
                     <li class="nav-item">
-                        <a href="./Planing.php" class="nav-link <?php echo ($currentPage == 'Planing') ? 'active' : ''; ?>">
+                        <a href="./Planing.php" class="nav-link <?php echo ($currentPage == 'planing') ? 'active' : ''; ?>">
                             <i class="nav-icon bi bi-calendar-plus-fill"></i>
                             <p>Planing</p>
                         </a>
