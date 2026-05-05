@@ -6,7 +6,14 @@ require_once 'helpers.php';
 session_start();
 isAuthQuery();
 
-$sessionAgentId = $_SESSION['id'];
+$sessionAgentId = ''; //isset($_GET['agent_id']) ? $_GET['agent_id'] : $_SESSION['id'];
+
+if (isset($_GET['agent_id'])) {
+    isAdminQuery();
+    $sessionAgentId = $_GET['agent_id'] ?? $_SESSION['id'];
+} else {
+    $sessionAgentId = $_SESSION['id'];
+}
 
 try {
     $stmtColor = $pdo->prepare("SELECT valueP FROM parametres WHERE keyP = 'shiftsColors'");
