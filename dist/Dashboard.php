@@ -614,7 +614,7 @@ ob_end_flush();
       }
     });
   </script>
-  <script src='https://cdn.jsdelivr.net/npm/fullcalendar/index.global.min.js'></script>
+  <script src='./assets/js/index.global.min.js'></script>
 
   <script>
     // 1. Move the helper function outside or keep it accessible
