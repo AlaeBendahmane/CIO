@@ -99,14 +99,14 @@ ob_end_flush();
           </li>
         </ul>
         <?php
-        $currentPage = 'Utilisateurs';
+        $currentPage = 'utilisateurs';
         include './components/profileNav.php';
         ?>
       </div>
     </nav>
     <?php
     $userRole = $role;
-    $currentPage = 'Utilisateurs';
+    $currentPage = 'utilisateurs';
     include './components/sidebar.php';
     ?>
     <main class="app-main">
