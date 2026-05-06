@@ -24,7 +24,7 @@ try {
     $stmt = $pdo->prepare("
         SELECT id, shift_type, start_time AS start, end_time AS end 
         FROM shifts 
-        WHERE agentId = :agentId
+        WHERE agentId = :agentId and isDeleted=0
     ");
     $stmt->execute(['agentId' => $sessionAgentId]);
     $shifts = $stmt->fetchAll(PDO::FETCH_ASSOC);
