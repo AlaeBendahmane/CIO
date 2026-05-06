@@ -191,6 +191,9 @@ ob_end_flush();
 
             $('#agentSelect').on('change', function() {
                 const selectedAgentId = $(this).val();
+                if (selectedAgentId == '') {
+                    return
+                }
 
                 // 1. Remove the old event source
                 calendar.getEventSources().forEach(source => source.remove());
