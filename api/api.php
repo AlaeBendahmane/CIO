@@ -29,7 +29,7 @@ $_role = $role;
 
 // function logActivity($pdo, $action, $idFiscal, $data, $m = null, $a = null, $by = null)
 // {
-//     $sql = "INSERT INTO activity_logs (action, idFiscal, details, mois, annee,updated_by) VALUES (?, ?, ?, ?, ?,?)";
+//     $sql = "INSERT INTO pointage_logs (action, idFiscal, details, mois, annee,updated_by) VALUES (?, ?, ?, ?, ?,?)";
 //     $stmt = $pdo->prepare($sql);
 //     $stmt->execute([
 //         $action,
@@ -264,7 +264,7 @@ if ($action == 'fetch_history') {
     author.prenom as author_prenom,
     target.nom as target_nom, 
     target.prenom as target_prenom
-FROM activity_logs l
+FROM pointage_logs l
 LEFT JOIN agents author ON l.updated_by = author.idFiscal
 LEFT JOIN agents target ON l.idFiscal = target.idFiscal
 WHERE l.action NOT IN (
@@ -290,7 +290,7 @@ WHERE l.action NOT IN (
     //     author.prenom as author_prenom,
     //     target.nom as target_nom, 
     //     target.prenom as target_prenom
-    // FROM activity_logs l
+    // FROM pointage_logs l
     // LEFT JOIN agents author ON l.updated_by = author.idFiscal
     // LEFT JOIN agents target ON l.idFiscal = target.idFiscal
     // WHERE l.action NOT IN (
@@ -316,7 +316,7 @@ WHERE l.action NOT IN (
     //     author.prenom as author_prenom,
     //     target.nom as target_nom, 
     //     target.prenom as target_prenom
-    // FROM activity_logs l
+    // FROM pointage_logs l
     // LEFT JOIN agents author ON l.updated_by = author.idFiscal
     // LEFT JOIN agents target ON l.idFiscal = target.idFiscal";
 

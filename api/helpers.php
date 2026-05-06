@@ -211,7 +211,7 @@ function reformatNameTables($table)
             // Correction : "Société" (majuscule et accents)
             return "Sociétés";
 
-        case 'activity_logs':
+        case 'pointage_logs':
             return "Journal de pointage";
 
         case 'parametres':
@@ -226,7 +226,7 @@ function reformatNameTables($table)
 
 function logActivity($pdo, $action, $idFiscal, $data, $m = null, $a = null, $by = null)
 {
-    $sql = "INSERT INTO activity_logs (action, idFiscal, details, mois, annee,updated_by) VALUES (?, ?, ?, ?, ?,?)";
+    $sql = "INSERT INTO pointage_logs (action, idFiscal, details, mois, annee,updated_by) VALUES (?, ?, ?, ?, ?,?)";
     $stmt = $pdo->prepare($sql);
     $stmt->execute([
         $action,
