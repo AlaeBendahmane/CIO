@@ -31,7 +31,7 @@ if ($user) {
     // Note : Utilisez password_verify() si vous utilisez password_hash() en PHP
     // $user = array_map('trim', $user);
     if ($hashedPassword === $user['password']) {
-        $token = bin2hex(random_bytes(8));
+        $token = bin2hex(random_bytes(24));
         $reformatedToken = str_replace(' ', '', $token);
         $sql = "UPDATE agents 
             SET token = :token 
@@ -42,7 +42,17 @@ if ($user) {
             ':idFiscal' => $user['idFiscal'],
             ':token' => $reformatedToken
         ]);
-
+        setcookie(
+            "auth_token",
+            $reformatedToken,
+            [
+                "expires" => time() + 3600,
+                "path" => "/",
+                "secure" => true,      // HTTPS only
+                "httponly" => true,    // JS cannot access
+                "samesite" => "Strict"
+            ]
+        );
         session_start();
         // 3. Créer la session
         $_SESSION['id'] = $user['id'];
@@ -53,7 +63,6 @@ if ($user) {
         $_SESSION['email'] = $user['email'];
         $_SESSION['ste'] = $user['ste'];
         $_SESSION['role'] = $user['role'];
-        $_SESSION['token'] = $reformatedToken;
         $_SESSION['needReset'] = $user['needReset'];
         $_SESSION['campagne'] = $user['campagne'];
         $_SESSION['profilePic'] = $user['profilePic'];
