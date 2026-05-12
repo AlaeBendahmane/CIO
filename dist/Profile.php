@@ -445,8 +445,8 @@ if ($ste == "DC") {
 
         const data = await response.json();
 
-        if (data.success && data.message) {
-          const dbRegex = data.message; // "/^(?=.*[A-Z]).{12,}$/"
+        if (data.success && data.data) {
+          const dbRegex = data.data; // "/^(?=.*[A-Z]).{12,}$/"
 
           // 1. Prepare Regex
           let cleanRegex = dbRegex.replace(/^\/|\/$/g, '');

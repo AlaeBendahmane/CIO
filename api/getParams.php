@@ -12,7 +12,7 @@ if ($value) {
     // Use it in your validation logic
     echo json_encode([
         'success' => true,
-        'message' => $value
+        'data' => $value
     ]);
 } else {
     echo json_encode([

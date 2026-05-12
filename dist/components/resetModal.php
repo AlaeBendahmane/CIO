@@ -44,8 +44,8 @@
             });
             const data = await response.json();
 
-            if (data.success && data.message) {
-                let cleanRegex = data.message.replace(/^\/|\/$/g, '');
+            if (data.success && data.data) {
+                let cleanRegex = data.data.replace(/^\/|\/$/g, '');
                 passwordPattern = new RegExp(cleanRegex);
                 buildUI(cleanRegex);
             }

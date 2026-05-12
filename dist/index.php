@@ -253,7 +253,7 @@ isAlreadyAuth();
           const data = await response.json();
 
           if (data.success) {
-            pattern = data?.message?.slice(1, -1);
+            pattern = data?.data?.slice(1, -1);
           } else {
             console.error("Error:", data.message);
           }
