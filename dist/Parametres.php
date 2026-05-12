@@ -487,8 +487,8 @@ ob_end_flush();
 
                     const data = await response.json();
 
-                    if (data.success && data.message) {
-                        const dbRegex = data.message;
+                    if (data.success && data.data) {
+                        const dbRegex = data.data;
                         currentGeneratedRegex = dbRegex.replace(/^\/|\/$/g, ''); //dbRegex.slice(1, -1)
 
                         // --- SYNC CHECKBOXES ---
