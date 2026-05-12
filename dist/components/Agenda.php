@@ -148,6 +148,11 @@
             <div class="form-group mb-2">
                 <select id="agentSelect" class="form-control select2" style="width: 100%;">
                 </select>
+                <div class="mt-1" style="display: flex;gap:15px;justify-content: space-between;align-items: center;">
+                    <a href="">Masse : Cet agent</a>
+                    <a href="">Masse : Tous les agents</a>
+                    <a href="">Historique</a>
+                </div>
             </div>
         <?php endif; ?>
         <div id='calendar'></div>
