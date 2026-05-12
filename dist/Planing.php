@@ -155,7 +155,7 @@ ob_end_flush();
         // 1. Move the helper function outside or keep it accessible
         function getResponsiveHeight() {
             // 140px accounts for your header and card padding
-            return window.innerHeight - 187;
+            return window.innerHeight - 215;
         }
 
         document.addEventListener('DOMContentLoaded', function() {
