@@ -125,6 +125,9 @@ ob_end_flush();
                                                 <a class="nav-link js-tab-link text-black" href="#panel-campagne">Campagnes</a>
                                             </li>
                                             <li class="nav-item">
+                                                <a class="nav-link js-tab-link text-black" href="#panel-shift">Planing</a>
+                                            </li>
+                                            <li class="nav-item">
                                                 <a class="nav-link js-tab-link text-black" href="#panel-DB">Base de données</a>
                                             </li>
                                         </ul>
@@ -345,6 +348,17 @@ ob_end_flush();
 
                                             </div>
 
+                                            <!--  -->
+                                            <div class="tab-pane fade" id="panel-shift">
+                                                <div class="d-flex justify-content-between align-items-center mb-3 sticky-top" style="top: 0; z-index: 1020;background-color: white;padding-top: 15px !important;padding-bottom: 15px;margin-bottom: 0px !important">
+                                                    <h4 class="mb-0">Configuration du planning</h4>
+                                                    <button class="btn btn-sm btn-success" id="btnAddType" onclick="addType()">
+                                                        <i class="fas fa-plus"></i> Nouveau
+                                                    </button>
+                                                </div>
+                                                <div id="shift-config-container" class="row g-3">
+                                                </div>
+                                            </div>
                                             <!--  -->
                                         </div>
                                     </div>
@@ -748,6 +762,290 @@ ob_end_flush();
 
                     // 4. NETTOYAGE : On retire le hash de l'URL pour que ce soit propre
                     window.history.replaceState(null, null, window.location.pathname);
+                }
+            }
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Initial fetch of shift configurations
+            await getColorsPlaning();
+        });
+
+        /**
+         * Fetch and Render Existing Shifts
+         */
+        async function getColorsPlaning() {
+            const container = document.getElementById('shift-config-container');
+            if (!container) return;
+
+            try {
+                const formData = new FormData();
+                formData.append('key', 'shiftsColors');
+
+                const response = await fetch('../api/getParams.php', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (data.success && data.data) {
+                    const shifts = JSON.parse(data.data);
+                    container.innerHTML = ''; // Clear spinner
+
+                    Object.entries(shifts).forEach(([key, values]) => {
+                        const shiftHtml = renderShiftCard(key, values);
+                        container.insertAdjacentHTML('beforeend', shiftHtml);
+                    });
+                }
+            } catch (error) {
+                console.error("Fetch failed:", error);
+                container.innerHTML = `<div class="alert alert-danger">Erreur lors du chargement des données.</div>`;
+            }
+        }
+
+        /**
+         * Card Template Generator
+         */
+        function renderShiftCard(key, values) {
+            return `
+        <div class="col-md-6 col-lg-5 col-xl-4 mb-3 shift-card" data-shift-key="${key}">
+            <div class="card shadow-sm border-1">
+                <div class="card-body" style="padding:10px">
+                    <div class="d-flex align-items-center p-3 rounded" 
+                        id="preview-${key}"
+                        style="background-color: ${values.color}; color: ${values.textColor}; border: 1px solid #dee2e6; overflow: hidden;">
+                        
+                        <div class="me-auto" style="min-width: 0;">
+                            <h6 class="small fw-bold mb-0 editable-label text-truncate" 
+                                title="${key}" 
+                                style="color: ${values.textColor} !important; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block;"
+                                data-key="${key}">${key}</h6>
+                        </div>
+
+                        <i class="bi bi-brush btn-edit-shift ms-2" 
+                           style="cursor:pointer; flex-shrink: 0;" 
+                           onclick="enableEditing(this, '${key}')"></i>
+                    </div>
+
+                    <div class="mt-2 row g-2 edit-controls d-none" style="justify-content: center; gap:8px">
+                        <div class="col-5">
+                            <label class="small text-muted d-block">Fond</label>
+                            <div class="d-flex align-items-center position-relative">
+                                <div class="rounded-circle me-2 border shadow-sm color-trigger" 
+                                    style="width:18px; height:18px; background:${values.color}; cursor:pointer; z-index: 2;"
+                                    onclick="this.nextElementSibling.click()"></div>
+                                <input type="color" 
+                                    style="opacity: 0; position: absolute; left: 0; width: 18px; height: 18px; pointer-events: none;" 
+                                    value="${values.color}" 
+                                    oninput="updateLivePreview(this, 'bg', '${key}')">
+                                <code class="small text-muted hex-label">${values.color}</code>
+                            </div>
+                        </div>
+                        <div class="col-5">
+                            <label class="small text-muted d-block">Texte</label>
+                            <div class="d-flex align-items-center position-relative">
+                                <div class="rounded-circle me-2 border shadow-sm color-trigger" 
+                                    style="width:18px; height:18px; background:${values.textColor}; cursor:pointer; z-index: 2;"
+                                    onclick="this.nextElementSibling.click()"></div>
+                                <input type="color" 
+                                    style="opacity: 0; position: absolute; left: 0; width: 18px; height: 18px; pointer-events: none;" 
+                                    value="${values.textColor}" 
+                                    oninput="updateLivePreview(this, 'text', '${key}')">
+                                <code class="small text-muted hex-label">${values.textColor}</code>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+        }
+
+        /**
+         * Handle UI Transitions (Edit mode vs View mode)
+         */
+        function enableEditing(iconElement, key) {
+            const currentCard = iconElement.closest('.shift-card');
+            const label = currentCard.querySelector('.editable-label');
+            const controls = currentCard.querySelector('.edit-controls');
+            const addBtn = document.getElementById("btnAddType");
+            const isEditing = label.getAttribute('contenteditable') === 'true';
+
+            if (!isEditing) {
+                // Close all other open editors
+                document.querySelectorAll('.shift-card').forEach(card => {
+                    const otherLabel = card.querySelector('.editable-label');
+                    const otherControls = card.querySelector('.edit-controls');
+                    const otherIcon = card.querySelector('.btn-edit-shift');
+
+                    if (otherLabel.getAttribute('contenteditable') === 'true') {
+                        otherLabel.setAttribute('contenteditable', 'false');
+                        otherControls.classList.add('d-none');
+                        otherControls.classList.remove('d-flex');
+                        otherIcon.classList.replace('bi-check-lg', 'bi-brush');
+                        otherIcon.classList.remove('text-light');
+                    }
+                });
+
+                // Open current editor
+                label.setAttribute('contenteditable', 'true');
+                label.focus();
+
+                // Move cursor to end
+                const range = document.createRange();
+                const sel = window.getSelection();
+                range.selectNodeContents(label);
+                range.collapse(false);
+                sel.removeAllRanges();
+                sel.addRange(range);
+
+                controls.classList.remove('d-none');
+                controls.classList.add('d-flex');
+                iconElement.classList.replace('bi-brush', 'bi-check-lg');
+                iconElement.classList.add('text-light');
+
+                if (addBtn) addBtn.disabled = true;
+            } else {
+                // Save and Close
+                label.setAttribute('contenteditable', 'false');
+                controls.classList.add('d-none');
+                controls.classList.remove('d-flex');
+                iconElement.classList.replace('bi-check-lg', 'bi-brush');
+                iconElement.classList.remove('text-light');
+
+                savePlanningConfig();
+            }
+        }
+
+        /**
+         * Live Color Updates
+         */
+        function updateLivePreview(input, type, key) {
+            const previewBox = document.getElementById(`preview-${key}`);
+            if (!previewBox) return;
+
+            const label = previewBox.querySelector('.editable-label');
+            const circularPreview = input.previousElementSibling;
+            const hexLabel = input.nextElementSibling;
+
+            if (circularPreview) circularPreview.style.backgroundColor = input.value;
+            if (hexLabel) hexLabel.innerText = input.value;
+
+            if (type === 'bg') {
+                previewBox.style.backgroundColor = input.value;
+            } else {
+                previewBox.style.color = input.value;
+                if (label) label.style.setProperty('color', input.value, 'important');
+            }
+        }
+
+        /**
+         * Validation and API Persistence
+         */
+        async function savePlanningConfig() {
+            const updatedData = {};
+            const cards = document.querySelectorAll('.shift-card');
+            const addBtn = document.getElementById("btnAddType");
+            let isValid = true;
+
+            cards.forEach(card => {
+                const label = card.querySelector('.editable-label');
+                const bgColorInput = card.querySelector('input[oninput*="bg"]');
+                const textColorInput = card.querySelector('input[oninput*="text"]');
+                const shiftKey = label.innerText.trim();
+
+                if (shiftKey === "NOUVEAU_TYPE" || shiftKey === "") {
+                    card.querySelector('.card').classList.add('border-danger');
+                    isValid = false;
+                } else {
+                    card.querySelector('.card').classList.remove('border-danger');
+                    updatedData[shiftKey] = {
+                        color: bgColorInput.value,
+                        textColor: textColorInput.value
+                    };
+                }
+            });
+
+            if (!isValid) {
+                Swal.fire({
+                    icon: "info",
+                    title: "Oops...",
+                    text: "Veuillez donner un nom valide au type de shift."
+                });
+                if (addBtn) addBtn.disabled = false;
+                return;
+            }
+
+            try {
+                const formData = new FormData();
+                formData.append('key', 'shiftsColors');
+                formData.append('value', JSON.stringify(updatedData));
+
+                const response = await fetch('../api/setParams.php', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+                if (!result.success) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "Erreur : " + result.message,
+                    });
+                }
+            } catch (error) {
+                console.error("Save failed:", error);
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "Erreur réseau lors de la sauvegarde."
+                });
+            } finally {
+                if (addBtn) addBtn.disabled = false;
+            }
+        }
+
+        /**
+         * Add New Type Utility
+         */
+        function addType() {
+            const tempKey = "NOUVEAU_TYPE_" + Date.now();
+            const defaultValues = {
+                color: "#cccccc",
+                textColor: "#000000"
+            };
+
+            const container = document.getElementById('shift-config-container');
+            const newHtml = renderShiftCard(tempKey, defaultValues);
+
+            container.insertAdjacentHTML('afterbegin', newHtml);
+
+            // Auto-rename placeholder
+            const newCard = container.querySelector(`[data-shift-key="${tempKey}"]`);
+            const label = newCard.querySelector('.editable-label');
+            label.innerText = "NOUVEAU_TYPE";
+
+            // Trigger edit mode immediately
+            const brush = newCard.querySelector('.btn-edit-shift');
+            enableEditing(brush, tempKey);
+        }
+
+        /**
+         * Global Keyboard Listeners
+         */
+        document.addEventListener('keydown', function(e) {
+            if (e.target.classList.contains('editable-label') && e.key === 'Enter') {
+                e.preventDefault();
+                e.target.blur();
+
+                // Trigger the save by simulating the check-icon click
+                const card = e.target.closest('.shift-card');
+                const icon = card.querySelector('.btn-edit-shift');
+                if (icon.classList.contains('bi-check-lg')) {
+                    enableEditing(icon, e.target.dataset.key);
                 }
             }
         });
