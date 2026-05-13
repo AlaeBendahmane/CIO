@@ -1,4 +1,16 @@
-<aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
+<?php
+$version = getParam($pdo, 'Version');
+?>
+<style>
+    .sidebar-version {
+        border-top: 1px solid var(--bs-border-color);
+        color: #c2c7d0;
+        font-size: 16px;
+        background: transparent;
+        cursor: default;
+    }
+</style>
+<aside class="app-sidebar bg-body-secondary shadow d-flex flex-column" data-bs-theme="dark">
     <div id="resize-backdrop-aside" style="display: none; position: absolute; top: 0px; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999;"></div>
     <div class="sidebar-brand">
         <a href="./Dashboard.php" class="brand-link">
@@ -122,5 +134,8 @@
 
             </ul>
         </nav>
+    </div>
+    <div class="sidebar-version text-center py-2">
+        <?= $version ?>
     </div>
 </aside>
