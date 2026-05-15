@@ -6,25 +6,34 @@ session_start();
 isAuthQuery();
 isAdminQuery();
 
-// 1. Get JSON Data
 $data = json_decode(file_get_contents('php://input'), true);
 
 $id         = $data['id'] ?? '';
 $title      = $data['title'] ?? '';
-$start_time = $data['start'] ?? ''; // Format: "YYYY-MM-DDTHH:mm:ss"
-$end_time   = $data['end'] ?? '';   // Format: "YYYY-MM-DDTHH:mm:ss"
-$agent_id   = $data['agent_id'] ?? '';
+$start_time = $data['start'] ?? '';
+$end_time   = $data['end'] ?? '';
 
-// 2. Validation
-// Note: We check for $id because we can't update without a reference
+// 1. Validation
 if (empty($id) || empty($title) || empty($start_time) || empty($end_time)) {
-    echo json_encode(['success' => false, 'message' => 'Données manquantes pour la mise à jour']);
+    echo json_encode(['success' => false, 'message' => 'Données manquantes']);
     exit;
 }
 
 try {
+    // 2. Fetch current state and agent ID before update
+    $stmt = $pdo->prepare("SELECT * FROM shifts WHERE id = ?");
+    $stmt->execute([$id]);
+    $oldShift = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$oldShift) {
+        echo json_encode(['success' => false, 'message' => 'Shift introuvable']);
+        exit;
+    }
+
+    // Use the database agentId if it's not provided in the request
+    $target_agent_id = $data['agent_id'] ?? $oldShift['agentId'];
+
     // 3. Perform the UPDATE
-    // We update the specific shift matched by its ID
     $sql = "UPDATE shifts 
             SET shift_type = :shift_type, 
                 start_time = :start_time, 
@@ -40,12 +49,21 @@ try {
     ]);
 
     if ($result) {
-        sendBulkNotification('Planning', 'Votre planning a été modifié. Merci de consulter vos nouveaux horaires.', [$agent_id], $_SESSION['id']);
+        // 4. Log the change
+        logShiftChange($pdo, $id, 'UPDATE', $oldShift, $data);
+
+        // 5. Notify the correct agent
+        sendBulkNotification(
+            'Planning',
+            'Votre planning a été modifié. Veuillez vérifier vos nouveaux horaires.',
+            [$target_agent_id],
+            $_SESSION['id']
+        );
+
         echo json_encode(['success' => true, 'message' => 'Shift mis à jour avec succès']);
     } else {
-        echo json_encode(['success' => false, 'message' => 'Aucun changement effectué ou erreur de mise à jour']);
+        echo json_encode(['success' => false, 'message' => 'Aucune modification enregistrée']);
     }
 } catch (PDOException $e) {
-    // Return a clean error for your SweetAlert2 to display
     echo json_encode(['success' => false, 'message' => 'Erreur Database: ' . $e->getMessage()]);
 }

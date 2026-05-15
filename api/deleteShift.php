@@ -7,11 +7,10 @@ session_start();
 isAuthQuery();
 isAdminQuery();
 
-$userUpdating = $_SESSION['id'];
 $json = file_get_contents('php://input');
 $data = json_decode($json, true);
 
-if (!isset($data['id']) || empty($data['id'])) {
+if (empty($data['id'])) {
     echo json_encode([
         'status' => 'error',
         'message' => 'ID de l\'événement manquant.'
@@ -22,35 +21,46 @@ if (!isset($data['id']) || empty($data['id'])) {
 $eventId = $data['id'];
 
 try {
-    $queryAgent = $pdo->prepare("SELECT agentId FROM shifts WHERE id = :id LIMIT 1");
-    $queryAgent->execute([':id' => $eventId]);
-    $shift = $queryAgent->fetch(PDO::FETCH_ASSOC);
+    // 1. Fetch the shift data ONCE. 
+    // This gives us both the 'old_data' for the log and the 'agentId' for the notification.
+    $stmt = $pdo->prepare("SELECT * FROM shifts WHERE id = ? LIMIT 1");
+    $stmt->execute([$eventId]);
+    $currentShift = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    $agent_id = $shift['agentId'] ?? null;
-    // 5. Prepare and Execute Delete Query
-    // Change 'shifts' to your actual table name
-    $stmt = $pdo->prepare("UPDATE shifts SET isDeleted= 1 WHERE id = :id");
+    if (!$currentShift) {
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Événement non trouvé dans la base de données.'
+        ]);
+        exit;
+    }
+
+    $agent_id = $currentShift['agentId'];
+
+    // 2. Perform Soft Delete
+    $stmt = $pdo->prepare("UPDATE shifts SET isDeleted = 1 WHERE id = :id");
     $stmt->bindParam(':id', $eventId, PDO::PARAM_INT);
 
     if ($stmt->execute()) {
-        if ($stmt->rowCount() > 0) {
-            sendBulkNotification('Planning', 'Votre planning a été modifié. Merci de consulter vos nouveaux horaires.', [$agent_id], $_SESSION['id']);
-            echo json_encode([
-                'status' => 'success',
-                'message' => 'Événement supprimé avec succès.'
-            ]);
-        } else {
-            // ID existed in request but not in database
-            echo json_encode([
-                'status' => 'error',
-                'message' => 'Événement non trouvé dans la base de données.'
-            ]);
-        }
+        // 3. Log the change using the data we fetched in step 1
+        logShiftChange($pdo, $eventId, 'DELETE', $currentShift, ['isDeleted' => 1]);
+
+        // 4. Notify the agent
+        sendBulkNotification(
+            'Planning',
+            'Votre planning a été modifié. Merci de consulter vos nouveaux horaires.',
+            [$agent_id],
+            $_SESSION['id']
+        );
+
+        echo json_encode([
+            'status' => 'success',
+            'message' => 'Événement supprimé avec succès.'
+        ]);
     } else {
         throw new Exception("Erreur lors de l'exécution de la requête.");
     }
 } catch (Exception $e) {
-    // 6. Handle Errors
     http_response_code(500);
     echo json_encode([
         'status' => 'error',

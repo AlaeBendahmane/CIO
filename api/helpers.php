@@ -310,3 +310,18 @@ function sendBulkNotification($title, $content, $agents, $from)
         ];
     }
 }
+
+function logShiftChange($pdo, $shiftId, $action, $oldData = null, $newData = null)
+{
+    $sql = "INSERT INTO shifts_logs (shift_id, action_type, changed_by, old_data, new_data) 
+            VALUES (:shift_id, :action, :user_id, :old, :new)";
+
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([
+        ':shift_id' => $shiftId,
+        ':action'   => $action,
+        ':user_id'  => $_SESSION['id'],
+        ':old'      => $oldData ? json_encode($oldData) : null,
+        ':new'      => $newData ? json_encode($newData) : null
+    ]);
+}
