@@ -36,6 +36,7 @@ try {
     ]);
 
     if ($result) {
+        sendBulkNotification('Planning', 'Votre planning a été modifié. Merci de consulter vos nouveaux horaires.', [$agent_id], $_SESSION['id']);
         echo json_encode(['success' => true, 'message' => 'Shift ajouté avec succès']);
     } else {
         echo json_encode(['success' => false, 'message' => 'Erreur lors de l\'insertion']);

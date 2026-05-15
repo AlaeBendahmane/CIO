@@ -22,6 +22,11 @@ if (!isset($data['id']) || empty($data['id'])) {
 $eventId = $data['id'];
 
 try {
+    $queryAgent = $pdo->prepare("SELECT agentId FROM shifts WHERE id = :id LIMIT 1");
+    $queryAgent->execute([':id' => $eventId]);
+    $shift = $queryAgent->fetch(PDO::FETCH_ASSOC);
+
+    $agent_id = $shift['agentId'] ?? null;
     // 5. Prepare and Execute Delete Query
     // Change 'shifts' to your actual table name
     $stmt = $pdo->prepare("UPDATE shifts SET isDeleted= 1 WHERE id = :id");
@@ -29,6 +34,7 @@ try {
 
     if ($stmt->execute()) {
         if ($stmt->rowCount() > 0) {
+            sendBulkNotification('Planning', 'Votre planning a été modifié. Merci de consulter vos nouveaux horaires.', [$agent_id], $_SESSION['id']);
             echo json_encode([
                 'status' => 'success',
                 'message' => 'Événement supprimé avec succès.'
