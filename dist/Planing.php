@@ -519,8 +519,9 @@ ob_end_flush();
                     text: "Cette action est irréversible !",
                     icon: 'warning',
                     showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    confirmButtonText: 'Oui, supprimer'
+                    confirmButtonColor: "#1ed760",
+                    confirmButtonText: 'Oui, supprimer',
+                    cancelButtonColor: "#d33",
                 }).then((result) => {
                     if (result.isConfirmed) {
                         fetch('../api/deleteShift.php', {
