@@ -89,6 +89,39 @@ ob_end_flush();
                 </div>
             </div>
         </main>
+        <div class="offcanvas offcanvas-end" style="--bs-offcanvas-width: 260px;" data-bs-scroll="true" tabindex="-1" id="offcanvasWithBothOptions" aria-labelledby="offcanvasWithBothOptionsLabel">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title" id="offcanvasWithBothOptionsLabel">Détails de l'événement</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                <form id="eventForm">
+                    <!-- Hidden inputs to track state -->
+                    <input type="hidden" id="event_id">
+                    <input type="hidden" id="start_date">
+                    <input type="hidden" id="end_date">
+
+                    <div class="mb-3">
+                        <label class="form-label">Titre</label>
+                        <input type="text" class="form-control" id="event_title" required placeholder="ex: Shift Matin">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Période</label>
+                        <div style="display: flex;gap:10px">
+                            <input type="time" class="form-control" id="event_start_time" required>
+                            <input type="time" class="form-control" id="event_end_time" required>
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="button" class="btn btn-primary w-100" id="btnSaveEvent">Enregistrer</button>
+                        <button type="button" class="btn btn-outline-danger" id="btnDeleteEvent" style="display: none;">
+                            <i class="bi bi-trash"></i> Supprimer l'événement
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
     <script src="./assets/js/overlayscrollbars.browser.es6.min.js"
         crossorigin="anonymous"></script>
@@ -177,7 +210,7 @@ ob_end_flush();
 
 
                             // Create new Option: new Option(text, value, defaultSelected, selected)
-                            const newOption = new Option(fullName, agent.id, false, false);
+                            const newOption = new Option(fullName, agent.id, false, agent.selected);
 
                             $select.append(newOption);
                         });
@@ -207,6 +240,9 @@ ob_end_flush();
                 });
             });
 
+            const eventOffcanvas = new bootstrap.Offcanvas('#offcanvasWithBothOptions');
+            const btnSave = document.getElementById('btnSaveEvent');
+            const btnDelete = document.getElementById('btnDeleteEvent');
 
             const calendarEl = document.getElementById('calendar');
             if (!calendarEl) {
@@ -217,6 +253,14 @@ ob_end_flush();
                 locale: 'fr',
                 noEventsContent: "Aucun événement à afficher",
                 firstDay: 1,
+                editable: true,
+                selectable: true,
+                height: getResponsiveHeight(),
+                expandRows: true,
+                handleWindowResize: true,
+                eventOverlap: false,
+                displayEventTime: false,
+                eventDisplay: 'block',
                 dayMaxEvents: 1,
                 moreLinkContent: function(args) {
                     return "+ " + args.num + " en plus";
@@ -277,6 +321,52 @@ ob_end_flush();
                         allDaySlot: true,
                         allDayText: 'Toute la journée',
                     }
+                },
+                eventDrop: (info) => updateEvent(info.event),
+                eventResize: (info) => updateEvent(info.event),
+                eventClick: function(info) {
+                    const event = info.event;
+
+                    // Populate Form
+                    document.getElementById('offcanvasWithBothOptionsLabel').innerText = "Modifier l'événement";
+                    document.getElementById('event_id').value = event.id;
+                    const reformat = event?.title?.replace(/\s*\b\d{1,2}:\d{2}\b/g, "").trim().toUpperCase();
+                    document.getElementById('event_title').value = reformat;
+                    console.log('--', event.title)
+
+                    // Format dates to HH:mm for the time inputs
+                    const startTime = event.start.toTimeString().substring(0, 5);
+                    const endTime = event.end ? event.end.toTimeString().substring(0, 5) : "";
+
+                    document.getElementById('event_start_time').value = startTime;
+                    document.getElementById('event_end_time').value = endTime;
+
+                    // Store raw dates for reference
+                    document.getElementById('start_date').value = event.startStr.split('T')[0];
+                    document.getElementById('end_date').value = event.endStr ? event.endStr.split('T')[0] : event.startStr.split('T')[0];
+
+                    btnDelete.style.display = 'block'; // Show delete button
+                    eventOffcanvas.show();
+                },
+                select: function(info) {
+                    const agentId = $('#agentSelect').val();
+                    if (!agentId) {
+                        Swal.fire('Attention', "Veuillez sélectionner un agent d'abord.", 'info');
+                        calendar.unselect();
+                        return;
+                    }
+
+                    document.getElementById('eventForm').reset();
+                    document.getElementById('offcanvasWithBothOptionsLabel').innerText = "Nouvel événement";
+                    document.getElementById('event_id').value = ""; // Empty ID
+
+                    // Set dates
+                    document.getElementById('start_date').value = info.startStr.split('T')[0];
+                    document.getElementById('end_date').value = info.endStr.split('T')[0];
+
+                    btnDelete.style.display = 'none'; // Hide delete button
+                    eventOffcanvas.show();
+                    calendar.unselect();
                 },
                 datesSet: function(info) {
                     const titleEl = document.querySelector('.fc-toolbar-title');
@@ -379,7 +469,94 @@ ob_end_flush();
             });
 
             calendar.render();
+            btnSave.addEventListener('click', function() {
+                const id = document.getElementById('event_id').value;
+                const agent_id = $('#agentSelect').val();
+                let title = document.getElementById('event_title').value;
+                title = title?.replace(/\s*\b\d{1,2}:\d{2}\b/g, "").trim().toUpperCase();
+                const dateStart = document.getElementById('start_date').value;
+                const timeStart = document.getElementById('event_start_time').value;
+                const timeEnd = document.getElementById('event_end_time').value;
 
+                if (!title || !timeStart || !timeEnd) {
+                    Swal.fire('Erreur', 'Veuillez remplir tous les champs', 'error');
+                    return;
+                }
+
+                const payload = {
+                    id: id,
+                    agent_id: agent_id,
+                    title: title,
+                    start: `${dateStart}T${timeStart}:00`,
+                    end: `${dateStart}T${timeEnd}:00`
+                };
+
+                const url = id ? '../api/updateShift.php' : '../api/addShift.php';
+
+                fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(payload)
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            calendar.refetchEvents(); // Refresh UI
+                            eventOffcanvas.hide();
+                            Swal.fire('Succès', 'Calendrier mis à jour', 'success');
+                        }
+                    });
+            });
+
+            // DELETE ACTION
+            btnDelete.addEventListener('click', function() {
+                const id = document.getElementById('event_id').value;
+
+                Swal.fire({
+                    title: 'Êtes-vous sûr ?',
+                    text: "Cette action est irréversible !",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    confirmButtonText: 'Oui, supprimer'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        fetch('../api/deleteShift.php', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    id: id
+                                })
+                            })
+                            .then(res => res.json())
+                            .then(data => {
+                                calendar.refetchEvents();
+                                eventOffcanvas.hide();
+                                Swal.fire('Supprimé !', 'L\'événement a été supprimé.', 'success');
+                            });
+                    }
+                });
+            });
+
+            function updateEvent(event) {
+                const reformat = event?.title?.replace(/\s*\b\d{1,2}:\d{2}\b/g, "").trim().toUpperCase();
+                fetch('../api/updateShift.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        id: event.id,
+                        start: event.startStr,
+                        end: event.endStr,
+                        title: reformat
+                    })
+                });
+            }
             // 2. Handle Window Resize (Height)
             window.addEventListener('resize', () => {
                 calendar.setOption('height', getResponsiveHeight());

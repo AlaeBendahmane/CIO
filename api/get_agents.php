@@ -13,9 +13,12 @@ try {
         $stmt->execute();
         $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        $users = array_map(function ($user) {
+        $users = array_map(function ($user) use ($from) {
             $user['nom'] = strtoupper($user['nom']);
             $user['prenom'] = strtoupper($user['prenom']);
+            if ($from == "planing") {
+                $user['selected'] = $user['id'] == $_SESSION['id'];
+            }
             return $user;
         }, $users);
 

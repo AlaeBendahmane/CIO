@@ -41,7 +41,7 @@ try {
 
         return [
             'id' => $shift['id'],
-            "title" => str_replace('_', ' ', $type)  . " " . $start_time . " " . $end_time,
+            "title" => strtoupper(str_replace('_', ' ', $type))  . " " . $start_time . " " . $end_time,
             'start' => $shift['start'],
             'end' => $shift['end'],
             'backgroundColor' => $bg,
