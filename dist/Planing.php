@@ -108,8 +108,8 @@ ob_end_flush();
                     <div class="mb-3">
                         <label class="form-label">Période</label>
                         <div style="display: flex;gap:10px">
-                            <input type="time" class="form-control" id="event_start_time" required>
-                            <input type="time" class="form-control" id="event_end_time" required>
+                            <input type="time" min="07:00" max="21:00" class="form-control" id="event_start_time" required>
+                            <input type="time" min="07:00" max="21:00" class="form-control" id="event_end_time" required>
                         </div>
                     </div>
 
