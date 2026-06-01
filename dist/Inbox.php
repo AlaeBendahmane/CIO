@@ -194,7 +194,7 @@ ob_end_flush();
                 </div>
               </div>
 
-              <div id="details-empty" class="card card-outline card-primary h-100 d-flex align-items-center justify-content-center border-dashed" style="height: 700px !important;">
+              <div id="details-empty" class="card card-outline card-primary h-100 d-flex align-items-center justify-content-center border-dashed" > <!--style="height: 700px !important;"
                 <div class="text-center text-muted">
                   <i class="bi bi-envelope-paper-fill fs-1 text-primary opacity-25"></i>
                   <p class="mt-3 fw-medium">Sélectionnez une notification pour l'ouvrir</p>
