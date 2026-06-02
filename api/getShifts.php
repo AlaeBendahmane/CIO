@@ -39,6 +39,10 @@ try {
         $bg = $config['color'] ?? '#3788d8';
         $text = $config['textColor'] ?? '#FFFFFF';
 
+        $startTimestamp = strtotime($shift['start']);
+        $endTimestamp   = strtotime($shift['end']);
+        $isEightHours = ($endTimestamp - $startTimestamp) >= 28800;
+
         return [
             'id' => $shift['id'],
             "title" => strtoupper(str_replace('_', ' ', $type))  . " " . $start_time . " " . $end_time,
@@ -46,7 +50,8 @@ try {
             'end' => $shift['end'],
             'backgroundColor' => $bg,
             'borderColor' => $bg,
-            'textColor' => $text
+            'textColor' => $text,
+            'allDay' => $isEightHours
         ];
     }, $shifts);
     echo json_encode($events);
