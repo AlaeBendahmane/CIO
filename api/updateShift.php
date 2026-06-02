@@ -49,8 +49,23 @@ try {
     ]);
 
     if ($result) {
-        // 4. Log the change
-        logShiftChange($pdo, $id, 'UPDATE', $oldShift, $data);
+        // Get current system time for the update stamp
+        $currentTimestamp = date('Y-m-d H:i:s');
+
+        // 4. Normalize the new data array to perfectly match database column keys
+        $normalizedNewData = [
+            'id'         => (int)$id,
+            'agentId'    => (int)$target_agent_id,
+            'end_time'   => str_replace('T', ' ', $end_time),
+            'isDeleted'  => (int)$oldShift['isDeleted'],
+            'shift_type' => $title,
+            'start_time' => str_replace('T', ' ', $start_time),
+            'created_at' => $oldShift['created_at'], // Keep the exact same creation time
+            'updated_at' => $currentTimestamp        // Set a fresh updated_at timestamp
+        ];
+
+        // Pass the normalized array instead of the raw frontend $data
+        logShiftChange($pdo, $id, 'UPDATE', $oldShift, $normalizedNewData);
 
         // 5. Notify the correct agent
         sendBulkNotification(
