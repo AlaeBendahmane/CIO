@@ -149,9 +149,12 @@
                 <select id="agentSelect" class="form-control select2" style="width: 100%;">
                 </select>
                 <div class="mt-1" style="display: flex;gap:15px;justify-content: space-between;align-items: center;">
-                    <a href="">Masse : Cet agent</a>
-                    <a href="">Masse : Tous les agents</a>
-                    <a href="">Historique</a>
+                    <a href="#offcanvasMasse" data-bs-toggle="offcanvas" role="button" aria-controls="offcanvasMasse">
+                        Import massif
+                    </a>
+                    <a href="#offcanvasHistorique" data-bs-toggle="offcanvas" role="button" aria-controls="offcanvasHistorique">
+                        Historique
+                    </a>
                 </div>
             </div>
         <?php endif; ?>
