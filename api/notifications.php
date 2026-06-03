@@ -29,8 +29,7 @@ if ($action == 'get_notifs') {
             WHERE n.isSeen = 0 
             AND (n.toUser = ? OR n.toUser = 'ALL') 
             AND n.isSent = 0
-            ORDER BY n.id ASC 
-            LIMIT 5";
+            ORDER BY n.id ASC ";
 
     $stmt = $pdo->prepare($sql);
     $stmt->execute([$myIdFiscal]);
@@ -107,7 +106,6 @@ if ($action == 'get_notifications_nav') {
         LEFT JOIN agents u ON n.fromAdmin = u.id
         WHERE n.toUser = ? 
         ORDER BY n.createdAt DESC 
-        LIMIT 20
     ");
     $stmt->execute([$sess]);
     $notifs = $stmt->fetchAll(PDO::FETCH_ASSOC);
