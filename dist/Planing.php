@@ -89,14 +89,15 @@ ob_end_flush();
                 </div>
             </div>
         </main>
-        <div class="offcanvas offcanvas-end" style="--bs-offcanvas-width: 260px;" data-bs-scroll="true" tabindex="-1" id="offcanvasWithBothOptions" aria-labelledby="offcanvasWithBothOptionsLabel">
+        <div class="offcanvas offcanvas-end" style="--bs-offcanvas-width: 350px;" data-bs-scroll="true" tabindex="-1" id="offcanvasWithBothOptions" aria-labelledby="offcanvasWithBothOptionsLabel">
             <div class="offcanvas-header">
                 <h5 class="offcanvas-title" id="offcanvasWithBothOptionsLabel">Détails de l'événement</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
             </div>
-            <div class="offcanvas-body">
-                <form id="eventForm">
-                    <!-- Hidden inputs to track state -->
+
+            <div class="offcanvas-body" style="overflow: hidden; display: flex; flex-direction: column; height: calc(100vh - 60px);">
+                <!-- Hidden inputs to track state -->
+                <form id="eventForm" class="flex-shrink-0 pb-2">
                     <input type="hidden" id="event_id">
                     <input type="hidden" id="start_date">
                     <input type="hidden" id="end_date">
@@ -120,8 +121,65 @@ ob_end_flush();
                         </button>
                     </div>
                 </form>
+
+                <div class="mt-3 flex-grow-1  border-top " id="shiftHistrory" style="display: none; overflow-y: auto; padding-right: 5px;">
+                    <label class="form-label text-muted small fw-bold sticky-top bg-white w-100 pb-2">
+                        Historique des modifications
+                    </label>
+
+                    <div id="timelineLoader" class="text-center my-3">
+                        <div class="spinner-border spinner-border-sm text-primary" role="status">
+                            <span class="visually-hidden">Chargement...</span>
+                        </div>
+                        <span class="ms-2 small text-muted">Chargement de l'historique...</span>
+                    </div>
+
+                    <div class="timeline" id="timelineContainer" style="display: none;">
+                        <div id="timelineEndClock">
+                            <i class="timeline-icon bi bi-clock-fill text-bg-secondary"></i>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
+        <!--  -->
+        <div class="offcanvas offcanvas-end" style="--bs-offcanvas-width: 350px;" data-bs-scroll="true" tabindex="-1" id="offcanvasHistorique" aria-labelledby="offcanvasHistorique">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title" id="offcanvasWithBothOptionsLabel">Historique des changements</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+
+            <div class="offcanvas-body">
+                aaa
+            </div>
+        </div>
+        <!--  -->
+        <div class="offcanvas offcanvas-end" style="--bs-offcanvas-width: 350px;" data-bs-scroll="true" tabindex="-1" id="offcanvasMasse" aria-labelledby="offcanvasMasse">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title" id="offcanvasWithBothOptionsLabel">Import massif</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+
+            <div class="offcanvas-body">
+                <form id="massUploadForm" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="csv_file" class="form-label font-weight-bold">Fichier CSV des horaires</label>
+                        <input class="form-control" type="file" id="csv_file" name="csv_file" accept=".csv" required>
+                        <div class="form-text">Veuillez enregistrer votre fichier Excel au format .csv avant de l'importer.</div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100" id="btnUploadMasse">
+                        <i class="fas fa-upload me-1"></i> Importer les horaires
+                    </button>
+                </form>
+
+                <hr class="my-4  d-none" id="spliiiit">
+
+                <div id="uploadResult" class="d-none"></div>
+            </div>
+        </div>
+        <!--  -->
     </div>
     <script src="./assets/js/overlayscrollbars.browser.es6.min.js"
         crossorigin="anonymous"></script>
@@ -327,12 +385,159 @@ ob_end_flush();
                 eventClick: function(info) {
                     const event = info.event;
 
-                    // Populate Form
+                    // 1. Reset UI & History Section Panel State
+                    const historySection = document.getElementById('shiftHistrory');
+                    const loader = document.getElementById('timelineLoader');
+                    const timelineContainer = document.getElementById('timelineContainer');
+                    const endClock = document.getElementById('timelineEndClock');
+
+                    historySection.style.display = 'block';
+                    loader.style.display = 'block';
+                    timelineContainer.style.display = 'none';
+
+                    // Clear any previously generated dynamic items (keep only the end clock anchor)
+                    const oldItems = timelineContainer.querySelectorAll('.dynamic-timeline-item');
+                    oldItems.forEach(item => item.remove());
+
+                    // 2. Fetch History Log Payload Stream
+                    fetch(`../api/getShiftHistory.php?shift_id=${event.id}`)
+                        .then(res => res.json())
+                        .then(response => {
+                            loader.style.display = 'none';
+                            timelineContainer.style.display = 'block';
+
+                            if (response.status === 'success' && response.data.length > 0) {
+                                let currentGroupDate = "";
+
+                                response.data.forEach(log => {
+                                    // Extract Date and Time components from "YYYY-MM-DD HH:mm:ss"
+                                    const datetimeParts = log.created_at.split(' ');
+                                    const rawDate = datetimeParts[0];
+                                    const rawTime = datetimeParts[1].substring(0, 5);
+                                    console.log(rawTime, rawDate)
+
+                                    // Format date beautifully for labels (e.g., "15 mai 2026")
+                                    const dateObj = new Date(rawDate);
+                                    const formattedDate = dateObj.toLocaleDateString('fr-FR', {
+                                        day: 'numeric',
+                                        month: 'short',
+                                        year: 'numeric'
+                                    });
+
+                                    // A. Insert Date Section Header if it's a new day group
+                                    if (currentGroupDate !== rawDate) {
+                                        currentGroupDate = rawDate;
+                                        const labelHtml = `
+                            <div class="time-label dynamic-timeline-item ">
+                                <span class="text-bg-danger small fw-bold">${formattedDate}</span>
+                            </div>`;
+                                        endClock.insertAdjacentHTML('beforebegin', labelHtml);
+                                    }
+
+                                    // B. Parse JSON strings safely
+                                    const newData = log.new_data ? JSON.parse(log.new_data) : null;
+                                    const oldData = log.old_data ? JSON.parse(log.old_data) : null;
+
+                                    const adminName = (log.prenom || log.nom) ? `${log.prenom} ${log.nom}` : `Utilisateur #${log.changed_by}`;
+
+                                    // C. Run contextual data validation diff engines
+                                    let iconClass = "bi bi-info-circle text-bg-secondary";
+                                    let actionBody = "";
+
+                                    if ((log.action_type === 'CREATE' || log.action_type === 'MASSECREATE') && newData) {
+                                        iconClass = "bi bi-plus-square text-bg-success text-dark";
+
+                                        const start = newData.start ? formatDate(newData.start.substring(0, 16).split('T')[0]) + ' à ' + newData.start.substring(0, 16).split('T')[1] : 'Non définie';
+
+                                        const end = newData.end ? formatDate(newData.end.substring(0, 16).split('T')[0]) + ' à ' + newData.end.substring(0, 16).split('T')[1] : 'Non définie';
+
+                                        actionBody = `
+                            <div class="p-2 bg-success-subtle rounded text-success-emphasis border border-success-subtle">
+                                <strong>Création du shift :</strong> ${newData.title || 'Sans titre'}<br>
+                                <small>Horaires : du ${start} au ${end}</small>
+                            </div>`;
+                                    } else if (log.action_type === 'UPDATE' && oldData && newData) {
+                                        iconClass = "bi bi-pencil-square text-bg-warning";
+                                        let changes = [];
+
+                                        // Compare Shift Types / Titles directly
+                                        const oldTitle = oldData.shift_type || 'Sans titre';
+                                        const newTitle = newData.shift_type || 'Sans titre';
+                                        if (oldTitle !== newTitle) {
+                                            changes.push(`Type de shift : <del class="text-danger">${oldTitle}</del> &rarr; <span class="text-success fw-bold">${newTitle}</span>`);
+                                        }
+
+                                        // Compare Start Time
+                                        const oldStart = oldData.start_time ? formatDate(oldData.start_time.substring(0, 16).split(' ')[0]) + ' à ' + oldData.start_time.substring(0, 16).split(' ')[1] : 'Non définie';
+                                        const newStart = newData.start_time ? formatDate(newData.start_time.substring(0, 16).split(' ')[0]) + ' à ' + newData.start_time.substring(0, 16).split(' ')[1] : 'Non définie';
+                                        if (oldStart !== newStart) {
+                                            changes.push(`Début : <del class="text-danger">${oldStart}</del> &rarr; <span class="text-success fw-bold">${newStart}</span>`);
+                                        }
+
+                                        // Compare End Time
+                                        const oldEnd = oldData.end_time ? formatDate(oldData.end_time.substring(0, 16).split(' ')[0]) + ' à ' + oldData.end_time.substring(0, 16).split(' ')[1] : 'Non définie';
+                                        const newEnd = newData.end_time ? formatDate(newData.end_time.substring(0, 16).split(' ')[0]) + ' à ' + newData.end_time.substring(0, 16).split(' ')[1] : 'Non définie';
+                                        if (oldEnd !== newEnd) {
+                                            changes.push(`Fin : <del class="text-danger">${oldEnd}</del> &rarr; <span class="text-success fw-bold">${newEnd}</span>`);
+                                        }
+
+                                        // Render updates if structural differences exist
+                                        if (changes.length > 0) {
+                                            actionBody = `<ul class="mb-0 ps-3">${changes.map(c => `<li class="my-1">${c}</li>`).join('')}</ul>`;
+                                        } else {
+                                            actionBody = `<span class="text-muted italic small">Mise à jour globale effectuée sans modification visible des horaires ou du type.</span>`;
+                                        }
+                                    } else if (log.action_type === 'DELETE' && oldData) {
+                                        iconClass = "bi bi-trash-fill text-bg-danger text-dark";
+
+                                        const oldTitle = oldData.shift_type || 'Inconnu';
+                                        const oldStart = oldData.start_time ? oldData.start_time.substring(0, 10) : '';
+
+                                        actionBody = `
+                                        <div class="p-2 bg-danger-subtle rounded text-danger-emphasis border border-danger-subtle">
+                                            Le shift <strong>"${oldTitle}"</strong> du ${oldStart} a été supprimé.
+                                        </div>`;
+                                    }
+
+                                    // D. Append clean row directly to layout view
+                                    const itemHtml = `
+                                            <div class="dynamic-timeline-item" style="margin-right: 0px !important;">
+                                                <i class="timeline-icon ${iconClass}"></i>
+                                                <div class="timeline-item shadow-none border-start-0 bg-light-subtle">
+                                                    <span class="time text-muted small">
+                                                        <i class="bi bi-clock-fill"></i> ${formatDate(rawDate)+' '+rawTime}
+                                                    </span>
+                                                    <h3 class="timeline-header font-semibold text-sm m-0" style="font-size:0.875rem;">
+                                                    <a href="javascript:void(0);"><strong>${adminName}</strong></a>
+                                                    </h3>
+                                                    <div class="timeline-body small text-secondary py-2">
+                                                        ${actionBody}
+                                                    </div>
+                                                </div>
+                                            </div>`;
+
+                                    endClock.insertAdjacentHTML('beforebegin', itemHtml);
+                                });
+                            } else {
+                                endClock.insertAdjacentHTML('beforebegin', `
+                    <div class="text-center text-muted small py-3 dynamic-timeline-item">
+                        Aucune modification n'a été enregistrée pour ce planning.
+                    </div>
+                `);
+                            }
+                        })
+                        .catch(err => {
+                            console.error('Timeline error:', err);
+                            loader.style.display = 'none';
+                        });
+
+                    // 3. Populate Form Core Structure Input Values Safely
                     document.getElementById('offcanvasWithBothOptionsLabel').innerText = "Modifier l'événement";
                     document.getElementById('event_id').value = event.id;
+
                     const reformat = event?.title?.replace(/\s*\b\d{1,2}:\d{2}\b/g, "").trim().toUpperCase();
                     document.getElementById('event_title').value = reformat;
-                    console.log('--', event.title)
+                    console.log('--', event.title);
 
                     // Format dates to HH:mm for the time inputs
                     const startTime = event.start.toTimeString().substring(0, 5);
@@ -345,7 +550,7 @@ ob_end_flush();
                     document.getElementById('start_date').value = event.startStr.split('T')[0];
                     document.getElementById('end_date').value = event.endStr ? event.endStr.split('T')[0] : event.startStr.split('T')[0];
 
-                    btnDelete.style.display = 'block'; // Show delete button
+                    btnDelete.style.display = 'block';
                     eventOffcanvas.show();
                 },
                 select: function(info) {
@@ -356,6 +561,7 @@ ob_end_flush();
                         return;
                     }
 
+                    document.getElementById('shiftHistrory').style.display = 'none';
                     document.getElementById('eventForm').reset();
                     document.getElementById('offcanvasWithBothOptionsLabel').innerText = "Nouvel événement";
                     document.getElementById('event_id').value = ""; // Empty ID
@@ -510,6 +716,70 @@ ob_end_flush();
                     });
             });
 
+            // 
+            document.getElementById('massUploadForm').addEventListener('submit', function(e) {
+                e.preventDefault(); // Stop native redirect page reloads
+
+                const fileInput = document.getElementById('csv_file');
+                const resultDiv = document.getElementById('uploadResult');
+                const btnSubmit = document.getElementById('btnUploadMasse');
+                const spliiiit = document.getElementById('spliiiit');
+
+                // Clear previous dynamic response states
+                resultDiv.className = 'd-none';
+                resultDiv.innerHTML = '';
+
+                // Package file content natively
+                const formData = new FormData();
+                formData.append('csv_file', fileInput.files[0]);
+
+                // Update Button visually during data transfers
+                btnSubmit.disabled = true;
+                btnSubmit.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Importation en cours...';
+
+                // Dispatch asynchronous connection request directly to backend endpoint 
+                fetch('../api/masseShifts.php', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        resultDiv.classList.remove('d-none');
+                        spliiiit.classList.remove('d-none');
+                        if (data.success) {
+
+                            resultDiv.className = 'alert alert-success';
+                            let msg = `<strong>Succès !</strong> ${data.data.message}<br>`;
+                            msg += `<small>• Enregistrements importés: ${data.data.imported_records_count}</small><br>`;
+                            if (data.data.duplicate_records_count > 0) {
+                                msg += `<small class="text-warning">• Ignorés (Shift dupliqué): ${data.data.skipped_records_count}</small>`;
+                            }
+                            if (data.data.skipped_records_count > 0) {
+                                msg += `<small class="text-danger">• Ignorés (Logon ID inconnu): ${data.data.skipped_records_count}</small>`;
+                            }
+                            resultDiv.innerHTML = msg;
+
+                            // Clear input box on genuine uploads
+                            fileInput.value = '';
+                        } else {
+                            spliiiit.classList.remove('d-none');
+                            resultDiv.className = 'alert alert-danger';
+                            resultDiv.innerHTML = `<strong>Erreur !</strong> ${data.message || 'Une erreur est survenue lors de l\'importation.'}`;
+                        }
+                    })
+                    .catch(error => {
+                        spliiiit.classList.remove('d-none');
+                        resultDiv.classList.remove('d-none');
+                        resultDiv.className = 'alert alert-danger';
+                        resultDiv.innerHTML = '<strong>Erreur !</strong> Impossible de contacter le serveur d\'API.';
+                    })
+                    .finally(() => {
+                        // Restore standard button layout statuses
+                        btnSubmit.disabled = false;
+                        btnSubmit.innerHTML = '<i class="fas fa-upload me-1"></i> Importer les horaires';
+                    });
+            });
+            // 
             // DELETE ACTION
             btnDelete.addEventListener('click', function() {
                 const id = document.getElementById('event_id').value;
@@ -573,6 +843,38 @@ ob_end_flush();
             // Observing the card-body or parent ensures width fills correctly
             resizeObserver.observe(calendarEl.parentElement);
         });
+
+        function openAndResetMasse() {
+            // 1. Reset the upload form and wipe old API response alerts
+            const uploadForm = document.getElementById('massUploadForm');
+            const resultDiv = document.getElementById('uploadResult');
+            const spliiiit = document.getElementById('spliiiit');
+
+            if (uploadForm) {
+                uploadForm.reset();
+            }
+
+            if (resultDiv) {
+                resultDiv.className = 'd-none';
+                resultDiv.innerHTML = '';
+            }
+
+            if (spliiiit) {
+                spliiiit.className = 'd-none';
+            }
+
+            // 2. Natively look up and display the Bootstrap offcanvas instance
+            const offcanvasElement = document.getElementById('offcanvasMasse');
+            if (offcanvasElement) {
+                // Get existing instance or create a new one safely
+                let bsOffcanvas = bootstrap.Offcanvas.getInstance(offcanvasElement);
+                if (!bsOffcanvas) {
+                    bsOffcanvas = new bootstrap.Offcanvas(offcanvasElement);
+                }
+                // Open the panel
+                bsOffcanvas.show();
+            }
+        }
     </script>
 
     <script src="./assets/js/Sortable.min.js"></script>

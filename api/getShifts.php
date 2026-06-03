@@ -15,6 +15,11 @@ if (isset($_GET['agent_id']) && $_GET['agent_id'] !== '') {
     $sessionAgentId = $_SESSION['id'];
 }
 
+$startSearch = $_GET['start'] ?? null;
+$endSearch   = $_GET['end'] ?? null;
+////// if prblm use those
+//$startSearch = date('Y-m-d H:i:s', strtotime($_GET['start']));
+// $endSearch   = date('Y-m-d H:i:s', strtotime($_GET['end']));
 try {
     $stmtColor = $pdo->prepare("SELECT valueP FROM parametres WHERE keyP = 'shiftsColors'");
     $stmtColor->execute();
@@ -24,9 +29,9 @@ try {
     $stmt = $pdo->prepare("
         SELECT id, shift_type, start_time AS start, end_time AS end 
         FROM shifts 
-        WHERE agentId = :agentId and isDeleted=0
+        WHERE agentId = :agentId and isDeleted=0  AND start_time < :endSearch AND end_time > :startSearch
     ");
-    $stmt->execute(['agentId' => $sessionAgentId]);
+    $stmt->execute(['agentId' => $sessionAgentId, 'startSearch' => $startSearch,   'endSearch'  => $endSearch]);
     $shifts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     $events = array_map(function ($shift) use ($colorMap) {
