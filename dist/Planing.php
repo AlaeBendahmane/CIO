@@ -154,7 +154,7 @@ ob_end_flush();
             <div class="offcanvas-body">
                 aaa
             </div>
-        </from the div>
+        </div>
         <!--  -->
         <div class="offcanvas offcanvas-end" style="--bs-offcanvas-width: 350px;" data-bs-scroll="true" tabindex="-1" id="offcanvasMasse" aria-labelledby="offcanvasMasseLabel">
             <div class="offcanvas-header">
