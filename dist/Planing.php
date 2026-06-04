@@ -89,6 +89,7 @@ ob_end_flush();
                 </div>
             </div>
         </main>
+        <!--  -->
         <div class="offcanvas offcanvas-end" style="--bs-offcanvas-width: 350px;" data-bs-scroll="true" tabindex="-1" id="offcanvasWithBothOptions" aria-labelledby="offcanvasWithBothOptionsLabel">
             <div class="offcanvas-header">
                 <h5 class="offcanvas-title" id="offcanvasWithBothOptionsLabel">Détails de l'événement</h5>
@@ -144,20 +145,20 @@ ob_end_flush();
             </div>
         </div>
         <!--  -->
-        <div class="offcanvas offcanvas-end" style="--bs-offcanvas-width: 350px;" data-bs-scroll="true" tabindex="-1" id="offcanvasHistorique" aria-labelledby="offcanvasHistorique">
+        <div class="offcanvas offcanvas-end" style="--bs-offcanvas-width: 350px;" data-bs-scroll="true" tabindex="-1" id="offcanvasHistorique" aria-labelledby="offcanvasHistoriqueLabel">
             <div class="offcanvas-header">
-                <h5 class="offcanvas-title" id="offcanvasWithBothOptionsLabel">Historique des changements</h5>
+                <h5 class="offcanvas-title" id="offcanvasHistoriqueLabel"> <i class="fas fa-history me-2 text-secondary"></i>Historique des changements</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
             </div>
 
             <div class="offcanvas-body">
                 aaa
             </div>
-        </div>
+        </from the div>
         <!--  -->
-        <div class="offcanvas offcanvas-end" style="--bs-offcanvas-width: 350px;" data-bs-scroll="true" tabindex="-1" id="offcanvasMasse" aria-labelledby="offcanvasMasse">
+        <div class="offcanvas offcanvas-end" style="--bs-offcanvas-width: 350px;" data-bs-scroll="true" tabindex="-1" id="offcanvasMasse" aria-labelledby="offcanvasMasseLabel">
             <div class="offcanvas-header">
-                <h5 class="offcanvas-title" id="offcanvasWithBothOptionsLabel">Import massif</h5>
+                <h5 class="offcanvas-title" id="offcanvasMasseLabel"> <i class="fas fa-upload me-2 text-secondary"></i>Import massif</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
             </div>
 
