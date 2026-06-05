@@ -199,7 +199,7 @@ if ($ste == "DC") {
                 </div>
                 <div class="col-6 mb-3">
                   <small class="text-uppercase text-bold">ID Proximus</small>
-                  <p>ID<?= $idProx ?></p>
+                  <p><?= $idProx ?></p>
                 </div>
                 <div class="col-6 mb-3">
                   <small class="text-uppercase text-bold">Entreprise</small>
