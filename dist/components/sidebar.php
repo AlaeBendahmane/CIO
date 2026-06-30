@@ -66,7 +66,7 @@ $version = getParam($pdo, 'Version');
                 <?php if ($userRole === 'A'): ?>
                     <?php $isDocumentsSection = in_array($currentPage, ['documents', 'massSend', 'documentsOne', 'fiches']); ?>
                     <li class="nav-item <?= $isDocumentsSection ? 'menu-open' : '' ?>">
-                        <a href="#" class="nav-link" <?= $isDocumentsSection ? 'style="background: transparent !important;"' : '' ?>">
+                        <a href="#" class="nav-link" <?= $isDocumentsSection ? 'style="background: transparent !important;"' : '' ?>>
                             <i class="nav-icon bi bi-archive-fill"></i>
                             <p>
                                 Documents
@@ -129,6 +129,51 @@ $version = getParam($pdo, 'Version');
                             <i class="nav-icon bi bi-sliders"></i>
                             <p>Paramètres</p>
                         </a>
+                    </li>
+                <?php endif; ?>
+
+                <?php if ($userRole === 'A'): ?>
+                    <?php $isAssets = in_array($currentPage, ['ordinateurs', 'accessoires', 'licenses', 'composants']); ?>
+                    <li class="nav-item <?= $isAssets ? 'menu-open' : '' ?>">
+                        <a href="#" class="nav-link" <?= $isAssets ? 'style="background: transparent !important;"' : '' ?>>
+                            <i class="nav-icon bi bi-box2-fill"></i>
+                            <p>
+                                Equipements
+                                <i class="nav-arrow bi bi-chevron-right"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview mb-1">
+                            <li class="nav-item">
+                                <a href="./Ordinateurs.php" class="nav-link <?= ($currentPage === 'ordinateurs') ? 'active' : '' ?>">
+                                    <i class="nav-icon bi bi-pc"></i>
+                                    <p>Ordinateurs</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="./Ecrans.php" class="nav-link <?= ($currentPage === 'ecrans') ? 'active' : '' ?>">
+                                    <i class="nav-icon bi bi-pc-display-horizontal"></i>
+                                    <p>Ecrans</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="./Accessoires.php" class="nav-link <?= ($currentPage === 'accessoires') ? 'active' : '' ?>">
+                                    <i class="nav-icon bi bi-keyboard"></i>
+                                    <p>Accessoires</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="./Licenses" class="nav-link <?= ($currentPage === 'licenses') ? 'active' : '' ?>">
+                                    <i class="nav-icon bi bi-key-fill"></i>
+                                    <p>Licenses</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="./Composants.php" class="nav-link <?= ($currentPage === 'composants') ? 'active' : '' ?>">
+                                    <i class="nav-icon bi bi-memory"></i>
+                                    <p>Composants</p>
+                                </a>
+                            </li>
+                        </ul>
                     </li>
                 <?php endif; ?>
 
