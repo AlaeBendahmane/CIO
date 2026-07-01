@@ -133,7 +133,7 @@ $version = getParam($pdo, 'Version');
                 <?php endif; ?>
 
                 <?php if ($userRole === 'A'): ?>
-                    <?php $isAssets = in_array($currentPage, ['ordinateurs', 'accessoires', 'licenses', 'composants']); ?>
+                    <?php $isAssets = in_array($currentPage, ['ordinateurs', 'ecrans', 'accessoires', 'licenses', 'composants']); ?>
                     <li class="nav-item <?= $isAssets ? 'menu-open' : '' ?>">
                         <a href="#" class="nav-link" <?= $isAssets ? 'style="background: transparent !important;"' : '' ?>>
                             <i class="nav-icon bi bi-box2-fill"></i>
@@ -162,7 +162,7 @@ $version = getParam($pdo, 'Version');
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="./Licenses" class="nav-link <?= ($currentPage === 'licenses') ? 'active' : '' ?>">
+                                <a href="./Licenses.php" class="nav-link <?= ($currentPage === 'licenses') ? 'active' : '' ?>">
                                     <i class="nav-icon bi bi-key-fill"></i>
                                     <p>Licenses</p>
                                 </a>
